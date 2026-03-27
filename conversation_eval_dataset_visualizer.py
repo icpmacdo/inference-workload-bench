@@ -8,25 +8,43 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
-
-def load_dataset(path: Path) -> list[dict[str, Any]]:
-    payload = json.loads(path.read_text())
-    if not isinstance(payload, list):
-        raise ValueError("Scenario dataset file must contain a top-level JSON list.")
-    return payload
+from benchmark_contracts import CONTRACT_SCHEMA_VERSION, compile_contracts_to_dataset, load_contracts
 
 
-def resolve_input_path(raw: str) -> Path:
+def _looks_like_contract_payload(payload: Any) -> bool:
+    if isinstance(payload, dict):
+        return str(payload.get("schema_version", "")) == CONTRACT_SCHEMA_VERSION
+    if isinstance(payload, list) and payload:
+        first = payload[0]
+        return isinstance(first, dict) and str(first.get("schema_version", "")) == CONTRACT_SCHEMA_VERSION
+    return False
+
+
+def load_view_source(raw: str) -> tuple[list[dict[str, Any]], Path, str]:
     path = Path(raw)
     if path.is_file():
-        return path
+        payload = json.loads(path.read_text())
+        if _looks_like_contract_payload(payload):
+            return compile_contracts_to_dataset(load_contracts(path)), path, "contracts"
+        if not isinstance(payload, list):
+            raise ValueError("Scenario dataset file must contain a top-level JSON list.")
+        return payload, path, "dataset"
     if path.is_dir():
+        json_files = sorted(path.glob("*.json"))
+        if not json_files:
+            raise FileNotFoundError(f"No JSON files found in directory: {path}")
+        for candidate in json_files:
+            payload = json.loads(candidate.read_text())
+            if _looks_like_contract_payload(payload):
+                return compile_contracts_to_dataset(load_contracts(path)), path, "contracts"
         matched = sorted(path.glob("conversation_eval*.json"))
         if not matched:
-            matched = sorted(path.glob("*.json"))
-        if not matched:
-            raise FileNotFoundError(f"No dataset JSON files found in directory: {path}")
-        return max(matched, key=lambda candidate: (candidate.stat().st_mtime, candidate.name))
+            matched = json_files
+        dataset_path = max(matched, key=lambda candidate: (candidate.stat().st_mtime, candidate.name))
+        payload = json.loads(dataset_path.read_text())
+        if not isinstance(payload, list):
+            raise ValueError(f"Scenario dataset file must contain a top-level JSON list: {dataset_path}")
+        return payload, dataset_path, "dataset"
     raise FileNotFoundError(f"Input not found: {path}")
 
 
@@ -77,6 +95,13 @@ def family_name(scenario_name: str) -> str:
     return scenario_name
 
 
+def scenario_family(scenario: dict[str, Any]) -> str:
+    explicit = str(scenario.get("benchmark_family", "")).strip()
+    if explicit:
+        return explicit
+    return family_name(str(scenario.get("name", "")))
+
+
 def summarize_check_params(check: dict[str, Any]) -> str:
     if "needles" in check:
         needles = check.get("needles") or []
@@ -88,6 +113,40 @@ def summarize_check_params(check: dict[str, Any]) -> str:
     if "max" in check:
         return f"max={check['max']}"
     return "custom rule params"
+
+
+def summarize_input_contract(input_contract: dict[str, Any] | None) -> str:
+    if not input_contract:
+        return "—"
+    parts: list[str] = []
+    task_type = str(input_contract.get("task_type", "")).strip()
+    if task_type:
+        parts.append(f"task={task_type}")
+    if "min_input_character_count" in input_contract:
+        parts.append(f"min input chars={input_contract['min_input_character_count']}")
+    return " • ".join(parts) if parts else "authored input contract"
+
+
+def summarize_output_contract(output_contract: dict[str, Any] | None) -> str:
+    if not output_contract:
+        return "—"
+    parts: list[str] = []
+    keyword_counts = output_contract.get("keyword_counts") or []
+    if keyword_counts:
+        parts.append(f"keywords={len(keyword_counts)} exact")
+    if "sentence_count" in output_contract:
+        parts.append(f"sentences={output_contract['sentence_count']}")
+    if "bullet_count" in output_contract:
+        parts.append(f"bullets={output_contract['bullet_count']}")
+    if "max_line_count" in output_contract:
+        parts.append(f"max lines={output_contract['max_line_count']}")
+    if "min_line_count" in output_contract:
+        parts.append(f"min lines={output_contract['min_line_count']}")
+    if "min_character_count" in output_contract:
+        parts.append(f"min chars={output_contract['min_character_count']}")
+    if "required_section_headers" in output_contract:
+        parts.append(f"headers={len(output_contract['required_section_headers'])}")
+    return " • ".join(parts) if parts else "authored output contract"
 
 
 def rule_counts(dataset: list[dict[str, Any]]) -> Counter:
@@ -112,7 +171,7 @@ def family_rows(dataset: list[dict[str, Any]]) -> list[dict[str, Any]]:
         lambda: {"scenarios": 0, "turns": 0, "checks": 0, "tags": Counter(), "rules": Counter()}
     )
     for scenario in dataset:
-        family = family_name(str(scenario.get("name", "")))
+        family = scenario_family(scenario)
         row = grouped[family]
         row["scenarios"] += 1
         turns = scenario.get("turns", [])
@@ -148,10 +207,13 @@ def turn_rows(dataset: list[dict[str, Any]]) -> list[dict[str, Any]]:
             unique_rules = list(dict.fromkeys(str(check.get("rule", "unknown")) for check in checks))
             rows.append(
                 {
-                    "family": family_name(scenario_name),
+                    "family": scenario_family(scenario),
                     "scenario": scenario_name,
                     "index": index,
+                    "prompt": str(turn.get("prompt", turn.get("user", ""))),
                     "user_message": str(turn.get("user", "")),
+                    "input_summary": summarize_input_contract(turn.get("input_contract")),
+                    "output_summary": summarize_output_contract(turn.get("output_contract")),
                     "checks_total": len(checks),
                     "rules_summary": ", ".join(unique_rules),
                     "checks": checks,
@@ -164,7 +226,7 @@ def scenario_details_html(dataset: list[dict[str, Any]]) -> str:
     html_chunks: list[str] = []
     grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for scenario in dataset:
-        grouped[family_name(str(scenario.get("name", "")))].append(scenario)
+        grouped[scenario_family(scenario)].append(scenario)
 
     for family, scenarios in sorted(grouped.items()):
         family_turns = sum(len(scenario.get("turns", [])) for scenario in scenarios)
@@ -193,12 +255,20 @@ def scenario_details_html(dataset: list[dict[str, Any]]) -> str:
             tags_html = "".join(f'<span class="pill">{escape(tag)}</span>' for tag in scenario.get("tags", []))
             facts = scenario.get("facts", {})
             facts_text = "\n".join(f"{key}: {value}" for key, value in facts.items()) or "—"
+            metadata_text = json.dumps(
+                scenario.get("workload_metadata", {}),
+                indent=2,
+                ensure_ascii=True,
+            ) if scenario.get("workload_metadata") else "—"
+            contract_source = str(scenario.get("contract_source", "")).strip() or "—"
 
             html_chunks.append(
                 "<details class='scenario-detail'>"
                 f"<summary><strong>{escape(scenario.get('name', ''))}</strong> — {escape(scenario.get('description', ''))}</summary>"
                 f"<div class='trace-block'><div class='trace-label'>System prompt</div><pre>{escape(scenario.get('system_prompt', ''))}</pre></div>"
                 f"<div class='trace-block'><div class='trace-label'>Facts</div><pre>{escape(facts_text)}</pre></div>"
+                f"<div class='trace-block'><div class='trace-label'>Workload metadata</div><pre>{escape(metadata_text)}</pre></div>"
+                f"<div class='trace-block'><div class='trace-label'>Contract source</div><pre>{escape(contract_source)}</pre></div>"
                 f"<div class='trace-block'><div class='trace-label'>Tags</div><div class='pill-row'>{tags_html or '<span class=\"muted\">—</span>'}</div></div>"
             )
 
@@ -206,6 +276,8 @@ def scenario_details_html(dataset: list[dict[str, Any]]) -> str:
                 checks = turn.get("checks", [])
                 input_contract = turn.get("input_contract")
                 output_contract = turn.get("output_contract")
+                correctness_checks = turn.get("correctness_checks", [])
+                generated_checks = turn.get("generated_checks", [])
                 check_rows = "".join(
                     "<tr>"
                     f"<td><code>{escape(check.get('name', ''))}</code></td>"
@@ -222,6 +294,9 @@ def scenario_details_html(dataset: list[dict[str, Any]]) -> str:
                     (
                         "<div class='trace-card'>"
                         f"<div class='trace-head'>Turn {index} • {len(checks)} checks • {escape(rules_summary)}</div>"
+                        f"<div class='trace-block'><div class='trace-label'>Input shape</div><pre>{escape(summarize_input_contract(input_contract))}</pre></div>"
+                        f"<div class='trace-block'><div class='trace-label'>Output shape</div><pre>{escape(summarize_output_contract(output_contract))}</pre></div>"
+                        f"<div class='trace-block'><div class='trace-label'>Authored prompt</div><pre>{escape(turn.get('prompt', turn.get('user', '')))}</pre></div>"
                         f"<div class='trace-block'><div class='trace-label'>User</div><pre>{escape(turn.get('user', ''))}</pre></div>"
                     )
                     + (
@@ -232,6 +307,16 @@ def scenario_details_html(dataset: list[dict[str, Any]]) -> str:
                     + (
                         f"<div class='trace-block'><div class='trace-label'>Output contract</div><pre>{escape(json.dumps(output_contract, indent=2, ensure_ascii=True))}</pre></div>"
                         if output_contract
+                        else ""
+                    )
+                    + (
+                        f"<div class='trace-block'><div class='trace-label'>Authored correctness checks</div><pre>{escape(json.dumps(correctness_checks, indent=2, ensure_ascii=True))}</pre></div>"
+                        if correctness_checks
+                        else ""
+                    )
+                    + (
+                        f"<div class='trace-block'><div class='trace-label'>Generated contract checks</div><pre>{escape(json.dumps(generated_checks, indent=2, ensure_ascii=True))}</pre></div>"
+                        if generated_checks
                         else ""
                     )
                     + (
@@ -256,7 +341,7 @@ def grouped_turn_rows_html(turns: list[dict[str, Any]]) -> str:
             current_family = row["family"]
             html_chunks.append(
                 "<tr class='group-row'>"
-                f"<td colspan='5'>{escape(current_family)}</td>"
+                f"<td colspan='6'>{escape(current_family)}</td>"
                 "</tr>"
             )
         checks_html = "".join(
@@ -271,6 +356,7 @@ def grouped_turn_rows_html(turns: list[dict[str, Any]]) -> str:
             f"<td><div class='name'>{escape(row['scenario'])}</div><div class='muted'>Turn {row['index']}</div></td>"
             f"<td>{format_num(row['checks_total'])}</td>"
             f"<td>{escape(truncate(row['rules_summary'], 80))}</td>"
+            f"<td><div class='muted'>{escape(row['input_summary'])}</div><div style='margin-top:6px'>{escape(row['output_summary'])}</div></td>"
             f"<td><details><summary>{escape(truncate(row['user_message'], 110))}</summary><pre>{escape(row['user_message'])}</pre></details></td>"
             f"<td><details><summary>Checks</summary><ul class='check-list'>{checks_html}</ul></details></td>"
             "</tr>"
@@ -278,7 +364,7 @@ def grouped_turn_rows_html(turns: list[dict[str, Any]]) -> str:
     return "".join(html_chunks)
 
 
-def build_html(dataset: list[dict[str, Any]], source_path: Path) -> str:
+def build_html(dataset: list[dict[str, Any]], source_path: Path, source_kind: str) -> str:
     total_turns = sum(len(scenario.get("turns", [])) for scenario in dataset)
     total_checks = sum(len(turn.get("checks", [])) for scenario in dataset for turn in scenario.get("turns", []))
     rules = rule_counts(dataset)
@@ -289,6 +375,7 @@ def build_html(dataset: list[dict[str, Any]], source_path: Path) -> str:
     summary_cards = "".join(
         [
             metric_card("Dataset file", escape(source_path.name), "scenario source"),
+            metric_card("Source type", escape(source_kind), "authored contracts or derived dataset"),
             metric_card("Scenario families", format_num(len(families)), "unique families"),
             metric_card("Scenarios", format_num(len(dataset)), "total scenarios"),
             metric_card("Turns", format_num(total_turns), "all scenarios"),
@@ -545,9 +632,9 @@ summary {{
 <header>
   <h1>Conversation evaluation dataset viewer</h1>
   <div class="subtitle">
-    This view shows the dataset definition itself, not scored model output. It is built from
-    <code>{escape(source_path.name)}</code> and is meant to answer two questions quickly: “what does this dataset cover?”
-    and “what exact scenario and check logic will the harness run?”
+    This view shows the benchmark contract surface area, not scored model output. It is built from
+    <code>{escape(source_path.name)}</code> and is meant to answer two questions quickly: “what workload classes does this benchmark cover?”
+    and “what exact contract and deterministic check logic will the harness run?”
   </div>
 </header>
 
@@ -596,6 +683,7 @@ summary {{
           <th>Scenario / turn</th>
           <th>Checks</th>
           <th>Rules</th>
+          <th>Contracts</th>
           <th>User message</th>
           <th>Check details</th>
         </tr>
@@ -620,7 +708,7 @@ summary {{
 <section class="section">
   <h2>Scenario library</h2>
   <p class="muted">
-    Use this section to inspect the exact system prompt, facts, turns, and deterministic checks that define the dataset.
+    Use this section to inspect the exact system prompt, turns, input contracts, output contracts, and deterministic checks that define the benchmark.
   </p>
   {scenario_library}
 </section>
@@ -670,9 +758,8 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    input_path = resolve_input_path(args.input)
-    dataset = load_dataset(input_path)
-    html_text = build_html(dataset, input_path)
+    dataset, input_path, source_kind = load_view_source(args.input)
+    html_text = build_html(dataset, input_path, source_kind)
 
     output_path = Path(args.output)
     output_path.write_text(html_text, encoding="utf-8")

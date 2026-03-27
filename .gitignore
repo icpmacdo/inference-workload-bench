@@ -1,0 +1,23 @@
+# Python cache and local environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Local machine and secret config
+.DS_Store
+.env
+.env.*
+chatbot/.tinker_chat_state.json
+
+# Generated benchmark outputs
+eval_runs*/
+workload_bundles*/
+archives/20*/
+
+# Generated scenario datasets compiled from contracts
+scenario_datasets/benchmark_contract_dataset*.json
+scenario_datasets/shape_control_v*.json

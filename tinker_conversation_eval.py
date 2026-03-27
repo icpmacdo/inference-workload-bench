@@ -38,6 +38,7 @@ class RuntimeConfig:
     scenario_names: list[str]
     scenario_file: str | None
     list_scenarios: bool
+    self_test: bool
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -54,6 +55,7 @@ class RuntimeConfig:
             "scenario_names": self.scenario_names,
             "scenario_file": self.scenario_file,
             "list_scenarios": self.list_scenarios,
+            "self_test": self.self_test,
         }
 
 
@@ -96,17 +98,51 @@ class Check:
 class ScenarioTurn:
     user: str
     checks: list[Check]
+    prompt: str = ""
+    turn_id: str = ""
+    input_contract: dict[str, Any] = field(default_factory=dict)
+    output_contract: dict[str, Any] = field(default_factory=dict)
+    correctness_checks: list[Check] = field(default_factory=list)
+    generated_checks: list[Check] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        payload = {
             "user": self.user,
             "checks": [check.to_dict() for check in self.checks],
         }
+        if self.prompt:
+            payload["prompt"] = self.prompt
+        if self.turn_id:
+            payload["turn_id"] = self.turn_id
+        if self.input_contract:
+            payload["input_contract"] = self.input_contract
+        if self.output_contract:
+            payload["output_contract"] = self.output_contract
+        if self.correctness_checks:
+            payload["correctness_checks"] = [check.to_dict() for check in self.correctness_checks]
+        if self.generated_checks:
+            payload["generated_checks"] = [check.to_dict() for check in self.generated_checks]
+        return payload
 
     @classmethod
     def from_dict(cls, payload: dict[str, Any]) -> ScenarioTurn:
         checks = [Check.from_dict(item) for item in payload.get("checks", [])]
-        return cls(user=str(payload["user"]), checks=checks)
+        correctness_checks = [
+            Check.from_dict(item) for item in payload.get("correctness_checks", [])
+        ]
+        generated_checks = [
+            Check.from_dict(item) for item in payload.get("generated_checks", [])
+        ]
+        return cls(
+            user=str(payload["user"]),
+            checks=checks,
+            prompt=str(payload.get("prompt", "")),
+            turn_id=str(payload.get("turn_id", "")),
+            input_contract=dict(payload.get("input_contract", {})),
+            output_contract=dict(payload.get("output_contract", {})),
+            correctness_checks=correctness_checks,
+            generated_checks=generated_checks,
+        )
 
 
 @dataclass(slots=True)
@@ -117,9 +153,13 @@ class Scenario:
     facts: dict[str, str]
     turns: list[ScenarioTurn]
     tags: list[str] = field(default_factory=list)
+    benchmark_family: str = ""
+    workload_metadata: dict[str, Any] = field(default_factory=dict)
+    contract_source: str = ""
+    contract_schema_version: str = ""
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        payload = {
             "name": self.name,
             "description": self.description,
             "system_prompt": self.system_prompt,
@@ -127,6 +167,15 @@ class Scenario:
             "turns": [turn.to_dict() for turn in self.turns],
             "tags": self.tags,
         }
+        if self.benchmark_family:
+            payload["benchmark_family"] = self.benchmark_family
+        if self.workload_metadata:
+            payload["workload_metadata"] = self.workload_metadata
+        if self.contract_source:
+            payload["contract_source"] = self.contract_source
+        if self.contract_schema_version:
+            payload["contract_schema_version"] = self.contract_schema_version
+        return payload
 
     @classmethod
     def from_dict(cls, payload: dict[str, Any]) -> Scenario:
@@ -138,6 +187,10 @@ class Scenario:
             facts={str(key): str(value) for key, value in payload.get("facts", {}).items()},
             turns=turns,
             tags=[str(tag) for tag in payload.get("tags", [])],
+            benchmark_family=str(payload.get("benchmark_family", "")),
+            workload_metadata=dict(payload.get("workload_metadata", {})),
+            contract_source=str(payload.get("contract_source", "")),
+            contract_schema_version=str(payload.get("contract_schema_version", "")),
         )
 
 
@@ -258,6 +311,15 @@ def _sentence_count(text: str) -> int:
     return len(parts)
 
 
+def _section_headers_present(text: str, headers: list[str]) -> tuple[bool, list[str]]:
+    missing: list[str] = []
+    for header in headers:
+        pattern = re.compile(rf"(?im)^\s*{re.escape(header)}\s*:?\s*$")
+        if pattern.search(text) is None:
+            missing.append(header)
+    return (not missing, missing)
+
+
 def _resolve_templates(value: Any, facts: dict[str, str]) -> Any:
     if isinstance(value, str):
         return TEMPLATE_RE.sub(lambda match: facts.get(match.group(1), match.group(0)), value)
@@ -326,6 +388,15 @@ def _evaluate_check(response_text: str, check: Check, facts: dict[str, str]) -> 
             if passed
             else f"non-empty line count {line_count} > {maximum}"
         )
+    elif check.rule == "line_count_at_least":
+        minimum = int(resolved_params["count"])
+        line_count = len(_nonempty_lines(response_text))
+        passed = line_count >= minimum
+        details = (
+            f"non-empty line count {line_count} >= {minimum}"
+            if passed
+            else f"non-empty line count {line_count} < {minimum}"
+        )
     elif check.rule == "bullet_count_equals":
         expected = int(resolved_params["count"])
         actual = len(_bullet_lines(response_text))
@@ -365,6 +436,19 @@ def _evaluate_check(response_text: str, check: Check, facts: dict[str, str]) -> 
             if passed
             else f"word count for '{word}' {actual} != {expected}"
         )
+    elif check.rule == "char_count_at_least":
+        minimum = int(resolved_params["count"])
+        actual = len(response_text.strip())
+        passed = actual >= minimum
+        details = (
+            f"character count {actual} >= {minimum}"
+            if passed
+            else f"character count {actual} < {minimum}"
+        )
+    elif check.rule == "section_headers_present":
+        headers = [str(item) for item in resolved_params.get("headers", [])]
+        passed, missing = _section_headers_present(response_text, headers)
+        details = "all required section headers present" if passed else f"missing headers: {missing}"
     else:
         raise ValueError(f"Unsupported rule: {check.rule}")
 
@@ -898,6 +982,53 @@ def _print_scenarios(scenarios: list[Scenario]) -> None:
         print(f"{scenario.name}: {scenario.description}")
 
 
+def _build_rule_case(
+    rule: str,
+    params: dict[str, Any],
+    response_text: str,
+    expected: bool,
+) -> tuple[Check, str, bool]:
+    return (
+        Check(
+            name=f"{rule}_self_test",
+            rule=rule,
+            params=params,
+        ),
+        response_text,
+        expected,
+    )
+
+
+def _run_self_test() -> int:
+    cases = [
+        _build_rule_case("word_count_equals", {"word": "note", "count": 2}, "note 27 note", True),
+        _build_rule_case(
+            "sentence_count_equals",
+            {"count": 2},
+            "The answer is 27. Keep it short.",
+            True,
+        ),
+        _build_rule_case("line_count_at_least", {"count": 3}, "one\ntwo\nthree", True),
+        _build_rule_case("char_count_at_least", {"count": 20}, "abcdefghijklmnopqrst", True),
+        _build_rule_case(
+            "section_headers_present",
+            {"headers": ["Summary", "Decision"]},
+            "Summary:\nShort note.\nDecision:\nApprove.",
+            True,
+        ),
+    ]
+
+    for check, response_text, expected in cases:
+        result = _evaluate_check(response_text, check, {})
+        if result.passed != expected:
+            raise AssertionError(
+                f"Rule self-test failed for {check.rule}: expected {expected}, got {result.passed}"
+            )
+
+    print("Self-test passed.")
+    return 0
+
+
 def _parse_args() -> RuntimeConfig:
     parser = argparse.ArgumentParser(
         description=(
@@ -931,6 +1062,7 @@ def _parse_args() -> RuntimeConfig:
         action="store_true",
         help="Print the available scenario names and exit.",
     )
+    parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
 
     scenario_names = []
@@ -951,6 +1083,7 @@ def _parse_args() -> RuntimeConfig:
         scenario_names=scenario_names,
         scenario_file=_clean_optional(args.scenario_file),
         list_scenarios=args.list_scenarios,
+        self_test=bool(args.self_test),
     )
     return config
 
@@ -965,6 +1098,9 @@ def _load_selected_scenarios(config: RuntimeConfig) -> list[Scenario]:
 
 
 async def _async_main(config: RuntimeConfig) -> int:
+    if config.self_test:
+        return _run_self_test()
+
     selected_scenarios = _load_selected_scenarios(config)
     if config.list_scenarios:
         _print_scenarios(selected_scenarios)

@@ -1,0 +1,3218 @@
+[
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "interactive_short_01_atlas-relay",
+    "description": "Eight short deterministic turns mixing arithmetic, lookup, policy application, and launch decisions for Atlas Relay.",
+    "benchmark_family": "interactive_short",
+    "system_prompt": "You are a fast operations assistant. Keep reasoning light, answer directly, and satisfy the explicit output contract exactly.",
+    "facts": {
+      "asset": "Atlas Relay",
+      "launch_date": "July 22",
+      "fallback_date": "August 5",
+      "bug_id": "BUG-431",
+      "owner": "Mina Patel",
+      "segment": "design partners",
+      "region": "us-west-2",
+      "not_ready_item": "support",
+      "review_label": "legal review",
+      "allowed_item": "airport rideshare",
+      "blocked_item": "minibar",
+      "blocked_cost": "$19",
+      "ticket_id": "SUP-7714",
+      "a": "12",
+      "b": "15",
+      "sum_result": "27",
+      "plan_a": "$39",
+      "plan_b": "$52",
+      "cheaper_label": "Plan A",
+      "cheaper_price": "$39"
+    },
+    "tags": [
+      "v1",
+      "interactive-short",
+      "deterministic",
+      "light-reasoning"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "flat",
+      "decode_stress": "low",
+      "expected_response_size_class": "short",
+      "isl_bucket": "medium",
+      "osl_bucket": "small"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "What is {{a}} + {{b}}?",
+        "input_contract": {
+          "task_type": "arithmetic",
+          "question": "What is {{a}} + {{b}}?",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "note",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_sum",
+            "rule": "regex",
+            "pattern": "(?is)\\b{{sum_result}}\\b"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Policy: {{allowed_item}} is reimbursable, {{blocked_item}} is never reimbursable. Is a {{blocked_cost}} {{blocked_item}} charge reimbursable?",
+        "input_contract": {
+          "task_type": "policy_application",
+          "policy_focus": "{{blocked_item}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "clear",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "rejects_blocked_item",
+            "rule": "regex",
+            "pattern": "(?is)({{blocked_item}}|{{blocked_cost}}).*((not|never|isn\\'t|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Ticket {{ticket_id}} belongs to {{owner}}. Who owns the ticket?",
+        "input_contract": {
+          "task_type": "lookup",
+          "entity": "{{ticket_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "record",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_owner",
+            "rule": "contains_all",
+            "needles": [
+              "{{owner}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "The launch date for {{asset}} is {{launch_date}}. What is the launch date?",
+        "input_contract": {
+          "task_type": "date_recall",
+          "asset": "{{asset}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "date",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_launch_date",
+            "rule": "contains_all",
+            "needles": [
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_05",
+        "prompt": "Which option is cheaper: Plan A at {{plan_a}} or Plan B at {{plan_b}}?",
+        "input_contract": {
+          "task_type": "comparison",
+          "options": [
+            "Plan A at {{plan_a}}",
+            "Plan B at {{plan_b}}"
+          ],
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "price",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "picks_cheaper_plan",
+            "rule": "regex",
+            "pattern": "(?is)({{cheaper_label}}|{{cheaper_price}}).*(cheaper|lower)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_06",
+        "prompt": "{{review_label}} is complete. Is {{review_label}} complete?",
+        "input_contract": {
+          "task_type": "status_check",
+          "review_label": "{{review_label}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "status",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "says_review_complete",
+            "rule": "regex",
+            "pattern": "(?is)\\byes\\b.*complete|complete.*\\byes\\b|{{review_label}}.*complete"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_07",
+        "prompt": "{{bug_id}} is open and high severity. What is the strongest reason not to launch {{asset}}?",
+        "input_contract": {
+          "task_type": "risk_summary",
+          "asset": "{{asset}}",
+          "bug_id": "{{bug_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "risk",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_bug_risk",
+            "rule": "contains_all",
+            "needles": [
+              "{{bug_id}}",
+              "high"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_08",
+        "prompt": "Should {{asset}} launch on {{launch_date}} if {{bug_id}} is still open? Answer directly.",
+        "input_contract": {
+          "task_type": "decision",
+          "asset": "{{asset}}",
+          "launch_date": "{{launch_date}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 2,
+          "keyword_counts": [
+            {
+              "keyword": "confirm",
+              "count": 3
+            }
+          ],
+          "max_line_count": 2
+        },
+        "correctness_checks": [
+          {
+            "name": "declines_launch",
+            "rule": "regex",
+            "pattern": "(?is)^\\s*(no\\b|not yet\\b|do not launch|should not launch|delay)"
+          },
+          {
+            "name": "mentions_reasoning_facts",
+            "rule": "contains_all",
+            "needles": [
+              "{{asset}}",
+              "{{launch_date}}",
+              "{{bug_id}}",
+              "open"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "interactive_short_02_beacon-assist",
+    "description": "Eight short deterministic turns mixing arithmetic, lookup, policy application, and launch decisions for Beacon Assist.",
+    "benchmark_family": "interactive_short",
+    "system_prompt": "You are a fast operations assistant. Keep reasoning light, answer directly, and satisfy the explicit output contract exactly.",
+    "facts": {
+      "asset": "Beacon Assist",
+      "launch_date": "August 14",
+      "fallback_date": "August 28",
+      "bug_id": "BUG-508",
+      "owner": "Jordan Alvarez",
+      "segment": "pilot customers",
+      "region": "us-east-1",
+      "not_ready_item": "legal review",
+      "review_label": "security review",
+      "allowed_item": "train fare",
+      "blocked_item": "gift basket",
+      "blocked_cost": "$24",
+      "ticket_id": "SUP-8021",
+      "a": "19",
+      "b": "24",
+      "sum_result": "43",
+      "plan_a": "$61",
+      "plan_b": "$58",
+      "cheaper_label": "Plan B",
+      "cheaper_price": "$58"
+    },
+    "tags": [
+      "v1",
+      "interactive-short",
+      "deterministic",
+      "light-reasoning"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "flat",
+      "decode_stress": "low",
+      "expected_response_size_class": "short",
+      "isl_bucket": "medium",
+      "osl_bucket": "small"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "What is {{a}} + {{b}}?",
+        "input_contract": {
+          "task_type": "arithmetic",
+          "question": "What is {{a}} + {{b}}?",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "note",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_sum",
+            "rule": "regex",
+            "pattern": "(?is)\\b{{sum_result}}\\b"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Policy: {{allowed_item}} is reimbursable, {{blocked_item}} is never reimbursable. Is a {{blocked_cost}} {{blocked_item}} charge reimbursable?",
+        "input_contract": {
+          "task_type": "policy_application",
+          "policy_focus": "{{blocked_item}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "clear",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "rejects_blocked_item",
+            "rule": "regex",
+            "pattern": "(?is)({{blocked_item}}|{{blocked_cost}}).*((not|never|isn\\'t|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Ticket {{ticket_id}} belongs to {{owner}}. Who owns the ticket?",
+        "input_contract": {
+          "task_type": "lookup",
+          "entity": "{{ticket_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "record",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_owner",
+            "rule": "contains_all",
+            "needles": [
+              "{{owner}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "The launch date for {{asset}} is {{launch_date}}. What is the launch date?",
+        "input_contract": {
+          "task_type": "date_recall",
+          "asset": "{{asset}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "date",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_launch_date",
+            "rule": "contains_all",
+            "needles": [
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_05",
+        "prompt": "Which option is cheaper: Plan A at {{plan_a}} or Plan B at {{plan_b}}?",
+        "input_contract": {
+          "task_type": "comparison",
+          "options": [
+            "Plan A at {{plan_a}}",
+            "Plan B at {{plan_b}}"
+          ],
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "price",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "picks_cheaper_plan",
+            "rule": "regex",
+            "pattern": "(?is)({{cheaper_label}}|{{cheaper_price}}).*(cheaper|lower)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_06",
+        "prompt": "{{review_label}} is complete. Is {{review_label}} complete?",
+        "input_contract": {
+          "task_type": "status_check",
+          "review_label": "{{review_label}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "status",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "says_review_complete",
+            "rule": "regex",
+            "pattern": "(?is)\\byes\\b.*complete|complete.*\\byes\\b|{{review_label}}.*complete"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_07",
+        "prompt": "{{bug_id}} is open and high severity. What is the strongest reason not to launch {{asset}}?",
+        "input_contract": {
+          "task_type": "risk_summary",
+          "asset": "{{asset}}",
+          "bug_id": "{{bug_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "risk",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_bug_risk",
+            "rule": "contains_all",
+            "needles": [
+              "{{bug_id}}",
+              "high"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_08",
+        "prompt": "Should {{asset}} launch on {{launch_date}} if {{bug_id}} is still open? Answer directly.",
+        "input_contract": {
+          "task_type": "decision",
+          "asset": "{{asset}}",
+          "launch_date": "{{launch_date}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 2,
+          "keyword_counts": [
+            {
+              "keyword": "confirm",
+              "count": 3
+            }
+          ],
+          "max_line_count": 2
+        },
+        "correctness_checks": [
+          {
+            "name": "declines_launch",
+            "rule": "regex",
+            "pattern": "(?is)^\\s*(no\\b|not yet\\b|do not launch|should not launch|delay)"
+          },
+          {
+            "name": "mentions_reasoning_facts",
+            "rule": "contains_all",
+            "needles": [
+              "{{asset}}",
+              "{{launch_date}}",
+              "{{bug_id}}",
+              "open"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "interactive_short_03_harbor-notes",
+    "description": "Eight short deterministic turns mixing arithmetic, lookup, policy application, and launch decisions for Harbor Notes.",
+    "benchmark_family": "interactive_short",
+    "system_prompt": "You are a fast operations assistant. Keep reasoning light, answer directly, and satisfy the explicit output contract exactly.",
+    "facts": {
+      "asset": "Harbor Notes",
+      "launch_date": "September 3",
+      "fallback_date": "September 17",
+      "bug_id": "BUG-612",
+      "owner": "Riley Chen",
+      "segment": "beta teams",
+      "region": "eu-west-1",
+      "not_ready_item": "training",
+      "review_label": "QA review",
+      "allowed_item": "taxi",
+      "blocked_item": "late checkout",
+      "blocked_cost": "$17",
+      "ticket_id": "SUP-9132",
+      "a": "27",
+      "b": "18",
+      "sum_result": "45",
+      "plan_a": "$44",
+      "plan_b": "$49",
+      "cheaper_label": "Plan A",
+      "cheaper_price": "$44"
+    },
+    "tags": [
+      "v1",
+      "interactive-short",
+      "deterministic",
+      "light-reasoning"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "flat",
+      "decode_stress": "low",
+      "expected_response_size_class": "short",
+      "isl_bucket": "medium",
+      "osl_bucket": "small"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "What is {{a}} + {{b}}?",
+        "input_contract": {
+          "task_type": "arithmetic",
+          "question": "What is {{a}} + {{b}}?",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "note",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_sum",
+            "rule": "regex",
+            "pattern": "(?is)\\b{{sum_result}}\\b"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Policy: {{allowed_item}} is reimbursable, {{blocked_item}} is never reimbursable. Is a {{blocked_cost}} {{blocked_item}} charge reimbursable?",
+        "input_contract": {
+          "task_type": "policy_application",
+          "policy_focus": "{{blocked_item}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "clear",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "rejects_blocked_item",
+            "rule": "regex",
+            "pattern": "(?is)({{blocked_item}}|{{blocked_cost}}).*((not|never|isn\\'t|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Ticket {{ticket_id}} belongs to {{owner}}. Who owns the ticket?",
+        "input_contract": {
+          "task_type": "lookup",
+          "entity": "{{ticket_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "record",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_owner",
+            "rule": "contains_all",
+            "needles": [
+              "{{owner}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "The launch date for {{asset}} is {{launch_date}}. What is the launch date?",
+        "input_contract": {
+          "task_type": "date_recall",
+          "asset": "{{asset}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "date",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_launch_date",
+            "rule": "contains_all",
+            "needles": [
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_05",
+        "prompt": "Which option is cheaper: Plan A at {{plan_a}} or Plan B at {{plan_b}}?",
+        "input_contract": {
+          "task_type": "comparison",
+          "options": [
+            "Plan A at {{plan_a}}",
+            "Plan B at {{plan_b}}"
+          ],
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "price",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "picks_cheaper_plan",
+            "rule": "regex",
+            "pattern": "(?is)({{cheaper_label}}|{{cheaper_price}}).*(cheaper|lower)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_06",
+        "prompt": "{{review_label}} is complete. Is {{review_label}} complete?",
+        "input_contract": {
+          "task_type": "status_check",
+          "review_label": "{{review_label}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "status",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "says_review_complete",
+            "rule": "regex",
+            "pattern": "(?is)\\byes\\b.*complete|complete.*\\byes\\b|{{review_label}}.*complete"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_07",
+        "prompt": "{{bug_id}} is open and high severity. What is the strongest reason not to launch {{asset}}?",
+        "input_contract": {
+          "task_type": "risk_summary",
+          "asset": "{{asset}}",
+          "bug_id": "{{bug_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "risk",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_bug_risk",
+            "rule": "contains_all",
+            "needles": [
+              "{{bug_id}}",
+              "high"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_08",
+        "prompt": "Should {{asset}} launch on {{launch_date}} if {{bug_id}} is still open? Answer directly.",
+        "input_contract": {
+          "task_type": "decision",
+          "asset": "{{asset}}",
+          "launch_date": "{{launch_date}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 2,
+          "keyword_counts": [
+            {
+              "keyword": "confirm",
+              "count": 3
+            }
+          ],
+          "max_line_count": 2
+        },
+        "correctness_checks": [
+          {
+            "name": "declines_launch",
+            "rule": "regex",
+            "pattern": "(?is)^\\s*(no\\b|not yet\\b|do not launch|should not launch|delay)"
+          },
+          {
+            "name": "mentions_reasoning_facts",
+            "rule": "contains_all",
+            "needles": [
+              "{{asset}}",
+              "{{launch_date}}",
+              "{{bug_id}}",
+              "open"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "interactive_short_04_northwind-console",
+    "description": "Eight short deterministic turns mixing arithmetic, lookup, policy application, and launch decisions for Northwind Console.",
+    "benchmark_family": "interactive_short",
+    "system_prompt": "You are a fast operations assistant. Keep reasoning light, answer directly, and satisfy the explicit output contract exactly.",
+    "facts": {
+      "asset": "Northwind Console",
+      "launch_date": "October 9",
+      "fallback_date": "October 30",
+      "bug_id": "BUG-709",
+      "owner": "Priya Shah",
+      "segment": "regional admins",
+      "region": "eu-central-1",
+      "not_ready_item": "QA signoff",
+      "review_label": "ops review",
+      "allowed_item": "parking",
+      "blocked_item": "alcohol",
+      "blocked_cost": "$29",
+      "ticket_id": "SUP-4805",
+      "a": "31",
+      "b": "14",
+      "sum_result": "45",
+      "plan_a": "$72",
+      "plan_b": "$68",
+      "cheaper_label": "Plan B",
+      "cheaper_price": "$68"
+    },
+    "tags": [
+      "v1",
+      "interactive-short",
+      "deterministic",
+      "light-reasoning"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "flat",
+      "decode_stress": "low",
+      "expected_response_size_class": "short",
+      "isl_bucket": "medium",
+      "osl_bucket": "small"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "What is {{a}} + {{b}}?",
+        "input_contract": {
+          "task_type": "arithmetic",
+          "question": "What is {{a}} + {{b}}?",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "note",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_sum",
+            "rule": "regex",
+            "pattern": "(?is)\\b{{sum_result}}\\b"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Policy: {{allowed_item}} is reimbursable, {{blocked_item}} is never reimbursable. Is a {{blocked_cost}} {{blocked_item}} charge reimbursable?",
+        "input_contract": {
+          "task_type": "policy_application",
+          "policy_focus": "{{blocked_item}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "clear",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "rejects_blocked_item",
+            "rule": "regex",
+            "pattern": "(?is)({{blocked_item}}|{{blocked_cost}}).*((not|never|isn\\'t|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Ticket {{ticket_id}} belongs to {{owner}}. Who owns the ticket?",
+        "input_contract": {
+          "task_type": "lookup",
+          "entity": "{{ticket_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "record",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_owner",
+            "rule": "contains_all",
+            "needles": [
+              "{{owner}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "The launch date for {{asset}} is {{launch_date}}. What is the launch date?",
+        "input_contract": {
+          "task_type": "date_recall",
+          "asset": "{{asset}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "date",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_launch_date",
+            "rule": "contains_all",
+            "needles": [
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_05",
+        "prompt": "Which option is cheaper: Plan A at {{plan_a}} or Plan B at {{plan_b}}?",
+        "input_contract": {
+          "task_type": "comparison",
+          "options": [
+            "Plan A at {{plan_a}}",
+            "Plan B at {{plan_b}}"
+          ],
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "price",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "picks_cheaper_plan",
+            "rule": "regex",
+            "pattern": "(?is)({{cheaper_label}}|{{cheaper_price}}).*(cheaper|lower)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_06",
+        "prompt": "{{review_label}} is complete. Is {{review_label}} complete?",
+        "input_contract": {
+          "task_type": "status_check",
+          "review_label": "{{review_label}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "status",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "says_review_complete",
+            "rule": "regex",
+            "pattern": "(?is)\\byes\\b.*complete|complete.*\\byes\\b|{{review_label}}.*complete"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_07",
+        "prompt": "{{bug_id}} is open and high severity. What is the strongest reason not to launch {{asset}}?",
+        "input_contract": {
+          "task_type": "risk_summary",
+          "asset": "{{asset}}",
+          "bug_id": "{{bug_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "risk",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_bug_risk",
+            "rule": "contains_all",
+            "needles": [
+              "{{bug_id}}",
+              "high"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_08",
+        "prompt": "Should {{asset}} launch on {{launch_date}} if {{bug_id}} is still open? Answer directly.",
+        "input_contract": {
+          "task_type": "decision",
+          "asset": "{{asset}}",
+          "launch_date": "{{launch_date}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 2,
+          "keyword_counts": [
+            {
+              "keyword": "confirm",
+              "count": 3
+            }
+          ],
+          "max_line_count": 2
+        },
+        "correctness_checks": [
+          {
+            "name": "declines_launch",
+            "rule": "regex",
+            "pattern": "(?is)^\\s*(no\\b|not yet\\b|do not launch|should not launch|delay)"
+          },
+          {
+            "name": "mentions_reasoning_facts",
+            "rule": "contains_all",
+            "needles": [
+              "{{asset}}",
+              "{{launch_date}}",
+              "{{bug_id}}",
+              "open"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "interactive_short_05_signal-canvas",
+    "description": "Eight short deterministic turns mixing arithmetic, lookup, policy application, and launch decisions for Signal Canvas.",
+    "benchmark_family": "interactive_short",
+    "system_prompt": "You are a fast operations assistant. Keep reasoning light, answer directly, and satisfy the explicit output contract exactly.",
+    "facts": {
+      "asset": "Signal Canvas",
+      "launch_date": "November 18",
+      "fallback_date": "December 1",
+      "bug_id": "BUG-815",
+      "owner": "Noah Kim",
+      "segment": "support leads",
+      "region": "ap-southeast-1",
+      "not_ready_item": "billing webhook",
+      "review_label": "launch review",
+      "allowed_item": "shuttle",
+      "blocked_item": "spa visit",
+      "blocked_cost": "$34",
+      "ticket_id": "SUP-5542",
+      "a": "44",
+      "b": "11",
+      "sum_result": "55",
+      "plan_a": "$33",
+      "plan_b": "$47",
+      "cheaper_label": "Plan A",
+      "cheaper_price": "$33"
+    },
+    "tags": [
+      "v1",
+      "interactive-short",
+      "deterministic",
+      "light-reasoning"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "flat",
+      "decode_stress": "low",
+      "expected_response_size_class": "short",
+      "isl_bucket": "medium",
+      "osl_bucket": "small"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "What is {{a}} + {{b}}?",
+        "input_contract": {
+          "task_type": "arithmetic",
+          "question": "What is {{a}} + {{b}}?",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "note",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_sum",
+            "rule": "regex",
+            "pattern": "(?is)\\b{{sum_result}}\\b"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Policy: {{allowed_item}} is reimbursable, {{blocked_item}} is never reimbursable. Is a {{blocked_cost}} {{blocked_item}} charge reimbursable?",
+        "input_contract": {
+          "task_type": "policy_application",
+          "policy_focus": "{{blocked_item}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "clear",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "rejects_blocked_item",
+            "rule": "regex",
+            "pattern": "(?is)({{blocked_item}}|{{blocked_cost}}).*((not|never|isn\\'t|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Ticket {{ticket_id}} belongs to {{owner}}. Who owns the ticket?",
+        "input_contract": {
+          "task_type": "lookup",
+          "entity": "{{ticket_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "record",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_owner",
+            "rule": "contains_all",
+            "needles": [
+              "{{owner}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "The launch date for {{asset}} is {{launch_date}}. What is the launch date?",
+        "input_contract": {
+          "task_type": "date_recall",
+          "asset": "{{asset}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "date",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_launch_date",
+            "rule": "contains_all",
+            "needles": [
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_05",
+        "prompt": "Which option is cheaper: Plan A at {{plan_a}} or Plan B at {{plan_b}}?",
+        "input_contract": {
+          "task_type": "comparison",
+          "options": [
+            "Plan A at {{plan_a}}",
+            "Plan B at {{plan_b}}"
+          ],
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "price",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "picks_cheaper_plan",
+            "rule": "regex",
+            "pattern": "(?is)({{cheaper_label}}|{{cheaper_price}}).*(cheaper|lower)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_06",
+        "prompt": "{{review_label}} is complete. Is {{review_label}} complete?",
+        "input_contract": {
+          "task_type": "status_check",
+          "review_label": "{{review_label}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "status",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "says_review_complete",
+            "rule": "regex",
+            "pattern": "(?is)\\byes\\b.*complete|complete.*\\byes\\b|{{review_label}}.*complete"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_07",
+        "prompt": "{{bug_id}} is open and high severity. What is the strongest reason not to launch {{asset}}?",
+        "input_contract": {
+          "task_type": "risk_summary",
+          "asset": "{{asset}}",
+          "bug_id": "{{bug_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "risk",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_bug_risk",
+            "rule": "contains_all",
+            "needles": [
+              "{{bug_id}}",
+              "high"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_08",
+        "prompt": "Should {{asset}} launch on {{launch_date}} if {{bug_id}} is still open? Answer directly.",
+        "input_contract": {
+          "task_type": "decision",
+          "asset": "{{asset}}",
+          "launch_date": "{{launch_date}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 2,
+          "keyword_counts": [
+            {
+              "keyword": "confirm",
+              "count": 3
+            }
+          ],
+          "max_line_count": 2
+        },
+        "correctness_checks": [
+          {
+            "name": "declines_launch",
+            "rule": "regex",
+            "pattern": "(?is)^\\s*(no\\b|not yet\\b|do not launch|should not launch|delay)"
+          },
+          {
+            "name": "mentions_reasoning_facts",
+            "rule": "contains_all",
+            "needles": [
+              "{{asset}}",
+              "{{launch_date}}",
+              "{{bug_id}}",
+              "open"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "interactive_short_06_voyager-desk",
+    "description": "Eight short deterministic turns mixing arithmetic, lookup, policy application, and launch decisions for Voyager Desk.",
+    "benchmark_family": "interactive_short",
+    "system_prompt": "You are a fast operations assistant. Keep reasoning light, answer directly, and satisfy the explicit output contract exactly.",
+    "facts": {
+      "asset": "Voyager Desk",
+      "launch_date": "December 2",
+      "fallback_date": "December 16",
+      "bug_id": "BUG-902",
+      "owner": "Elena Morris",
+      "segment": "field operators",
+      "region": "ap-northeast-1",
+      "not_ready_item": "customer docs",
+      "review_label": "policy review",
+      "allowed_item": "subway fare",
+      "blocked_item": "souvenir",
+      "blocked_cost": "$21",
+      "ticket_id": "SUP-6388",
+      "a": "56",
+      "b": "9",
+      "sum_result": "65",
+      "plan_a": "$81",
+      "plan_b": "$76",
+      "cheaper_label": "Plan B",
+      "cheaper_price": "$76"
+    },
+    "tags": [
+      "v1",
+      "interactive-short",
+      "deterministic",
+      "light-reasoning"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "flat",
+      "decode_stress": "low",
+      "expected_response_size_class": "short",
+      "isl_bucket": "medium",
+      "osl_bucket": "small"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "What is {{a}} + {{b}}?",
+        "input_contract": {
+          "task_type": "arithmetic",
+          "question": "What is {{a}} + {{b}}?",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "note",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_sum",
+            "rule": "regex",
+            "pattern": "(?is)\\b{{sum_result}}\\b"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Policy: {{allowed_item}} is reimbursable, {{blocked_item}} is never reimbursable. Is a {{blocked_cost}} {{blocked_item}} charge reimbursable?",
+        "input_contract": {
+          "task_type": "policy_application",
+          "policy_focus": "{{blocked_item}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "clear",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "rejects_blocked_item",
+            "rule": "regex",
+            "pattern": "(?is)({{blocked_item}}|{{blocked_cost}}).*((not|never|isn\\'t|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Ticket {{ticket_id}} belongs to {{owner}}. Who owns the ticket?",
+        "input_contract": {
+          "task_type": "lookup",
+          "entity": "{{ticket_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "record",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_owner",
+            "rule": "contains_all",
+            "needles": [
+              "{{owner}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "The launch date for {{asset}} is {{launch_date}}. What is the launch date?",
+        "input_contract": {
+          "task_type": "date_recall",
+          "asset": "{{asset}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "date",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_launch_date",
+            "rule": "contains_all",
+            "needles": [
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_05",
+        "prompt": "Which option is cheaper: Plan A at {{plan_a}} or Plan B at {{plan_b}}?",
+        "input_contract": {
+          "task_type": "comparison",
+          "options": [
+            "Plan A at {{plan_a}}",
+            "Plan B at {{plan_b}}"
+          ],
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "price",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "picks_cheaper_plan",
+            "rule": "regex",
+            "pattern": "(?is)({{cheaper_label}}|{{cheaper_price}}).*(cheaper|lower)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_06",
+        "prompt": "{{review_label}} is complete. Is {{review_label}} complete?",
+        "input_contract": {
+          "task_type": "status_check",
+          "review_label": "{{review_label}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "status",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "says_review_complete",
+            "rule": "regex",
+            "pattern": "(?is)\\byes\\b.*complete|complete.*\\byes\\b|{{review_label}}.*complete"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_07",
+        "prompt": "{{bug_id}} is open and high severity. What is the strongest reason not to launch {{asset}}?",
+        "input_contract": {
+          "task_type": "risk_summary",
+          "asset": "{{asset}}",
+          "bug_id": "{{bug_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "risk",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_bug_risk",
+            "rule": "contains_all",
+            "needles": [
+              "{{bug_id}}",
+              "high"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_08",
+        "prompt": "Should {{asset}} launch on {{launch_date}} if {{bug_id}} is still open? Answer directly.",
+        "input_contract": {
+          "task_type": "decision",
+          "asset": "{{asset}}",
+          "launch_date": "{{launch_date}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 2,
+          "keyword_counts": [
+            {
+              "keyword": "confirm",
+              "count": 3
+            }
+          ],
+          "max_line_count": 2
+        },
+        "correctness_checks": [
+          {
+            "name": "declines_launch",
+            "rule": "regex",
+            "pattern": "(?is)^\\s*(no\\b|not yet\\b|do not launch|should not launch|delay)"
+          },
+          {
+            "name": "mentions_reasoning_facts",
+            "rule": "contains_all",
+            "needles": [
+              "{{asset}}",
+              "{{launch_date}}",
+              "{{bug_id}}",
+              "open"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "interactive_short_07_summit-board",
+    "description": "Eight short deterministic turns mixing arithmetic, lookup, policy application, and launch decisions for Summit Board.",
+    "benchmark_family": "interactive_short",
+    "system_prompt": "You are a fast operations assistant. Keep reasoning light, answer directly, and satisfy the explicit output contract exactly.",
+    "facts": {
+      "asset": "Summit Board",
+      "launch_date": "January 15",
+      "fallback_date": "January 29",
+      "bug_id": "BUG-104",
+      "owner": "Marcus Lopez",
+      "segment": "finance reviewers",
+      "region": "ca-central-1",
+      "not_ready_item": "incident runbook",
+      "review_label": "vendor review",
+      "allowed_item": "ferry ticket",
+      "blocked_item": "snack drawer",
+      "blocked_cost": "$16",
+      "ticket_id": "SUP-7013",
+      "a": "63",
+      "b": "7",
+      "sum_result": "70",
+      "plan_a": "$55",
+      "plan_b": "$62",
+      "cheaper_label": "Plan A",
+      "cheaper_price": "$55"
+    },
+    "tags": [
+      "v1",
+      "interactive-short",
+      "deterministic",
+      "light-reasoning"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "flat",
+      "decode_stress": "low",
+      "expected_response_size_class": "short",
+      "isl_bucket": "medium",
+      "osl_bucket": "small"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "What is {{a}} + {{b}}?",
+        "input_contract": {
+          "task_type": "arithmetic",
+          "question": "What is {{a}} + {{b}}?",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "note",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_sum",
+            "rule": "regex",
+            "pattern": "(?is)\\b{{sum_result}}\\b"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Policy: {{allowed_item}} is reimbursable, {{blocked_item}} is never reimbursable. Is a {{blocked_cost}} {{blocked_item}} charge reimbursable?",
+        "input_contract": {
+          "task_type": "policy_application",
+          "policy_focus": "{{blocked_item}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "clear",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "rejects_blocked_item",
+            "rule": "regex",
+            "pattern": "(?is)({{blocked_item}}|{{blocked_cost}}).*((not|never|isn\\'t|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Ticket {{ticket_id}} belongs to {{owner}}. Who owns the ticket?",
+        "input_contract": {
+          "task_type": "lookup",
+          "entity": "{{ticket_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "record",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_owner",
+            "rule": "contains_all",
+            "needles": [
+              "{{owner}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "The launch date for {{asset}} is {{launch_date}}. What is the launch date?",
+        "input_contract": {
+          "task_type": "date_recall",
+          "asset": "{{asset}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "date",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_launch_date",
+            "rule": "contains_all",
+            "needles": [
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_05",
+        "prompt": "Which option is cheaper: Plan A at {{plan_a}} or Plan B at {{plan_b}}?",
+        "input_contract": {
+          "task_type": "comparison",
+          "options": [
+            "Plan A at {{plan_a}}",
+            "Plan B at {{plan_b}}"
+          ],
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "price",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "picks_cheaper_plan",
+            "rule": "regex",
+            "pattern": "(?is)({{cheaper_label}}|{{cheaper_price}}).*(cheaper|lower)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_06",
+        "prompt": "{{review_label}} is complete. Is {{review_label}} complete?",
+        "input_contract": {
+          "task_type": "status_check",
+          "review_label": "{{review_label}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "status",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "says_review_complete",
+            "rule": "regex",
+            "pattern": "(?is)\\byes\\b.*complete|complete.*\\byes\\b|{{review_label}}.*complete"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_07",
+        "prompt": "{{bug_id}} is open and high severity. What is the strongest reason not to launch {{asset}}?",
+        "input_contract": {
+          "task_type": "risk_summary",
+          "asset": "{{asset}}",
+          "bug_id": "{{bug_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "risk",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_bug_risk",
+            "rule": "contains_all",
+            "needles": [
+              "{{bug_id}}",
+              "high"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_08",
+        "prompt": "Should {{asset}} launch on {{launch_date}} if {{bug_id}} is still open? Answer directly.",
+        "input_contract": {
+          "task_type": "decision",
+          "asset": "{{asset}}",
+          "launch_date": "{{launch_date}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 2,
+          "keyword_counts": [
+            {
+              "keyword": "confirm",
+              "count": 3
+            }
+          ],
+          "max_line_count": 2
+        },
+        "correctness_checks": [
+          {
+            "name": "declines_launch",
+            "rule": "regex",
+            "pattern": "(?is)^\\s*(no\\b|not yet\\b|do not launch|should not launch|delay)"
+          },
+          {
+            "name": "mentions_reasoning_facts",
+            "rule": "contains_all",
+            "needles": [
+              "{{asset}}",
+              "{{launch_date}}",
+              "{{bug_id}}",
+              "open"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "interactive_short_08_cedar-brief",
+    "description": "Eight short deterministic turns mixing arithmetic, lookup, policy application, and launch decisions for Cedar Brief.",
+    "benchmark_family": "interactive_short",
+    "system_prompt": "You are a fast operations assistant. Keep reasoning light, answer directly, and satisfy the explicit output contract exactly.",
+    "facts": {
+      "asset": "Cedar Brief",
+      "launch_date": "February 11",
+      "fallback_date": "February 27",
+      "bug_id": "BUG-228",
+      "owner": "Sofia Bennett",
+      "segment": "ops analysts",
+      "region": "sa-east-1",
+      "not_ready_item": "regional rollout plan",
+      "review_label": "readiness review",
+      "allowed_item": "bus pass",
+      "blocked_item": "room upgrade",
+      "blocked_cost": "$27",
+      "ticket_id": "SUP-7449",
+      "a": "28",
+      "b": "35",
+      "sum_result": "63",
+      "plan_a": "$69",
+      "plan_b": "$64",
+      "cheaper_label": "Plan B",
+      "cheaper_price": "$64"
+    },
+    "tags": [
+      "v1",
+      "interactive-short",
+      "deterministic",
+      "light-reasoning"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "flat",
+      "decode_stress": "low",
+      "expected_response_size_class": "short",
+      "isl_bucket": "medium",
+      "osl_bucket": "small"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "What is {{a}} + {{b}}?",
+        "input_contract": {
+          "task_type": "arithmetic",
+          "question": "What is {{a}} + {{b}}?",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "note",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_sum",
+            "rule": "regex",
+            "pattern": "(?is)\\b{{sum_result}}\\b"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Policy: {{allowed_item}} is reimbursable, {{blocked_item}} is never reimbursable. Is a {{blocked_cost}} {{blocked_item}} charge reimbursable?",
+        "input_contract": {
+          "task_type": "policy_application",
+          "policy_focus": "{{blocked_item}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "clear",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "rejects_blocked_item",
+            "rule": "regex",
+            "pattern": "(?is)({{blocked_item}}|{{blocked_cost}}).*((not|never|isn\\'t|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Ticket {{ticket_id}} belongs to {{owner}}. Who owns the ticket?",
+        "input_contract": {
+          "task_type": "lookup",
+          "entity": "{{ticket_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "record",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_owner",
+            "rule": "contains_all",
+            "needles": [
+              "{{owner}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "The launch date for {{asset}} is {{launch_date}}. What is the launch date?",
+        "input_contract": {
+          "task_type": "date_recall",
+          "asset": "{{asset}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "date",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_launch_date",
+            "rule": "contains_all",
+            "needles": [
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_05",
+        "prompt": "Which option is cheaper: Plan A at {{plan_a}} or Plan B at {{plan_b}}?",
+        "input_contract": {
+          "task_type": "comparison",
+          "options": [
+            "Plan A at {{plan_a}}",
+            "Plan B at {{plan_b}}"
+          ],
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "price",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "picks_cheaper_plan",
+            "rule": "regex",
+            "pattern": "(?is)({{cheaper_label}}|{{cheaper_price}}).*(cheaper|lower)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_06",
+        "prompt": "{{review_label}} is complete. Is {{review_label}} complete?",
+        "input_contract": {
+          "task_type": "status_check",
+          "review_label": "{{review_label}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "status",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "says_review_complete",
+            "rule": "regex",
+            "pattern": "(?is)\\byes\\b.*complete|complete.*\\byes\\b|{{review_label}}.*complete"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_07",
+        "prompt": "{{bug_id}} is open and high severity. What is the strongest reason not to launch {{asset}}?",
+        "input_contract": {
+          "task_type": "risk_summary",
+          "asset": "{{asset}}",
+          "bug_id": "{{bug_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "risk",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_bug_risk",
+            "rule": "contains_all",
+            "needles": [
+              "{{bug_id}}",
+              "high"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_08",
+        "prompt": "Should {{asset}} launch on {{launch_date}} if {{bug_id}} is still open? Answer directly.",
+        "input_contract": {
+          "task_type": "decision",
+          "asset": "{{asset}}",
+          "launch_date": "{{launch_date}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 2,
+          "keyword_counts": [
+            {
+              "keyword": "confirm",
+              "count": 3
+            }
+          ],
+          "max_line_count": 2
+        },
+        "correctness_checks": [
+          {
+            "name": "declines_launch",
+            "rule": "regex",
+            "pattern": "(?is)^\\s*(no\\b|not yet\\b|do not launch|should not launch|delay)"
+          },
+          {
+            "name": "mentions_reasoning_facts",
+            "rule": "contains_all",
+            "needles": [
+              "{{asset}}",
+              "{{launch_date}}",
+              "{{bug_id}}",
+              "open"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "interactive_short_09_granite-flow",
+    "description": "Eight short deterministic turns mixing arithmetic, lookup, policy application, and launch decisions for Granite Flow.",
+    "benchmark_family": "interactive_short",
+    "system_prompt": "You are a fast operations assistant. Keep reasoning light, answer directly, and satisfy the explicit output contract exactly.",
+    "facts": {
+      "asset": "Granite Flow",
+      "launch_date": "March 6",
+      "fallback_date": "March 21",
+      "bug_id": "BUG-347",
+      "owner": "Theo Khan",
+      "segment": "store managers",
+      "region": "eu-north-1",
+      "not_ready_item": "on-call staffing",
+      "review_label": "regional review",
+      "allowed_item": "commuter rail",
+      "blocked_item": "movie rental",
+      "blocked_cost": "$18",
+      "ticket_id": "SUP-8250",
+      "a": "16",
+      "b": "48",
+      "sum_result": "64",
+      "plan_a": "$41",
+      "plan_b": "$53",
+      "cheaper_label": "Plan A",
+      "cheaper_price": "$41"
+    },
+    "tags": [
+      "v1",
+      "interactive-short",
+      "deterministic",
+      "light-reasoning"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "flat",
+      "decode_stress": "low",
+      "expected_response_size_class": "short",
+      "isl_bucket": "medium",
+      "osl_bucket": "small"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "What is {{a}} + {{b}}?",
+        "input_contract": {
+          "task_type": "arithmetic",
+          "question": "What is {{a}} + {{b}}?",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "note",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_sum",
+            "rule": "regex",
+            "pattern": "(?is)\\b{{sum_result}}\\b"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Policy: {{allowed_item}} is reimbursable, {{blocked_item}} is never reimbursable. Is a {{blocked_cost}} {{blocked_item}} charge reimbursable?",
+        "input_contract": {
+          "task_type": "policy_application",
+          "policy_focus": "{{blocked_item}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "clear",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "rejects_blocked_item",
+            "rule": "regex",
+            "pattern": "(?is)({{blocked_item}}|{{blocked_cost}}).*((not|never|isn\\'t|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Ticket {{ticket_id}} belongs to {{owner}}. Who owns the ticket?",
+        "input_contract": {
+          "task_type": "lookup",
+          "entity": "{{ticket_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "record",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_owner",
+            "rule": "contains_all",
+            "needles": [
+              "{{owner}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "The launch date for {{asset}} is {{launch_date}}. What is the launch date?",
+        "input_contract": {
+          "task_type": "date_recall",
+          "asset": "{{asset}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "date",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_launch_date",
+            "rule": "contains_all",
+            "needles": [
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_05",
+        "prompt": "Which option is cheaper: Plan A at {{plan_a}} or Plan B at {{plan_b}}?",
+        "input_contract": {
+          "task_type": "comparison",
+          "options": [
+            "Plan A at {{plan_a}}",
+            "Plan B at {{plan_b}}"
+          ],
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "price",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "picks_cheaper_plan",
+            "rule": "regex",
+            "pattern": "(?is)({{cheaper_label}}|{{cheaper_price}}).*(cheaper|lower)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_06",
+        "prompt": "{{review_label}} is complete. Is {{review_label}} complete?",
+        "input_contract": {
+          "task_type": "status_check",
+          "review_label": "{{review_label}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "status",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "says_review_complete",
+            "rule": "regex",
+            "pattern": "(?is)\\byes\\b.*complete|complete.*\\byes\\b|{{review_label}}.*complete"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_07",
+        "prompt": "{{bug_id}} is open and high severity. What is the strongest reason not to launch {{asset}}?",
+        "input_contract": {
+          "task_type": "risk_summary",
+          "asset": "{{asset}}",
+          "bug_id": "{{bug_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "risk",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_bug_risk",
+            "rule": "contains_all",
+            "needles": [
+              "{{bug_id}}",
+              "high"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_08",
+        "prompt": "Should {{asset}} launch on {{launch_date}} if {{bug_id}} is still open? Answer directly.",
+        "input_contract": {
+          "task_type": "decision",
+          "asset": "{{asset}}",
+          "launch_date": "{{launch_date}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 2,
+          "keyword_counts": [
+            {
+              "keyword": "confirm",
+              "count": 3
+            }
+          ],
+          "max_line_count": 2
+        },
+        "correctness_checks": [
+          {
+            "name": "declines_launch",
+            "rule": "regex",
+            "pattern": "(?is)^\\s*(no\\b|not yet\\b|do not launch|should not launch|delay)"
+          },
+          {
+            "name": "mentions_reasoning_facts",
+            "rule": "contains_all",
+            "needles": [
+              "{{asset}}",
+              "{{launch_date}}",
+              "{{bug_id}}",
+              "open"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "interactive_short_10_juniper-ops",
+    "description": "Eight short deterministic turns mixing arithmetic, lookup, policy application, and launch decisions for Juniper Ops.",
+    "benchmark_family": "interactive_short",
+    "system_prompt": "You are a fast operations assistant. Keep reasoning light, answer directly, and satisfy the explicit output contract exactly.",
+    "facts": {
+      "asset": "Juniper Ops",
+      "launch_date": "April 21",
+      "fallback_date": "May 2",
+      "bug_id": "BUG-466",
+      "owner": "Avery Brooks",
+      "segment": "training leads",
+      "region": "us-gov-west-1",
+      "not_ready_item": "pricing approval",
+      "review_label": "billing review",
+      "allowed_item": "car share",
+      "blocked_item": "tobacco",
+      "blocked_cost": "$23",
+      "ticket_id": "SUP-8907",
+      "a": "52",
+      "b": "13",
+      "sum_result": "65",
+      "plan_a": "$74",
+      "plan_b": "$71",
+      "cheaper_label": "Plan B",
+      "cheaper_price": "$71"
+    },
+    "tags": [
+      "v1",
+      "interactive-short",
+      "deterministic",
+      "light-reasoning"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "flat",
+      "decode_stress": "low",
+      "expected_response_size_class": "short",
+      "isl_bucket": "medium",
+      "osl_bucket": "small"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "What is {{a}} + {{b}}?",
+        "input_contract": {
+          "task_type": "arithmetic",
+          "question": "What is {{a}} + {{b}}?",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "note",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_sum",
+            "rule": "regex",
+            "pattern": "(?is)\\b{{sum_result}}\\b"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Policy: {{allowed_item}} is reimbursable, {{blocked_item}} is never reimbursable. Is a {{blocked_cost}} {{blocked_item}} charge reimbursable?",
+        "input_contract": {
+          "task_type": "policy_application",
+          "policy_focus": "{{blocked_item}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "clear",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "rejects_blocked_item",
+            "rule": "regex",
+            "pattern": "(?is)({{blocked_item}}|{{blocked_cost}}).*((not|never|isn\\'t|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Ticket {{ticket_id}} belongs to {{owner}}. Who owns the ticket?",
+        "input_contract": {
+          "task_type": "lookup",
+          "entity": "{{ticket_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "record",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_owner",
+            "rule": "contains_all",
+            "needles": [
+              "{{owner}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "The launch date for {{asset}} is {{launch_date}}. What is the launch date?",
+        "input_contract": {
+          "task_type": "date_recall",
+          "asset": "{{asset}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "date",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_launch_date",
+            "rule": "contains_all",
+            "needles": [
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_05",
+        "prompt": "Which option is cheaper: Plan A at {{plan_a}} or Plan B at {{plan_b}}?",
+        "input_contract": {
+          "task_type": "comparison",
+          "options": [
+            "Plan A at {{plan_a}}",
+            "Plan B at {{plan_b}}"
+          ],
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "price",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "picks_cheaper_plan",
+            "rule": "regex",
+            "pattern": "(?is)({{cheaper_label}}|{{cheaper_price}}).*(cheaper|lower)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_06",
+        "prompt": "{{review_label}} is complete. Is {{review_label}} complete?",
+        "input_contract": {
+          "task_type": "status_check",
+          "review_label": "{{review_label}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "status",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "says_review_complete",
+            "rule": "regex",
+            "pattern": "(?is)\\byes\\b.*complete|complete.*\\byes\\b|{{review_label}}.*complete"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_07",
+        "prompt": "{{bug_id}} is open and high severity. What is the strongest reason not to launch {{asset}}?",
+        "input_contract": {
+          "task_type": "risk_summary",
+          "asset": "{{asset}}",
+          "bug_id": "{{bug_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "risk",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_bug_risk",
+            "rule": "contains_all",
+            "needles": [
+              "{{bug_id}}",
+              "high"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_08",
+        "prompt": "Should {{asset}} launch on {{launch_date}} if {{bug_id}} is still open? Answer directly.",
+        "input_contract": {
+          "task_type": "decision",
+          "asset": "{{asset}}",
+          "launch_date": "{{launch_date}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 2,
+          "keyword_counts": [
+            {
+              "keyword": "confirm",
+              "count": 3
+            }
+          ],
+          "max_line_count": 2
+        },
+        "correctness_checks": [
+          {
+            "name": "declines_launch",
+            "rule": "regex",
+            "pattern": "(?is)^\\s*(no\\b|not yet\\b|do not launch|should not launch|delay)"
+          },
+          {
+            "name": "mentions_reasoning_facts",
+            "rule": "contains_all",
+            "needles": [
+              "{{asset}}",
+              "{{launch_date}}",
+              "{{bug_id}}",
+              "open"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "interactive_short_11_meridian-pulse",
+    "description": "Eight short deterministic turns mixing arithmetic, lookup, policy application, and launch decisions for Meridian Pulse.",
+    "benchmark_family": "interactive_short",
+    "system_prompt": "You are a fast operations assistant. Keep reasoning light, answer directly, and satisfy the explicit output contract exactly.",
+    "facts": {
+      "asset": "Meridian Pulse",
+      "launch_date": "May 13",
+      "fallback_date": "May 29",
+      "bug_id": "BUG-583",
+      "owner": "Samira Khan",
+      "segment": "platform teams",
+      "region": "ap-south-1",
+      "not_ready_item": "security signoff",
+      "review_label": "privacy review",
+      "allowed_item": "luggage fee",
+      "blocked_item": "premium wifi",
+      "blocked_cost": "$26",
+      "ticket_id": "SUP-9304",
+      "a": "39",
+      "b": "22",
+      "sum_result": "61",
+      "plan_a": "$38",
+      "plan_b": "$42",
+      "cheaper_label": "Plan A",
+      "cheaper_price": "$38"
+    },
+    "tags": [
+      "v1",
+      "interactive-short",
+      "deterministic",
+      "light-reasoning"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "flat",
+      "decode_stress": "low",
+      "expected_response_size_class": "short",
+      "isl_bucket": "medium",
+      "osl_bucket": "small"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "What is {{a}} + {{b}}?",
+        "input_contract": {
+          "task_type": "arithmetic",
+          "question": "What is {{a}} + {{b}}?",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "note",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_sum",
+            "rule": "regex",
+            "pattern": "(?is)\\b{{sum_result}}\\b"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Policy: {{allowed_item}} is reimbursable, {{blocked_item}} is never reimbursable. Is a {{blocked_cost}} {{blocked_item}} charge reimbursable?",
+        "input_contract": {
+          "task_type": "policy_application",
+          "policy_focus": "{{blocked_item}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "clear",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "rejects_blocked_item",
+            "rule": "regex",
+            "pattern": "(?is)({{blocked_item}}|{{blocked_cost}}).*((not|never|isn\\'t|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Ticket {{ticket_id}} belongs to {{owner}}. Who owns the ticket?",
+        "input_contract": {
+          "task_type": "lookup",
+          "entity": "{{ticket_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "record",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_owner",
+            "rule": "contains_all",
+            "needles": [
+              "{{owner}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "The launch date for {{asset}} is {{launch_date}}. What is the launch date?",
+        "input_contract": {
+          "task_type": "date_recall",
+          "asset": "{{asset}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "date",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_launch_date",
+            "rule": "contains_all",
+            "needles": [
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_05",
+        "prompt": "Which option is cheaper: Plan A at {{plan_a}} or Plan B at {{plan_b}}?",
+        "input_contract": {
+          "task_type": "comparison",
+          "options": [
+            "Plan A at {{plan_a}}",
+            "Plan B at {{plan_b}}"
+          ],
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "price",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "picks_cheaper_plan",
+            "rule": "regex",
+            "pattern": "(?is)({{cheaper_label}}|{{cheaper_price}}).*(cheaper|lower)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_06",
+        "prompt": "{{review_label}} is complete. Is {{review_label}} complete?",
+        "input_contract": {
+          "task_type": "status_check",
+          "review_label": "{{review_label}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "status",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "says_review_complete",
+            "rule": "regex",
+            "pattern": "(?is)\\byes\\b.*complete|complete.*\\byes\\b|{{review_label}}.*complete"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_07",
+        "prompt": "{{bug_id}} is open and high severity. What is the strongest reason not to launch {{asset}}?",
+        "input_contract": {
+          "task_type": "risk_summary",
+          "asset": "{{asset}}",
+          "bug_id": "{{bug_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "risk",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_bug_risk",
+            "rule": "contains_all",
+            "needles": [
+              "{{bug_id}}",
+              "high"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_08",
+        "prompt": "Should {{asset}} launch on {{launch_date}} if {{bug_id}} is still open? Answer directly.",
+        "input_contract": {
+          "task_type": "decision",
+          "asset": "{{asset}}",
+          "launch_date": "{{launch_date}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 2,
+          "keyword_counts": [
+            {
+              "keyword": "confirm",
+              "count": 3
+            }
+          ],
+          "max_line_count": 2
+        },
+        "correctness_checks": [
+          {
+            "name": "declines_launch",
+            "rule": "regex",
+            "pattern": "(?is)^\\s*(no\\b|not yet\\b|do not launch|should not launch|delay)"
+          },
+          {
+            "name": "mentions_reasoning_facts",
+            "rule": "contains_all",
+            "needles": [
+              "{{asset}}",
+              "{{launch_date}}",
+              "{{bug_id}}",
+              "open"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "interactive_short_12_pioneer-queue",
+    "description": "Eight short deterministic turns mixing arithmetic, lookup, policy application, and launch decisions for Pioneer Queue.",
+    "benchmark_family": "interactive_short",
+    "system_prompt": "You are a fast operations assistant. Keep reasoning light, answer directly, and satisfy the explicit output contract exactly.",
+    "facts": {
+      "asset": "Pioneer Queue",
+      "launch_date": "June 4",
+      "fallback_date": "June 19",
+      "bug_id": "BUG-691",
+      "owner": "Diego Flores",
+      "segment": "sales engineers",
+      "region": "eu-west-2",
+      "not_ready_item": "migration checklist",
+      "review_label": "support review",
+      "allowed_item": "hotel wifi",
+      "blocked_item": "valet tip",
+      "blocked_cost": "$22",
+      "ticket_id": "SUP-9928",
+      "a": "47",
+      "b": "26",
+      "sum_result": "73",
+      "plan_a": "$59",
+      "plan_b": "$66",
+      "cheaper_label": "Plan A",
+      "cheaper_price": "$59"
+    },
+    "tags": [
+      "v1",
+      "interactive-short",
+      "deterministic",
+      "light-reasoning"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "flat",
+      "decode_stress": "low",
+      "expected_response_size_class": "short",
+      "isl_bucket": "medium",
+      "osl_bucket": "small"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "What is {{a}} + {{b}}?",
+        "input_contract": {
+          "task_type": "arithmetic",
+          "question": "What is {{a}} + {{b}}?",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "note",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_sum",
+            "rule": "regex",
+            "pattern": "(?is)\\b{{sum_result}}\\b"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Policy: {{allowed_item}} is reimbursable, {{blocked_item}} is never reimbursable. Is a {{blocked_cost}} {{blocked_item}} charge reimbursable?",
+        "input_contract": {
+          "task_type": "policy_application",
+          "policy_focus": "{{blocked_item}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "clear",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "rejects_blocked_item",
+            "rule": "regex",
+            "pattern": "(?is)({{blocked_item}}|{{blocked_cost}}).*((not|never|isn\\'t|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Ticket {{ticket_id}} belongs to {{owner}}. Who owns the ticket?",
+        "input_contract": {
+          "task_type": "lookup",
+          "entity": "{{ticket_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "record",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_owner",
+            "rule": "contains_all",
+            "needles": [
+              "{{owner}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "The launch date for {{asset}} is {{launch_date}}. What is the launch date?",
+        "input_contract": {
+          "task_type": "date_recall",
+          "asset": "{{asset}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "date",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_launch_date",
+            "rule": "contains_all",
+            "needles": [
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_05",
+        "prompt": "Which option is cheaper: Plan A at {{plan_a}} or Plan B at {{plan_b}}?",
+        "input_contract": {
+          "task_type": "comparison",
+          "options": [
+            "Plan A at {{plan_a}}",
+            "Plan B at {{plan_b}}"
+          ],
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "price",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "picks_cheaper_plan",
+            "rule": "regex",
+            "pattern": "(?is)({{cheaper_label}}|{{cheaper_price}}).*(cheaper|lower)"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_06",
+        "prompt": "{{review_label}} is complete. Is {{review_label}} complete?",
+        "input_contract": {
+          "task_type": "status_check",
+          "review_label": "{{review_label}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "status",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "says_review_complete",
+            "rule": "regex",
+            "pattern": "(?is)\\byes\\b.*complete|complete.*\\byes\\b|{{review_label}}.*complete"
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_07",
+        "prompt": "{{bug_id}} is open and high severity. What is the strongest reason not to launch {{asset}}?",
+        "input_contract": {
+          "task_type": "risk_summary",
+          "asset": "{{asset}}",
+          "bug_id": "{{bug_id}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword_counts": [
+            {
+              "keyword": "risk",
+              "count": 2
+            }
+          ]
+        },
+        "correctness_checks": [
+          {
+            "name": "mentions_bug_risk",
+            "rule": "contains_all",
+            "needles": [
+              "{{bug_id}}",
+              "high"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_08",
+        "prompt": "Should {{asset}} launch on {{launch_date}} if {{bug_id}} is still open? Answer directly.",
+        "input_contract": {
+          "task_type": "decision",
+          "asset": "{{asset}}",
+          "launch_date": "{{launch_date}}",
+          "min_input_character_count": 90
+        },
+        "output_contract": {
+          "sentence_count": 2,
+          "keyword_counts": [
+            {
+              "keyword": "confirm",
+              "count": 3
+            }
+          ],
+          "max_line_count": 2
+        },
+        "correctness_checks": [
+          {
+            "name": "declines_launch",
+            "rule": "regex",
+            "pattern": "(?is)^\\s*(no\\b|not yet\\b|do not launch|should not launch|delay)"
+          },
+          {
+            "name": "mentions_reasoning_facts",
+            "rule": "contains_all",
+            "needles": [
+              "{{asset}}",
+              "{{launch_date}}",
+              "{{bug_id}}",
+              "open"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
