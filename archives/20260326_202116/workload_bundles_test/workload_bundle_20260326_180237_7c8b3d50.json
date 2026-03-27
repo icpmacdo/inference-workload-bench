@@ -1,0 +1,821 @@
+{
+  "meta": {
+    "started_at": "2026-03-26T18:02:24-07:00",
+    "finished_at": "2026-03-26T18:02:37-07:00",
+    "run_fingerprint": "7c8b3d500295c3b3c831bbd17f3dbebe64a1e70a4fa7dcbee565703daa62ed21",
+    "bundle_id": "20260326T1802370700_7c8b3d50"
+  },
+  "config": {
+    "base_model": "Qwen/Qwen3.5-4B",
+    "model_path": null,
+    "base_url": null,
+    "renderer_name": null,
+    "max_tokens": 768,
+    "temperature": 0.2,
+    "top_p": 0.9,
+    "top_k": 40,
+    "seed": 7,
+    "output_dir": "workload_bundles_test",
+    "pattern_names": [
+      "revision_brief"
+    ],
+    "spec_file": null,
+    "instance_count": 1,
+    "compile_only": false,
+    "list_patterns": false,
+    "list_rules": false,
+    "self_test": false,
+    "resolved_renderer_name": "qwen3_5_disable_thinking"
+  },
+  "authored_specs": [
+    {
+      "name": "revision_brief",
+      "description": "A drafting-and-revision workload that requires fact preservation across a shorter rewrite.",
+      "family": "revision_brief",
+      "tags": [
+        "revision",
+        "consistency",
+        "factuality"
+      ],
+      "system_prompt": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it.",
+      "interaction_pattern": {
+        "clarification_count": 0,
+        "revision_count": 1,
+        "final_artifact": "announcement_paragraph",
+        "pressure_tags": [
+          "revision",
+          "state_preserved",
+          "no_drift"
+        ],
+        "turn_count_hint": 6
+      },
+      "hidden_state_template": {
+        "fact_pools": {
+          "product_name": [
+            "Northwind Copilot",
+            "Beacon Assist",
+            "Harbor Notes"
+          ],
+          "launch_date": [
+            "June 18",
+            "July 9",
+            "August 2"
+          ],
+          "rollout_group": [
+            "12 design partners",
+            "15 pilot customers",
+            "18 beta teams"
+          ],
+          "launch_url": [
+            "northwind.ai/copilot",
+            "beacon.ai/assist",
+            "harbor.ai/notes"
+          ]
+        },
+        "mutable_facts": [],
+        "distractors": {
+          "wrong_launch_date": [
+            "June 19",
+            "July 10",
+            "August 3"
+          ],
+          "wrong_rollout_group": [
+            "13 design partners",
+            "16 pilot customers",
+            "19 beta teams"
+          ],
+          "wrong_url": [
+            "northwind.com/copilot",
+            "beacon.ai/copilot",
+            "harbor.ai/write"
+          ]
+        },
+        "omission_keys": [],
+        "canaries": [
+          {
+            "key": "product_name",
+            "mode": "recall"
+          },
+          {
+            "key": "launch_date",
+            "mode": "recall"
+          },
+          {
+            "key": "launch_url",
+            "mode": "recall"
+          }
+        ]
+      },
+      "mask_policy": {
+        "direction": "assistant_only",
+        "masked_phases": [
+          "launch_ack",
+          "launch_draft",
+          "launch_revision"
+        ],
+        "visible_anchor_assistant_steps": [],
+        "fill_order": "sequential"
+      },
+      "artifact_contract": {
+        "required_fields": [
+          "Product",
+          "Launch Date",
+          "Rollout",
+          "URL"
+        ]
+      },
+      "style_options": {
+        "fact_variants": [
+          "Use these launch facts later: product {{facts.product_name}}, public launch {{facts.launch_date}}, initial rollout to {{facts.rollout_group}}, and URL {{facts.launch_url}}. Reply with a short acknowledgement that repeats the product name and launch date.",
+          "Hold these launch facts for later turns: product {{facts.product_name}}, public launch on {{facts.launch_date}}, first rollout to {{facts.rollout_group}}, and URL {{facts.launch_url}}. Reply with a short acknowledgement that repeats the product name and date."
+        ]
+      }
+    }
+  ],
+  "compiled_instances": [
+    {
+      "instance_id": "revision_brief-001-5d3152a1",
+      "family": "revision_brief",
+      "seed": 7,
+      "spec_fingerprint": "b6c249d55a0e5e577cb2e574095551faf9a5ee583415b371ec49ecf5d8263a37",
+      "instance_fingerprint": "5d3152a1ee15a0feeb2a92384c95810755d4e6ef07f8be10c5de539006989ded",
+      "interaction_pattern": {
+        "clarification_count": 0,
+        "revision_count": 1,
+        "final_artifact": "announcement_paragraph",
+        "pressure_tags": [
+          "revision",
+          "state_preserved",
+          "no_drift"
+        ],
+        "turn_count_hint": 6
+      },
+      "hidden_state": {
+        "facts": {
+          "product_name": "Beacon Assist",
+          "launch_date": "June 18",
+          "rollout_group": "15 pilot customers",
+          "launch_url": "harbor.ai/notes"
+        },
+        "facts_current": {
+          "product_name": "Beacon Assist",
+          "launch_date": "June 18",
+          "rollout_group": "15 pilot customers",
+          "launch_url": "harbor.ai/notes"
+        },
+        "distractors": {
+          "wrong_launch_date": "June 19",
+          "wrong_rollout_group": "13 design partners",
+          "wrong_url": "harbor.ai/write"
+        },
+        "mutable": {},
+        "omission_keys": [],
+        "omission_values": [],
+        "canaries": {
+          "product_name": {
+            "key": "product_name",
+            "mode": "recall",
+            "phase": null,
+            "description": "",
+            "initial_value": "Beacon Assist",
+            "current_value": "Beacon Assist"
+          },
+          "launch_date": {
+            "key": "launch_date",
+            "mode": "recall",
+            "phase": null,
+            "description": "",
+            "initial_value": "June 18",
+            "current_value": "June 18"
+          },
+          "launch_url": {
+            "key": "launch_url",
+            "mode": "recall",
+            "phase": null,
+            "description": "",
+            "initial_value": "harbor.ai/notes",
+            "current_value": "harbor.ai/notes"
+          }
+        }
+      },
+      "mask_policy": {
+        "direction": "assistant_only",
+        "masked_phases": [
+          "launch_ack",
+          "launch_draft",
+          "launch_revision"
+        ],
+        "visible_anchor_assistant_steps": [],
+        "fill_order": "sequential"
+      },
+      "steps": [
+        {
+          "step_id": "system_context",
+          "phase": "system_context",
+          "role": "system",
+          "source": "authored_anchor",
+          "masked": false,
+          "content": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it."
+        },
+        {
+          "step_id": "launch_facts",
+          "phase": "launch_facts",
+          "role": "user",
+          "source": "authored_anchor",
+          "masked": false,
+          "content": "Use these launch facts later: product Beacon Assist, public launch June 18, initial rollout to 15 pilot customers, and URL harbor.ai/notes. Reply with a short acknowledgement that repeats the product name and launch date."
+        },
+        {
+          "step_id": "launch_ack",
+          "phase": "launch_ack",
+          "role": "assistant",
+          "source": "model_fill",
+          "masked": true,
+          "content": null
+        },
+        {
+          "step_id": "draft_request",
+          "phase": "draft_request",
+          "role": "user",
+          "source": "authored_anchor",
+          "masked": false,
+          "content": "Draft a two-sentence announcement paragraph."
+        },
+        {
+          "step_id": "launch_draft",
+          "phase": "launch_draft",
+          "role": "assistant",
+          "source": "model_fill",
+          "masked": true,
+          "content": null
+        },
+        {
+          "step_id": "revision_request",
+          "phase": "revision_request",
+          "role": "user",
+          "source": "authored_anchor",
+          "masked": false,
+          "content": "Revise the announcement to be shorter, but keep every factual detail unchanged."
+        },
+        {
+          "step_id": "launch_revision",
+          "phase": "launch_revision",
+          "role": "assistant",
+          "source": "model_fill",
+          "masked": true,
+          "content": null
+        }
+      ],
+      "checks": [
+        {
+          "step_id": "launch_ack",
+          "phase": "launch_ack",
+          "name": "ack_repeats_product_and_date",
+          "rule": "contains_all",
+          "weight": 1.0,
+          "params": {
+            "needles": [
+              "Beacon Assist",
+              "June 18"
+            ]
+          }
+        },
+        {
+          "step_id": "launch_ack",
+          "phase": "launch_ack",
+          "name": "ack_is_compact",
+          "rule": "line_count_at_most",
+          "weight": 1.0,
+          "params": {
+            "max": 1
+          }
+        },
+        {
+          "step_id": "launch_draft",
+          "phase": "launch_draft",
+          "name": "draft_preserves_facts",
+          "rule": "state_preserved",
+          "weight": 1.0,
+          "params": {
+            "expected_values": [
+              "Beacon Assist",
+              "June 18",
+              "15 pilot customers",
+              "harbor.ai/notes"
+            ]
+          }
+        },
+        {
+          "step_id": "launch_draft",
+          "phase": "launch_draft",
+          "name": "draft_is_short",
+          "rule": "line_count_at_most",
+          "weight": 1.0,
+          "params": {
+            "max": 2
+          }
+        },
+        {
+          "step_id": "launch_revision",
+          "phase": "launch_revision",
+          "name": "revision_preserves_facts",
+          "rule": "state_preserved",
+          "weight": 1.0,
+          "params": {
+            "expected_values": [
+              "Beacon Assist",
+              "June 18",
+              "15 pilot customers",
+              "harbor.ai/notes"
+            ]
+          }
+        },
+        {
+          "step_id": "launch_revision",
+          "phase": "launch_revision",
+          "name": "revision_avoids_known_drift",
+          "rule": "contains_none",
+          "weight": 1.0,
+          "params": {
+            "needles": [
+              "June 19",
+              "13 design partners",
+              "harbor.ai/write"
+            ]
+          }
+        },
+        {
+          "step_id": "launch_revision",
+          "phase": "launch_revision",
+          "name": "revision_is_short",
+          "rule": "line_count_at_most",
+          "weight": 1.0,
+          "params": {
+            "max": 2
+          }
+        }
+      ],
+      "workload_metadata": {
+        "name": "revision_brief",
+        "description": "A drafting-and-revision workload that requires fact preservation across a shorter rewrite.",
+        "tags": [
+          "revision",
+          "consistency",
+          "factuality"
+        ],
+        "family": "revision_brief",
+        "pressure_tags": [
+          "revision",
+          "state_preserved",
+          "no_drift"
+        ],
+        "final_artifact": "announcement_paragraph",
+        "clarification_count": 0,
+        "revision_count": 1,
+        "turn_count": 6,
+        "masked_step_count": 3,
+        "masked_phases": [
+          "launch_ack",
+          "launch_draft",
+          "launch_revision"
+        ],
+        "visible_anchor_assistant_steps": []
+      }
+    }
+  ],
+  "summary": {
+    "compile_only": false,
+    "authored_spec_count": 1,
+    "compiled_instance_count": 1,
+    "masked_step_count": 3,
+    "run_result_count": 1,
+    "passed_instances": 1,
+    "failed_instances": 0,
+    "total_checks": 7,
+    "passed_checks": 7,
+    "failed_checks": 0,
+    "score": 7.0,
+    "max_score": 7.0,
+    "score_pct": 100.0,
+    "total_latency_ms": 6380.63,
+    "total_prompt_tokens": 387,
+    "total_completion_tokens": 108
+  },
+  "export_payloads": {
+    "inferencex_v1": {
+      "schema_version": "inferencex_v1",
+      "instances": [
+        {
+          "instance_id": "revision_brief-001-5d3152a1",
+          "family": "revision_brief",
+          "workload_metadata": {
+            "name": "revision_brief",
+            "description": "A drafting-and-revision workload that requires fact preservation across a shorter rewrite.",
+            "tags": [
+              "revision",
+              "consistency",
+              "factuality"
+            ],
+            "family": "revision_brief",
+            "pressure_tags": [
+              "revision",
+              "state_preserved",
+              "no_drift"
+            ],
+            "final_artifact": "announcement_paragraph",
+            "clarification_count": 0,
+            "revision_count": 1,
+            "turn_count": 6,
+            "masked_step_count": 3,
+            "masked_phases": [
+              "launch_ack",
+              "launch_draft",
+              "launch_revision"
+            ],
+            "visible_anchor_assistant_steps": []
+          },
+          "conversation": [
+            {
+              "step_id": "system_context",
+              "phase": "system_context",
+              "role": "system",
+              "source": "authored_anchor",
+              "masked": false,
+              "content": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it."
+            },
+            {
+              "step_id": "launch_facts",
+              "phase": "launch_facts",
+              "role": "user",
+              "source": "authored_anchor",
+              "masked": false,
+              "content": "Use these launch facts later: product Beacon Assist, public launch June 18, initial rollout to 15 pilot customers, and URL harbor.ai/notes. Reply with a short acknowledgement that repeats the product name and launch date."
+            },
+            {
+              "step_id": "launch_ack",
+              "phase": "launch_ack",
+              "role": "assistant",
+              "source": "model_fill",
+              "masked": true,
+              "content": null
+            },
+            {
+              "step_id": "draft_request",
+              "phase": "draft_request",
+              "role": "user",
+              "source": "authored_anchor",
+              "masked": false,
+              "content": "Draft a two-sentence announcement paragraph."
+            },
+            {
+              "step_id": "launch_draft",
+              "phase": "launch_draft",
+              "role": "assistant",
+              "source": "model_fill",
+              "masked": true,
+              "content": null
+            },
+            {
+              "step_id": "revision_request",
+              "phase": "revision_request",
+              "role": "user",
+              "source": "authored_anchor",
+              "masked": false,
+              "content": "Revise the announcement to be shorter, but keep every factual detail unchanged."
+            },
+            {
+              "step_id": "launch_revision",
+              "phase": "launch_revision",
+              "role": "assistant",
+              "source": "model_fill",
+              "masked": true,
+              "content": null
+            }
+          ],
+          "mask_annotations": [
+            {
+              "step_id": "system_context",
+              "phase": "system_context",
+              "masked": false,
+              "source": "authored_anchor"
+            },
+            {
+              "step_id": "launch_facts",
+              "phase": "launch_facts",
+              "masked": false,
+              "source": "authored_anchor"
+            },
+            {
+              "step_id": "launch_ack",
+              "phase": "launch_ack",
+              "masked": true,
+              "source": "model_fill"
+            },
+            {
+              "step_id": "draft_request",
+              "phase": "draft_request",
+              "masked": false,
+              "source": "authored_anchor"
+            },
+            {
+              "step_id": "launch_draft",
+              "phase": "launch_draft",
+              "masked": true,
+              "source": "model_fill"
+            },
+            {
+              "step_id": "revision_request",
+              "phase": "revision_request",
+              "masked": false,
+              "source": "authored_anchor"
+            },
+            {
+              "step_id": "launch_revision",
+              "phase": "launch_revision",
+              "masked": true,
+              "source": "model_fill"
+            }
+          ],
+          "checks": [
+            {
+              "step_id": "launch_ack",
+              "phase": "launch_ack",
+              "name": "ack_repeats_product_and_date",
+              "rule": "contains_all",
+              "weight": 1.0,
+              "params": {
+                "needles": [
+                  "Beacon Assist",
+                  "June 18"
+                ]
+              }
+            },
+            {
+              "step_id": "launch_ack",
+              "phase": "launch_ack",
+              "name": "ack_is_compact",
+              "rule": "line_count_at_most",
+              "weight": 1.0,
+              "params": {
+                "max": 1
+              }
+            },
+            {
+              "step_id": "launch_draft",
+              "phase": "launch_draft",
+              "name": "draft_preserves_facts",
+              "rule": "state_preserved",
+              "weight": 1.0,
+              "params": {
+                "expected_values": [
+                  "Beacon Assist",
+                  "June 18",
+                  "15 pilot customers",
+                  "harbor.ai/notes"
+                ]
+              }
+            },
+            {
+              "step_id": "launch_draft",
+              "phase": "launch_draft",
+              "name": "draft_is_short",
+              "rule": "line_count_at_most",
+              "weight": 1.0,
+              "params": {
+                "max": 2
+              }
+            },
+            {
+              "step_id": "launch_revision",
+              "phase": "launch_revision",
+              "name": "revision_preserves_facts",
+              "rule": "state_preserved",
+              "weight": 1.0,
+              "params": {
+                "expected_values": [
+                  "Beacon Assist",
+                  "June 18",
+                  "15 pilot customers",
+                  "harbor.ai/notes"
+                ]
+              }
+            },
+            {
+              "step_id": "launch_revision",
+              "phase": "launch_revision",
+              "name": "revision_avoids_known_drift",
+              "rule": "contains_none",
+              "weight": 1.0,
+              "params": {
+                "needles": [
+                  "June 19",
+                  "13 design partners",
+                  "harbor.ai/write"
+                ]
+              }
+            },
+            {
+              "step_id": "launch_revision",
+              "phase": "launch_revision",
+              "name": "revision_is_short",
+              "rule": "line_count_at_most",
+              "weight": 1.0,
+              "params": {
+                "max": 2
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "run_results": [
+    {
+      "instance_id": "revision_brief-001-5d3152a1",
+      "masked_step_results": [
+        {
+          "step_id": "launch_ack",
+          "prompt_messages": [
+            {
+              "role": "system",
+              "content": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it."
+            },
+            {
+              "role": "user",
+              "content": "Use these launch facts later: product Beacon Assist, public launch June 18, initial rollout to 15 pilot customers, and URL harbor.ai/notes. Reply with a short acknowledgement that repeats the product name and launch date."
+            }
+          ],
+          "assistant_message": "Beacon Assist, public launch June 18.",
+          "latency_ms": 1084.44,
+          "prompt_tokens": 82,
+          "completion_tokens": 12,
+          "stop_reason": "stop",
+          "checks": [
+            {
+              "name": "ack_repeats_product_and_date",
+              "rule": "contains_all",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "all required substrings present",
+              "params": {
+                "needles": [
+                  "Beacon Assist",
+                  "June 18"
+                ]
+              }
+            },
+            {
+              "name": "ack_is_compact",
+              "rule": "line_count_at_most",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "non-empty line count 1 <= 1",
+              "params": {
+                "max": 1
+              }
+            }
+          ]
+        },
+        {
+          "step_id": "launch_draft",
+          "prompt_messages": [
+            {
+              "role": "system",
+              "content": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it."
+            },
+            {
+              "role": "user",
+              "content": "Use these launch facts later: product Beacon Assist, public launch June 18, initial rollout to 15 pilot customers, and URL harbor.ai/notes. Reply with a short acknowledgement that repeats the product name and launch date."
+            },
+            {
+              "role": "assistant",
+              "content": "Beacon Assist, public launch June 18."
+            },
+            {
+              "role": "user",
+              "content": "Draft a two-sentence announcement paragraph."
+            }
+          ],
+          "assistant_message": "Beacon Assist is officially launching to the public on June 18, marking a significant milestone in our commitment to enhancing user productivity. While the initial rollout will begin with 15 pilot customers to refine our features, the full experience is available at harbor.ai/notes starting that day.",
+          "latency_ms": 3270.74,
+          "prompt_tokens": 111,
+          "completion_tokens": 59,
+          "stop_reason": "stop",
+          "checks": [
+            {
+              "name": "draft_preserves_facts",
+              "rule": "state_preserved",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "required state preserved",
+              "params": {
+                "expected_values": [
+                  "Beacon Assist",
+                  "June 18",
+                  "15 pilot customers",
+                  "harbor.ai/notes"
+                ]
+              }
+            },
+            {
+              "name": "draft_is_short",
+              "rule": "line_count_at_most",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "non-empty line count 1 <= 2",
+              "params": {
+                "max": 2
+              }
+            }
+          ]
+        },
+        {
+          "step_id": "launch_revision",
+          "prompt_messages": [
+            {
+              "role": "system",
+              "content": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it."
+            },
+            {
+              "role": "user",
+              "content": "Use these launch facts later: product Beacon Assist, public launch June 18, initial rollout to 15 pilot customers, and URL harbor.ai/notes. Reply with a short acknowledgement that repeats the product name and launch date."
+            },
+            {
+              "role": "assistant",
+              "content": "Beacon Assist, public launch June 18."
+            },
+            {
+              "role": "user",
+              "content": "Draft a two-sentence announcement paragraph."
+            },
+            {
+              "role": "assistant",
+              "content": "Beacon Assist is officially launching to the public on June 18, marking a significant milestone in our commitment to enhancing user productivity. While the initial rollout will begin with 15 pilot customers to refine our features, the full experience is available at harbor.ai/notes starting that day."
+            },
+            {
+              "role": "user",
+              "content": "Revise the announcement to be shorter, but keep every factual detail unchanged."
+            }
+          ],
+          "assistant_message": "Beacon Assist launches publicly on June 18, with an initial rollout to 15 pilot customers. The full experience is available at harbor.ai/notes starting that day.",
+          "latency_ms": 2025.45,
+          "prompt_tokens": 194,
+          "completion_tokens": 37,
+          "stop_reason": "stop",
+          "checks": [
+            {
+              "name": "revision_preserves_facts",
+              "rule": "state_preserved",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "required state preserved",
+              "params": {
+                "expected_values": [
+                  "Beacon Assist",
+                  "June 18",
+                  "15 pilot customers",
+                  "harbor.ai/notes"
+                ]
+              }
+            },
+            {
+              "name": "revision_avoids_known_drift",
+              "rule": "contains_none",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "no forbidden substrings present",
+              "params": {
+                "needles": [
+                  "June 19",
+                  "13 design partners",
+                  "harbor.ai/write"
+                ]
+              }
+            },
+            {
+              "name": "revision_is_short",
+              "rule": "line_count_at_most",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "non-empty line count 1 <= 2",
+              "params": {
+                "max": 2
+              }
+            }
+          ]
+        }
+      ],
+      "instance_score": 7.0,
+      "instance_max_score": 7.0,
+      "instance_score_pct": 100.0,
+      "passed": true
+    }
+  ]
+}

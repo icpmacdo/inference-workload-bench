@@ -1,0 +1,5092 @@
+[
+  {
+    "name": "expense_policy_memory_01",
+    "description": "Memory-heavy travel reimbursement evaluation with one forbidden item.",
+    "system_prompt": "You are an internal operations assistant. Stay grounded in the conversation, answer directly, and do not invent policy exceptions.",
+    "facts": {
+      "trip_code": "TRIP-4821",
+      "hotel_cap": "$180",
+      "meal_cap": "$65",
+      "approved_transport": "airport rideshare",
+      "forbidden_item": "minibar"
+    },
+    "turns": [
+      {
+        "user": "I'm going to give you a reimbursement policy to use later. Hotel: up to $180/night with receipt. Meals: up to $65/day. Airport rideshare is reimbursable. Minibar is never reimbursable. My trip code is TRIP-4821. Reply with one sentence confirming the trip code and the hotel and meal caps.",
+        "checks": [
+          {
+            "name": "acknowledges_key_policy_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}",
+              "{{hotel_cap}}",
+              "{{meal_cap}}"
+            ]
+          },
+          {
+            "name": "ack_is_compact",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 2
+          }
+        ]
+      },
+      {
+        "user": "Now evaluate these expenses and answer in exactly three bullets: $172 hotel, $24 airport rideshare, $19 minibar.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "hotel_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$172|hotel).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "transport_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$24|airport\\ rideshare).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "forbidden_item_is_rejected",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$19|minibar).*((not|never|isn't|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "user": "Give me a one-sentence summary of only the approved items and include the trip code exactly.",
+        "checks": [
+          {
+            "name": "summary_keeps_trip_code",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}"
+            ]
+          },
+          {
+            "name": "summary_mentions_both_approved_items",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)((hotel|\\$172).*(?:airport\\ rideshare|\\$24))|(((?:airport\\ rideshare|\\$24)).*(hotel|\\$172))"
+          },
+          {
+            "name": "summary_omits_rejected_item",
+            "rule": "regex_none",
+            "weight": 1.0,
+            "pattern": "(?is)(minibar|\\$19)"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "memory",
+      "policy",
+      "consistency",
+      "travel"
+    ]
+  },
+  {
+    "name": "expense_policy_memory_02",
+    "description": "Memory-heavy travel reimbursement evaluation with one forbidden item.",
+    "system_prompt": "You are an internal operations assistant. Stay grounded in the conversation, answer directly, and do not invent policy exceptions.",
+    "facts": {
+      "trip_code": "TRIP-4822",
+      "hotel_cap": "$185",
+      "meal_cap": "$66",
+      "approved_transport": "train fare",
+      "forbidden_item": "alcohol"
+    },
+    "turns": [
+      {
+        "user": "I'm going to give you a reimbursement policy to use later. Hotel: up to $185/night with receipt. Meals: up to $66/day. Train fare is reimbursable. Alcohol is never reimbursable. My trip code is TRIP-4822. Reply with one sentence confirming the trip code and the hotel and meal caps.",
+        "checks": [
+          {
+            "name": "acknowledges_key_policy_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}",
+              "{{hotel_cap}}",
+              "{{meal_cap}}"
+            ]
+          },
+          {
+            "name": "ack_is_compact",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 2
+          }
+        ]
+      },
+      {
+        "user": "Now evaluate these expenses and answer in exactly three bullets: $173 hotel, $25 train fare, $20 alcohol.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "hotel_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$173|hotel).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "transport_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$25|train\\ fare).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "forbidden_item_is_rejected",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$20|alcohol).*((not|never|isn't|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "user": "Give me a one-sentence summary of only the approved items and include the trip code exactly.",
+        "checks": [
+          {
+            "name": "summary_keeps_trip_code",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}"
+            ]
+          },
+          {
+            "name": "summary_mentions_both_approved_items",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)((hotel|\\$173).*(?:train\\ fare|\\$25))|(((?:train\\ fare|\\$25)).*(hotel|\\$173))"
+          },
+          {
+            "name": "summary_omits_rejected_item",
+            "rule": "regex_none",
+            "weight": 1.0,
+            "pattern": "(?is)(alcohol|\\$20)"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "memory",
+      "policy",
+      "consistency",
+      "travel"
+    ]
+  },
+  {
+    "name": "expense_policy_memory_03",
+    "description": "Memory-heavy travel reimbursement evaluation with one forbidden item.",
+    "system_prompt": "You are an internal operations assistant. Stay grounded in the conversation, answer directly, and do not invent policy exceptions.",
+    "facts": {
+      "trip_code": "TRIP-4823",
+      "hotel_cap": "$190",
+      "meal_cap": "$67",
+      "approved_transport": "taxi to client site",
+      "forbidden_item": "spa service"
+    },
+    "turns": [
+      {
+        "user": "I'm going to give you a reimbursement policy to use later. Hotel: up to $190/night with receipt. Meals: up to $67/day. Taxi to client site is reimbursable. Spa service is never reimbursable. My trip code is TRIP-4823. Reply with one sentence confirming the trip code and the hotel and meal caps.",
+        "checks": [
+          {
+            "name": "acknowledges_key_policy_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}",
+              "{{hotel_cap}}",
+              "{{meal_cap}}"
+            ]
+          },
+          {
+            "name": "ack_is_compact",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 2
+          }
+        ]
+      },
+      {
+        "user": "Now evaluate these expenses and answer in exactly three bullets: $174 hotel, $26 taxi to client site, $21 spa service.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "hotel_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$174|hotel).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "transport_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$26|taxi\\ to\\ client\\ site).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "forbidden_item_is_rejected",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$21|spa\\ service).*((not|never|isn't|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "user": "Give me a one-sentence summary of only the approved items and include the trip code exactly.",
+        "checks": [
+          {
+            "name": "summary_keeps_trip_code",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}"
+            ]
+          },
+          {
+            "name": "summary_mentions_both_approved_items",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)((hotel|\\$174).*(?:taxi\\ to\\ client\\ site|\\$26))|(((?:taxi\\ to\\ client\\ site|\\$26)).*(hotel|\\$174))"
+          },
+          {
+            "name": "summary_omits_rejected_item",
+            "rule": "regex_none",
+            "weight": 1.0,
+            "pattern": "(?is)(spa\\ service|\\$21)"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "memory",
+      "policy",
+      "consistency",
+      "travel"
+    ]
+  },
+  {
+    "name": "expense_policy_memory_04",
+    "description": "Memory-heavy travel reimbursement evaluation with one forbidden item.",
+    "system_prompt": "You are an internal operations assistant. Stay grounded in the conversation, answer directly, and do not invent policy exceptions.",
+    "facts": {
+      "trip_code": "TRIP-4824",
+      "hotel_cap": "$195",
+      "meal_cap": "$68",
+      "approved_transport": "parking receipt",
+      "forbidden_item": "gift shop"
+    },
+    "turns": [
+      {
+        "user": "I'm going to give you a reimbursement policy to use later. Hotel: up to $195/night with receipt. Meals: up to $68/day. Parking receipt is reimbursable. Gift shop is never reimbursable. My trip code is TRIP-4824. Reply with one sentence confirming the trip code and the hotel and meal caps.",
+        "checks": [
+          {
+            "name": "acknowledges_key_policy_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}",
+              "{{hotel_cap}}",
+              "{{meal_cap}}"
+            ]
+          },
+          {
+            "name": "ack_is_compact",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 2
+          }
+        ]
+      },
+      {
+        "user": "Now evaluate these expenses and answer in exactly three bullets: $175 hotel, $27 parking receipt, $22 gift shop.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "hotel_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$175|hotel).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "transport_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$27|parking\\ receipt).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "forbidden_item_is_rejected",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$22|gift\\ shop).*((not|never|isn't|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "user": "Give me a one-sentence summary of only the approved items and include the trip code exactly.",
+        "checks": [
+          {
+            "name": "summary_keeps_trip_code",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}"
+            ]
+          },
+          {
+            "name": "summary_mentions_both_approved_items",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)((hotel|\\$175).*(?:parking\\ receipt|\\$27))|(((?:parking\\ receipt|\\$27)).*(hotel|\\$175))"
+          },
+          {
+            "name": "summary_omits_rejected_item",
+            "rule": "regex_none",
+            "weight": 1.0,
+            "pattern": "(?is)(gift\\ shop|\\$22)"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "memory",
+      "policy",
+      "consistency",
+      "travel"
+    ]
+  },
+  {
+    "name": "expense_policy_memory_05",
+    "description": "Memory-heavy travel reimbursement evaluation with one forbidden item.",
+    "system_prompt": "You are an internal operations assistant. Stay grounded in the conversation, answer directly, and do not invent policy exceptions.",
+    "facts": {
+      "trip_code": "TRIP-4825",
+      "hotel_cap": "$200",
+      "meal_cap": "$69",
+      "approved_transport": "shuttle transfer",
+      "forbidden_item": "movie rental"
+    },
+    "turns": [
+      {
+        "user": "I'm going to give you a reimbursement policy to use later. Hotel: up to $200/night with receipt. Meals: up to $69/day. Shuttle transfer is reimbursable. Movie rental is never reimbursable. My trip code is TRIP-4825. Reply with one sentence confirming the trip code and the hotel and meal caps.",
+        "checks": [
+          {
+            "name": "acknowledges_key_policy_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}",
+              "{{hotel_cap}}",
+              "{{meal_cap}}"
+            ]
+          },
+          {
+            "name": "ack_is_compact",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 2
+          }
+        ]
+      },
+      {
+        "user": "Now evaluate these expenses and answer in exactly three bullets: $176 hotel, $28 shuttle transfer, $23 movie rental.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "hotel_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$176|hotel).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "transport_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$28|shuttle\\ transfer).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "forbidden_item_is_rejected",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$23|movie\\ rental).*((not|never|isn't|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "user": "Give me a one-sentence summary of only the approved items and include the trip code exactly.",
+        "checks": [
+          {
+            "name": "summary_keeps_trip_code",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}"
+            ]
+          },
+          {
+            "name": "summary_mentions_both_approved_items",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)((hotel|\\$176).*(?:shuttle\\ transfer|\\$28))|(((?:shuttle\\ transfer|\\$28)).*(hotel|\\$176))"
+          },
+          {
+            "name": "summary_omits_rejected_item",
+            "rule": "regex_none",
+            "weight": 1.0,
+            "pattern": "(?is)(movie\\ rental|\\$23)"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "memory",
+      "policy",
+      "consistency",
+      "travel"
+    ]
+  },
+  {
+    "name": "expense_policy_memory_06",
+    "description": "Memory-heavy travel reimbursement evaluation with one forbidden item.",
+    "system_prompt": "You are an internal operations assistant. Stay grounded in the conversation, answer directly, and do not invent policy exceptions.",
+    "facts": {
+      "trip_code": "TRIP-4826",
+      "hotel_cap": "$205",
+      "meal_cap": "$70",
+      "approved_transport": "subway fare",
+      "forbidden_item": "late checkout fee"
+    },
+    "turns": [
+      {
+        "user": "I'm going to give you a reimbursement policy to use later. Hotel: up to $205/night with receipt. Meals: up to $70/day. Subway fare is reimbursable. Late checkout fee is never reimbursable. My trip code is TRIP-4826. Reply with one sentence confirming the trip code and the hotel and meal caps.",
+        "checks": [
+          {
+            "name": "acknowledges_key_policy_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}",
+              "{{hotel_cap}}",
+              "{{meal_cap}}"
+            ]
+          },
+          {
+            "name": "ack_is_compact",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 2
+          }
+        ]
+      },
+      {
+        "user": "Now evaluate these expenses and answer in exactly three bullets: $177 hotel, $29 subway fare, $24 late checkout fee.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "hotel_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$177|hotel).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "transport_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$29|subway\\ fare).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "forbidden_item_is_rejected",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$24|late\\ checkout\\ fee).*((not|never|isn't|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "user": "Give me a one-sentence summary of only the approved items and include the trip code exactly.",
+        "checks": [
+          {
+            "name": "summary_keeps_trip_code",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}"
+            ]
+          },
+          {
+            "name": "summary_mentions_both_approved_items",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)((hotel|\\$177).*(?:subway\\ fare|\\$29))|(((?:subway\\ fare|\\$29)).*(hotel|\\$177))"
+          },
+          {
+            "name": "summary_omits_rejected_item",
+            "rule": "regex_none",
+            "weight": 1.0,
+            "pattern": "(?is)(late\\ checkout\\ fee|\\$24)"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "memory",
+      "policy",
+      "consistency",
+      "travel"
+    ]
+  },
+  {
+    "name": "expense_policy_memory_07",
+    "description": "Memory-heavy travel reimbursement evaluation with one forbidden item.",
+    "system_prompt": "You are an internal operations assistant. Stay grounded in the conversation, answer directly, and do not invent policy exceptions.",
+    "facts": {
+      "trip_code": "TRIP-4827",
+      "hotel_cap": "$210",
+      "meal_cap": "$71",
+      "approved_transport": "ferry ticket",
+      "forbidden_item": "snack drawer"
+    },
+    "turns": [
+      {
+        "user": "I'm going to give you a reimbursement policy to use later. Hotel: up to $210/night with receipt. Meals: up to $71/day. Ferry ticket is reimbursable. Snack drawer is never reimbursable. My trip code is TRIP-4827. Reply with one sentence confirming the trip code and the hotel and meal caps.",
+        "checks": [
+          {
+            "name": "acknowledges_key_policy_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}",
+              "{{hotel_cap}}",
+              "{{meal_cap}}"
+            ]
+          },
+          {
+            "name": "ack_is_compact",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 2
+          }
+        ]
+      },
+      {
+        "user": "Now evaluate these expenses and answer in exactly three bullets: $178 hotel, $30 ferry ticket, $25 snack drawer.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "hotel_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$178|hotel).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "transport_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$30|ferry\\ ticket).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "forbidden_item_is_rejected",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$25|snack\\ drawer).*((not|never|isn't|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "user": "Give me a one-sentence summary of only the approved items and include the trip code exactly.",
+        "checks": [
+          {
+            "name": "summary_keeps_trip_code",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}"
+            ]
+          },
+          {
+            "name": "summary_mentions_both_approved_items",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)((hotel|\\$178).*(?:ferry\\ ticket|\\$30))|(((?:ferry\\ ticket|\\$30)).*(hotel|\\$178))"
+          },
+          {
+            "name": "summary_omits_rejected_item",
+            "rule": "regex_none",
+            "weight": 1.0,
+            "pattern": "(?is)(snack\\ drawer|\\$25)"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "memory",
+      "policy",
+      "consistency",
+      "travel"
+    ]
+  },
+  {
+    "name": "expense_policy_memory_08",
+    "description": "Memory-heavy travel reimbursement evaluation with one forbidden item.",
+    "system_prompt": "You are an internal operations assistant. Stay grounded in the conversation, answer directly, and do not invent policy exceptions.",
+    "facts": {
+      "trip_code": "TRIP-4828",
+      "hotel_cap": "$215",
+      "meal_cap": "$72",
+      "approved_transport": "bus pass",
+      "forbidden_item": "room upgrade"
+    },
+    "turns": [
+      {
+        "user": "I'm going to give you a reimbursement policy to use later. Hotel: up to $215/night with receipt. Meals: up to $72/day. Bus pass is reimbursable. Room upgrade is never reimbursable. My trip code is TRIP-4828. Reply with one sentence confirming the trip code and the hotel and meal caps.",
+        "checks": [
+          {
+            "name": "acknowledges_key_policy_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}",
+              "{{hotel_cap}}",
+              "{{meal_cap}}"
+            ]
+          },
+          {
+            "name": "ack_is_compact",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 2
+          }
+        ]
+      },
+      {
+        "user": "Now evaluate these expenses and answer in exactly three bullets: $179 hotel, $31 bus pass, $26 room upgrade.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "hotel_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$179|hotel).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "transport_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$31|bus\\ pass).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "forbidden_item_is_rejected",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$26|room\\ upgrade).*((not|never|isn't|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "user": "Give me a one-sentence summary of only the approved items and include the trip code exactly.",
+        "checks": [
+          {
+            "name": "summary_keeps_trip_code",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}"
+            ]
+          },
+          {
+            "name": "summary_mentions_both_approved_items",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)((hotel|\\$179).*(?:bus\\ pass|\\$31))|(((?:bus\\ pass|\\$31)).*(hotel|\\$179))"
+          },
+          {
+            "name": "summary_omits_rejected_item",
+            "rule": "regex_none",
+            "weight": 1.0,
+            "pattern": "(?is)(room\\ upgrade|\\$26)"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "memory",
+      "policy",
+      "consistency",
+      "travel"
+    ]
+  },
+  {
+    "name": "expense_policy_memory_09",
+    "description": "Memory-heavy travel reimbursement evaluation with one forbidden item.",
+    "system_prompt": "You are an internal operations assistant. Stay grounded in the conversation, answer directly, and do not invent policy exceptions.",
+    "facts": {
+      "trip_code": "TRIP-4829",
+      "hotel_cap": "$220",
+      "meal_cap": "$73",
+      "approved_transport": "commuter rail",
+      "forbidden_item": "souvenir charge"
+    },
+    "turns": [
+      {
+        "user": "I'm going to give you a reimbursement policy to use later. Hotel: up to $220/night with receipt. Meals: up to $73/day. Commuter rail is reimbursable. Souvenir charge is never reimbursable. My trip code is TRIP-4829. Reply with one sentence confirming the trip code and the hotel and meal caps.",
+        "checks": [
+          {
+            "name": "acknowledges_key_policy_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}",
+              "{{hotel_cap}}",
+              "{{meal_cap}}"
+            ]
+          },
+          {
+            "name": "ack_is_compact",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 2
+          }
+        ]
+      },
+      {
+        "user": "Now evaluate these expenses and answer in exactly three bullets: $180 hotel, $32 commuter rail, $27 souvenir charge.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "hotel_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$180|hotel).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "transport_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$32|commuter\\ rail).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "forbidden_item_is_rejected",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$27|souvenir\\ charge).*((not|never|isn't|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "user": "Give me a one-sentence summary of only the approved items and include the trip code exactly.",
+        "checks": [
+          {
+            "name": "summary_keeps_trip_code",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}"
+            ]
+          },
+          {
+            "name": "summary_mentions_both_approved_items",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)((hotel|\\$180).*(?:commuter\\ rail|\\$32))|(((?:commuter\\ rail|\\$32)).*(hotel|\\$180))"
+          },
+          {
+            "name": "summary_omits_rejected_item",
+            "rule": "regex_none",
+            "weight": 1.0,
+            "pattern": "(?is)(souvenir\\ charge|\\$27)"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "memory",
+      "policy",
+      "consistency",
+      "travel"
+    ]
+  },
+  {
+    "name": "expense_policy_memory_10",
+    "description": "Memory-heavy travel reimbursement evaluation with one forbidden item.",
+    "system_prompt": "You are an internal operations assistant. Stay grounded in the conversation, answer directly, and do not invent policy exceptions.",
+    "facts": {
+      "trip_code": "TRIP-4830",
+      "hotel_cap": "$225",
+      "meal_cap": "$74",
+      "approved_transport": "car share fee",
+      "forbidden_item": "cocktail tab"
+    },
+    "turns": [
+      {
+        "user": "I'm going to give you a reimbursement policy to use later. Hotel: up to $225/night with receipt. Meals: up to $74/day. Car share fee is reimbursable. Cocktail tab is never reimbursable. My trip code is TRIP-4830. Reply with one sentence confirming the trip code and the hotel and meal caps.",
+        "checks": [
+          {
+            "name": "acknowledges_key_policy_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}",
+              "{{hotel_cap}}",
+              "{{meal_cap}}"
+            ]
+          },
+          {
+            "name": "ack_is_compact",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 2
+          }
+        ]
+      },
+      {
+        "user": "Now evaluate these expenses and answer in exactly three bullets: $181 hotel, $33 car share fee, $28 cocktail tab.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "hotel_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$181|hotel).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "transport_is_approved",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$33|car\\ share\\ fee).*(reimburs|covered|eligible|approved)"
+          },
+          {
+            "name": "forbidden_item_is_rejected",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(\\$28|cocktail\\ tab).*((not|never|isn't|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "user": "Give me a one-sentence summary of only the approved items and include the trip code exactly.",
+        "checks": [
+          {
+            "name": "summary_keeps_trip_code",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{trip_code}}"
+            ]
+          },
+          {
+            "name": "summary_mentions_both_approved_items",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)((hotel|\\$181).*(?:car\\ share\\ fee|\\$33))|(((?:car\\ share\\ fee|\\$33)).*(hotel|\\$181))"
+          },
+          {
+            "name": "summary_omits_rejected_item",
+            "rule": "regex_none",
+            "weight": 1.0,
+            "pattern": "(?is)(cocktail\\ tab|\\$28)"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "memory",
+      "policy",
+      "consistency",
+      "travel"
+    ]
+  },
+  {
+    "name": "support_handoff_precision_01",
+    "description": "Support handoff note with exact field formatting and retained facts.",
+    "system_prompt": "You are a support operations assistant. Follow formatting instructions exactly, retain incident details across turns, and do not invent missing evidence.",
+    "facts": {
+      "ticket_id": "SUP-7714",
+      "customer_name": "Mina Patel",
+      "environment": "staging",
+      "region": "us-west-2",
+      "trigger": "password reset"
+    },
+    "turns": [
+      {
+        "user": "I need a support handoff note later. Facts to remember: customer Mina Patel, ticket SUP-7714, issue started right after a password reset, and it only reproduces in staging. Before drafting anything, ask me exactly one clarifying question.",
+        "checks": [
+          {
+            "name": "asks_one_clarifying_question",
+            "rule": "question_count_equals",
+            "weight": 1.0,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "user": "The affected region is us-west-2 and there were no 2FA errors. Now draft the handoff note using exactly these labels on separate lines: Ticket, Customer, Problem, Environment, Region, Next Step.",
+        "checks": [
+          {
+            "name": "ticket_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Ticket:\\s*SUP\\-7714\\s*$"
+          },
+          {
+            "name": "customer_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Customer:\\s*Mina\\ Patel\\s*$"
+          },
+          {
+            "name": "problem_mentions_trigger",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Problem:.*password\\ reset.*$"
+          },
+          {
+            "name": "environment_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Environment:\\s*staging\\s*$"
+          },
+          {
+            "name": "region_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Region:\\s*us\\-west\\-2\\s*$"
+          },
+          {
+            "name": "mentions_no_2fa_errors",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(no|without).*(2FA|two-factor).*(errors?)"
+          },
+          {
+            "name": "next_step_line_present",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Next Step:\\s*\\S.+$"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "formatting",
+      "memory",
+      "handoff",
+      "support"
+    ]
+  },
+  {
+    "name": "support_handoff_precision_02",
+    "description": "Support handoff note with exact field formatting and retained facts.",
+    "system_prompt": "You are a support operations assistant. Follow formatting instructions exactly, retain incident details across turns, and do not invent missing evidence.",
+    "facts": {
+      "ticket_id": "SUP-7715",
+      "customer_name": "Jordan Lopez",
+      "environment": "sandbox",
+      "region": "us-east-1",
+      "trigger": "billing profile update"
+    },
+    "turns": [
+      {
+        "user": "I need a support handoff note later. Facts to remember: customer Jordan Lopez, ticket SUP-7715, issue started right after a billing profile update, and it only reproduces in sandbox. Before drafting anything, ask me exactly one clarifying question.",
+        "checks": [
+          {
+            "name": "asks_one_clarifying_question",
+            "rule": "question_count_equals",
+            "weight": 1.0,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "user": "The affected region is us-east-1 and there were no 2FA errors. Now draft the handoff note using exactly these labels on separate lines: Ticket, Customer, Problem, Environment, Region, Next Step.",
+        "checks": [
+          {
+            "name": "ticket_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Ticket:\\s*SUP\\-7715\\s*$"
+          },
+          {
+            "name": "customer_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Customer:\\s*Jordan\\ Lopez\\s*$"
+          },
+          {
+            "name": "problem_mentions_trigger",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Problem:.*billing\\ profile\\ update.*$"
+          },
+          {
+            "name": "environment_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Environment:\\s*sandbox\\s*$"
+          },
+          {
+            "name": "region_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Region:\\s*us\\-east\\-1\\s*$"
+          },
+          {
+            "name": "mentions_no_2fa_errors",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(no|without).*(2FA|two-factor).*(errors?)"
+          },
+          {
+            "name": "next_step_line_present",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Next Step:\\s*\\S.+$"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "formatting",
+      "memory",
+      "handoff",
+      "support"
+    ]
+  },
+  {
+    "name": "support_handoff_precision_03",
+    "description": "Support handoff note with exact field formatting and retained facts.",
+    "system_prompt": "You are a support operations assistant. Follow formatting instructions exactly, retain incident details across turns, and do not invent missing evidence.",
+    "facts": {
+      "ticket_id": "SUP-7716",
+      "customer_name": "Avery Nguyen",
+      "environment": "preprod",
+      "region": "eu-west-1",
+      "trigger": "role change"
+    },
+    "turns": [
+      {
+        "user": "I need a support handoff note later. Facts to remember: customer Avery Nguyen, ticket SUP-7716, issue started right after a role change, and it only reproduces in preprod. Before drafting anything, ask me exactly one clarifying question.",
+        "checks": [
+          {
+            "name": "asks_one_clarifying_question",
+            "rule": "question_count_equals",
+            "weight": 1.0,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "user": "The affected region is eu-west-1 and there were no 2FA errors. Now draft the handoff note using exactly these labels on separate lines: Ticket, Customer, Problem, Environment, Region, Next Step.",
+        "checks": [
+          {
+            "name": "ticket_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Ticket:\\s*SUP\\-7716\\s*$"
+          },
+          {
+            "name": "customer_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Customer:\\s*Avery\\ Nguyen\\s*$"
+          },
+          {
+            "name": "problem_mentions_trigger",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Problem:.*role\\ change.*$"
+          },
+          {
+            "name": "environment_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Environment:\\s*preprod\\s*$"
+          },
+          {
+            "name": "region_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Region:\\s*eu\\-west\\-1\\s*$"
+          },
+          {
+            "name": "mentions_no_2fa_errors",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(no|without).*(2FA|two-factor).*(errors?)"
+          },
+          {
+            "name": "next_step_line_present",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Next Step:\\s*\\S.+$"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "formatting",
+      "memory",
+      "handoff",
+      "support"
+    ]
+  },
+  {
+    "name": "support_handoff_precision_04",
+    "description": "Support handoff note with exact field formatting and retained facts.",
+    "system_prompt": "You are a support operations assistant. Follow formatting instructions exactly, retain incident details across turns, and do not invent missing evidence.",
+    "facts": {
+      "ticket_id": "SUP-7717",
+      "customer_name": "Priya Shah",
+      "environment": "qa",
+      "region": "eu-central-1",
+      "trigger": "SSO migration"
+    },
+    "turns": [
+      {
+        "user": "I need a support handoff note later. Facts to remember: customer Priya Shah, ticket SUP-7717, issue started right after a SSO migration, and it only reproduces in qa. Before drafting anything, ask me exactly one clarifying question.",
+        "checks": [
+          {
+            "name": "asks_one_clarifying_question",
+            "rule": "question_count_equals",
+            "weight": 1.0,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "user": "The affected region is eu-central-1 and there were no 2FA errors. Now draft the handoff note using exactly these labels on separate lines: Ticket, Customer, Problem, Environment, Region, Next Step.",
+        "checks": [
+          {
+            "name": "ticket_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Ticket:\\s*SUP\\-7717\\s*$"
+          },
+          {
+            "name": "customer_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Customer:\\s*Priya\\ Shah\\s*$"
+          },
+          {
+            "name": "problem_mentions_trigger",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Problem:.*SSO\\ migration.*$"
+          },
+          {
+            "name": "environment_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Environment:\\s*qa\\s*$"
+          },
+          {
+            "name": "region_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Region:\\s*eu\\-central\\-1\\s*$"
+          },
+          {
+            "name": "mentions_no_2fa_errors",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(no|without).*(2FA|two-factor).*(errors?)"
+          },
+          {
+            "name": "next_step_line_present",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Next Step:\\s*\\S.+$"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "formatting",
+      "memory",
+      "handoff",
+      "support"
+    ]
+  },
+  {
+    "name": "support_handoff_precision_05",
+    "description": "Support handoff note with exact field formatting and retained facts.",
+    "system_prompt": "You are a support operations assistant. Follow formatting instructions exactly, retain incident details across turns, and do not invent missing evidence.",
+    "facts": {
+      "ticket_id": "SUP-7718",
+      "customer_name": "Noah Bennett",
+      "environment": "dev-preview",
+      "region": "ap-southeast-1",
+      "trigger": "API key rotation"
+    },
+    "turns": [
+      {
+        "user": "I need a support handoff note later. Facts to remember: customer Noah Bennett, ticket SUP-7718, issue started right after a API key rotation, and it only reproduces in dev-preview. Before drafting anything, ask me exactly one clarifying question.",
+        "checks": [
+          {
+            "name": "asks_one_clarifying_question",
+            "rule": "question_count_equals",
+            "weight": 1.0,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "user": "The affected region is ap-southeast-1 and there were no 2FA errors. Now draft the handoff note using exactly these labels on separate lines: Ticket, Customer, Problem, Environment, Region, Next Step.",
+        "checks": [
+          {
+            "name": "ticket_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Ticket:\\s*SUP\\-7718\\s*$"
+          },
+          {
+            "name": "customer_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Customer:\\s*Noah\\ Bennett\\s*$"
+          },
+          {
+            "name": "problem_mentions_trigger",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Problem:.*API\\ key\\ rotation.*$"
+          },
+          {
+            "name": "environment_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Environment:\\s*dev\\-preview\\s*$"
+          },
+          {
+            "name": "region_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Region:\\s*ap\\-southeast\\-1\\s*$"
+          },
+          {
+            "name": "mentions_no_2fa_errors",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(no|without).*(2FA|two-factor).*(errors?)"
+          },
+          {
+            "name": "next_step_line_present",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Next Step:\\s*\\S.+$"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "formatting",
+      "memory",
+      "handoff",
+      "support"
+    ]
+  },
+  {
+    "name": "support_handoff_precision_06",
+    "description": "Support handoff note with exact field formatting and retained facts.",
+    "system_prompt": "You are a support operations assistant. Follow formatting instructions exactly, retain incident details across turns, and do not invent missing evidence.",
+    "facts": {
+      "ticket_id": "SUP-7719",
+      "customer_name": "Elena Khan",
+      "environment": "integration",
+      "region": "ap-northeast-1",
+      "trigger": "domain switch"
+    },
+    "turns": [
+      {
+        "user": "I need a support handoff note later. Facts to remember: customer Elena Khan, ticket SUP-7719, issue started right after a domain switch, and it only reproduces in integration. Before drafting anything, ask me exactly one clarifying question.",
+        "checks": [
+          {
+            "name": "asks_one_clarifying_question",
+            "rule": "question_count_equals",
+            "weight": 1.0,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "user": "The affected region is ap-northeast-1 and there were no 2FA errors. Now draft the handoff note using exactly these labels on separate lines: Ticket, Customer, Problem, Environment, Region, Next Step.",
+        "checks": [
+          {
+            "name": "ticket_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Ticket:\\s*SUP\\-7719\\s*$"
+          },
+          {
+            "name": "customer_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Customer:\\s*Elena\\ Khan\\s*$"
+          },
+          {
+            "name": "problem_mentions_trigger",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Problem:.*domain\\ switch.*$"
+          },
+          {
+            "name": "environment_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Environment:\\s*integration\\s*$"
+          },
+          {
+            "name": "region_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Region:\\s*ap\\-northeast\\-1\\s*$"
+          },
+          {
+            "name": "mentions_no_2fa_errors",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(no|without).*(2FA|two-factor).*(errors?)"
+          },
+          {
+            "name": "next_step_line_present",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Next Step:\\s*\\S.+$"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "formatting",
+      "memory",
+      "handoff",
+      "support"
+    ]
+  },
+  {
+    "name": "support_handoff_precision_07",
+    "description": "Support handoff note with exact field formatting and retained facts.",
+    "system_prompt": "You are a support operations assistant. Follow formatting instructions exactly, retain incident details across turns, and do not invent missing evidence.",
+    "facts": {
+      "ticket_id": "SUP-7720",
+      "customer_name": "Marcus Morris",
+      "environment": "staging-eu",
+      "region": "ca-central-1",
+      "trigger": "account merge"
+    },
+    "turns": [
+      {
+        "user": "I need a support handoff note later. Facts to remember: customer Marcus Morris, ticket SUP-7720, issue started right after a account merge, and it only reproduces in staging-eu. Before drafting anything, ask me exactly one clarifying question.",
+        "checks": [
+          {
+            "name": "asks_one_clarifying_question",
+            "rule": "question_count_equals",
+            "weight": 1.0,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "user": "The affected region is ca-central-1 and there were no 2FA errors. Now draft the handoff note using exactly these labels on separate lines: Ticket, Customer, Problem, Environment, Region, Next Step.",
+        "checks": [
+          {
+            "name": "ticket_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Ticket:\\s*SUP\\-7720\\s*$"
+          },
+          {
+            "name": "customer_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Customer:\\s*Marcus\\ Morris\\s*$"
+          },
+          {
+            "name": "problem_mentions_trigger",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Problem:.*account\\ merge.*$"
+          },
+          {
+            "name": "environment_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Environment:\\s*staging\\-eu\\s*$"
+          },
+          {
+            "name": "region_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Region:\\s*ca\\-central\\-1\\s*$"
+          },
+          {
+            "name": "mentions_no_2fa_errors",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(no|without).*(2FA|two-factor).*(errors?)"
+          },
+          {
+            "name": "next_step_line_present",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Next Step:\\s*\\S.+$"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "formatting",
+      "memory",
+      "handoff",
+      "support"
+    ]
+  },
+  {
+    "name": "support_handoff_precision_08",
+    "description": "Support handoff note with exact field formatting and retained facts.",
+    "system_prompt": "You are a support operations assistant. Follow formatting instructions exactly, retain incident details across turns, and do not invent missing evidence.",
+    "facts": {
+      "ticket_id": "SUP-7721",
+      "customer_name": "Riley Garcia",
+      "environment": "staging-us",
+      "region": "sa-east-1",
+      "trigger": "seat reassignment"
+    },
+    "turns": [
+      {
+        "user": "I need a support handoff note later. Facts to remember: customer Riley Garcia, ticket SUP-7721, issue started right after a seat reassignment, and it only reproduces in staging-us. Before drafting anything, ask me exactly one clarifying question.",
+        "checks": [
+          {
+            "name": "asks_one_clarifying_question",
+            "rule": "question_count_equals",
+            "weight": 1.0,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "user": "The affected region is sa-east-1 and there were no 2FA errors. Now draft the handoff note using exactly these labels on separate lines: Ticket, Customer, Problem, Environment, Region, Next Step.",
+        "checks": [
+          {
+            "name": "ticket_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Ticket:\\s*SUP\\-7721\\s*$"
+          },
+          {
+            "name": "customer_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Customer:\\s*Riley\\ Garcia\\s*$"
+          },
+          {
+            "name": "problem_mentions_trigger",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Problem:.*seat\\ reassignment.*$"
+          },
+          {
+            "name": "environment_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Environment:\\s*staging\\-us\\s*$"
+          },
+          {
+            "name": "region_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Region:\\s*sa\\-east\\-1\\s*$"
+          },
+          {
+            "name": "mentions_no_2fa_errors",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(no|without).*(2FA|two-factor).*(errors?)"
+          },
+          {
+            "name": "next_step_line_present",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Next Step:\\s*\\S.+$"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "formatting",
+      "memory",
+      "handoff",
+      "support"
+    ]
+  },
+  {
+    "name": "support_handoff_precision_09",
+    "description": "Support handoff note with exact field formatting and retained facts.",
+    "system_prompt": "You are a support operations assistant. Follow formatting instructions exactly, retain incident details across turns, and do not invent missing evidence.",
+    "facts": {
+      "ticket_id": "SUP-7722",
+      "customer_name": "Sofia Kim",
+      "environment": "uat",
+      "region": "us-gov-west-1",
+      "trigger": "email alias update"
+    },
+    "turns": [
+      {
+        "user": "I need a support handoff note later. Facts to remember: customer Sofia Kim, ticket SUP-7722, issue started right after a email alias update, and it only reproduces in uat. Before drafting anything, ask me exactly one clarifying question.",
+        "checks": [
+          {
+            "name": "asks_one_clarifying_question",
+            "rule": "question_count_equals",
+            "weight": 1.0,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "user": "The affected region is us-gov-west-1 and there were no 2FA errors. Now draft the handoff note using exactly these labels on separate lines: Ticket, Customer, Problem, Environment, Region, Next Step.",
+        "checks": [
+          {
+            "name": "ticket_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Ticket:\\s*SUP\\-7722\\s*$"
+          },
+          {
+            "name": "customer_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Customer:\\s*Sofia\\ Kim\\s*$"
+          },
+          {
+            "name": "problem_mentions_trigger",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Problem:.*email\\ alias\\ update.*$"
+          },
+          {
+            "name": "environment_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Environment:\\s*uat\\s*$"
+          },
+          {
+            "name": "region_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Region:\\s*us\\-gov\\-west\\-1\\s*$"
+          },
+          {
+            "name": "mentions_no_2fa_errors",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(no|without).*(2FA|two-factor).*(errors?)"
+          },
+          {
+            "name": "next_step_line_present",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Next Step:\\s*\\S.+$"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "formatting",
+      "memory",
+      "handoff",
+      "support"
+    ]
+  },
+  {
+    "name": "support_handoff_precision_10",
+    "description": "Support handoff note with exact field formatting and retained facts.",
+    "system_prompt": "You are a support operations assistant. Follow formatting instructions exactly, retain incident details across turns, and do not invent missing evidence.",
+    "facts": {
+      "ticket_id": "SUP-7723",
+      "customer_name": "Theo Sullivan",
+      "environment": "pilot",
+      "region": "eu-north-1",
+      "trigger": "plan downgrade"
+    },
+    "turns": [
+      {
+        "user": "I need a support handoff note later. Facts to remember: customer Theo Sullivan, ticket SUP-7723, issue started right after a plan downgrade, and it only reproduces in pilot. Before drafting anything, ask me exactly one clarifying question.",
+        "checks": [
+          {
+            "name": "asks_one_clarifying_question",
+            "rule": "question_count_equals",
+            "weight": 1.0,
+            "count": 1
+          }
+        ]
+      },
+      {
+        "user": "The affected region is eu-north-1 and there were no 2FA errors. Now draft the handoff note using exactly these labels on separate lines: Ticket, Customer, Problem, Environment, Region, Next Step.",
+        "checks": [
+          {
+            "name": "ticket_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Ticket:\\s*SUP\\-7723\\s*$"
+          },
+          {
+            "name": "customer_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Customer:\\s*Theo\\ Sullivan\\s*$"
+          },
+          {
+            "name": "problem_mentions_trigger",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Problem:.*plan\\ downgrade.*$"
+          },
+          {
+            "name": "environment_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Environment:\\s*pilot\\s*$"
+          },
+          {
+            "name": "region_line_exact",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Region:\\s*eu\\-north\\-1\\s*$"
+          },
+          {
+            "name": "mentions_no_2fa_errors",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(no|without).*(2FA|two-factor).*(errors?)"
+          },
+          {
+            "name": "next_step_line_present",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?im)^Next Step:\\s*\\S.+$"
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "formatting",
+      "memory",
+      "handoff",
+      "support"
+    ]
+  },
+  {
+    "name": "launch_brief_consistency_01",
+    "description": "Preserve exact launch facts across a draft and revision cycle.",
+    "system_prompt": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it.",
+    "facts": {
+      "product_name": "Northwind Copilot",
+      "launch_date": "January 10",
+      "rollout_group": "12 design partners",
+      "launch_url": "northwind-copilot.example.com/launch"
+    },
+    "turns": [
+      {
+        "user": "Use these launch facts later: product Northwind Copilot, public launch January 10, initial rollout to 12 design partners, and URL northwind-copilot.example.com/launch. Reply with a short acknowledgement that repeats the product name and launch date.",
+        "checks": [
+          {
+            "name": "ack_repeats_product_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Draft a two-sentence announcement paragraph.",
+        "checks": [
+          {
+            "name": "draft_keeps_all_launch_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Revise the announcement to be shorter, but keep every factual detail unchanged.",
+        "checks": [
+          {
+            "name": "revision_preserves_all_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          },
+          {
+            "name": "revision_does_not_drift",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "January 11",
+              "13 design partners"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "revision",
+      "consistency",
+      "factuality",
+      "launch"
+    ]
+  },
+  {
+    "name": "launch_brief_consistency_02",
+    "description": "Preserve exact launch facts across a draft and revision cycle.",
+    "system_prompt": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it.",
+    "facts": {
+      "product_name": "Harbor Assist",
+      "launch_date": "February 11",
+      "rollout_group": "13 design partners",
+      "launch_url": "harbor-assist.example.com/launch"
+    },
+    "turns": [
+      {
+        "user": "Use these launch facts later: product Harbor Assist, public launch February 11, initial rollout to 13 design partners, and URL harbor-assist.example.com/launch. Reply with a short acknowledgement that repeats the product name and launch date.",
+        "checks": [
+          {
+            "name": "ack_repeats_product_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Draft a two-sentence announcement paragraph.",
+        "checks": [
+          {
+            "name": "draft_keeps_all_launch_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Revise the announcement to be shorter, but keep every factual detail unchanged.",
+        "checks": [
+          {
+            "name": "revision_preserves_all_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          },
+          {
+            "name": "revision_does_not_drift",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "February 12",
+              "14 design partners"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "revision",
+      "consistency",
+      "factuality",
+      "launch"
+    ]
+  },
+  {
+    "name": "launch_brief_consistency_03",
+    "description": "Preserve exact launch facts across a draft and revision cycle.",
+    "system_prompt": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it.",
+    "facts": {
+      "product_name": "Atlas Brief",
+      "launch_date": "March 12",
+      "rollout_group": "14 design partners",
+      "launch_url": "atlas-brief.example.com/launch"
+    },
+    "turns": [
+      {
+        "user": "Use these launch facts later: product Atlas Brief, public launch March 12, initial rollout to 14 design partners, and URL atlas-brief.example.com/launch. Reply with a short acknowledgement that repeats the product name and launch date.",
+        "checks": [
+          {
+            "name": "ack_repeats_product_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Draft a two-sentence announcement paragraph.",
+        "checks": [
+          {
+            "name": "draft_keeps_all_launch_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Revise the announcement to be shorter, but keep every factual detail unchanged.",
+        "checks": [
+          {
+            "name": "revision_preserves_all_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          },
+          {
+            "name": "revision_does_not_drift",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "March 13",
+              "15 design partners"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "revision",
+      "consistency",
+      "factuality",
+      "launch"
+    ]
+  },
+  {
+    "name": "launch_brief_consistency_04",
+    "description": "Preserve exact launch facts across a draft and revision cycle.",
+    "system_prompt": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it.",
+    "facts": {
+      "product_name": "Signal Canvas",
+      "launch_date": "April 13",
+      "rollout_group": "15 design partners",
+      "launch_url": "signal-canvas.example.com/launch"
+    },
+    "turns": [
+      {
+        "user": "Use these launch facts later: product Signal Canvas, public launch April 13, initial rollout to 15 design partners, and URL signal-canvas.example.com/launch. Reply with a short acknowledgement that repeats the product name and launch date.",
+        "checks": [
+          {
+            "name": "ack_repeats_product_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Draft a two-sentence announcement paragraph.",
+        "checks": [
+          {
+            "name": "draft_keeps_all_launch_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Revise the announcement to be shorter, but keep every factual detail unchanged.",
+        "checks": [
+          {
+            "name": "revision_preserves_all_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          },
+          {
+            "name": "revision_does_not_drift",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "April 14",
+              "16 design partners"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "revision",
+      "consistency",
+      "factuality",
+      "launch"
+    ]
+  },
+  {
+    "name": "launch_brief_consistency_05",
+    "description": "Preserve exact launch facts across a draft and revision cycle.",
+    "system_prompt": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it.",
+    "facts": {
+      "product_name": "Summit Notes",
+      "launch_date": "May 14",
+      "rollout_group": "16 design partners",
+      "launch_url": "summit-notes.example.com/launch"
+    },
+    "turns": [
+      {
+        "user": "Use these launch facts later: product Summit Notes, public launch May 14, initial rollout to 16 design partners, and URL summit-notes.example.com/launch. Reply with a short acknowledgement that repeats the product name and launch date.",
+        "checks": [
+          {
+            "name": "ack_repeats_product_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Draft a two-sentence announcement paragraph.",
+        "checks": [
+          {
+            "name": "draft_keeps_all_launch_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Revise the announcement to be shorter, but keep every factual detail unchanged.",
+        "checks": [
+          {
+            "name": "revision_preserves_all_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          },
+          {
+            "name": "revision_does_not_drift",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "May 15",
+              "17 design partners"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "revision",
+      "consistency",
+      "factuality",
+      "launch"
+    ]
+  },
+  {
+    "name": "launch_brief_consistency_06",
+    "description": "Preserve exact launch facts across a draft and revision cycle.",
+    "system_prompt": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it.",
+    "facts": {
+      "product_name": "Pioneer Desk",
+      "launch_date": "June 15",
+      "rollout_group": "17 design partners",
+      "launch_url": "pioneer-desk.example.com/launch"
+    },
+    "turns": [
+      {
+        "user": "Use these launch facts later: product Pioneer Desk, public launch June 15, initial rollout to 17 design partners, and URL pioneer-desk.example.com/launch. Reply with a short acknowledgement that repeats the product name and launch date.",
+        "checks": [
+          {
+            "name": "ack_repeats_product_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Draft a two-sentence announcement paragraph.",
+        "checks": [
+          {
+            "name": "draft_keeps_all_launch_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Revise the announcement to be shorter, but keep every factual detail unchanged.",
+        "checks": [
+          {
+            "name": "revision_preserves_all_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          },
+          {
+            "name": "revision_does_not_drift",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "June 16",
+              "18 design partners"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "revision",
+      "consistency",
+      "factuality",
+      "launch"
+    ]
+  },
+  {
+    "name": "launch_brief_consistency_07",
+    "description": "Preserve exact launch facts across a draft and revision cycle.",
+    "system_prompt": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it.",
+    "facts": {
+      "product_name": "Voyager Hub",
+      "launch_date": "July 16",
+      "rollout_group": "18 design partners",
+      "launch_url": "voyager-hub.example.com/launch"
+    },
+    "turns": [
+      {
+        "user": "Use these launch facts later: product Voyager Hub, public launch July 16, initial rollout to 18 design partners, and URL voyager-hub.example.com/launch. Reply with a short acknowledgement that repeats the product name and launch date.",
+        "checks": [
+          {
+            "name": "ack_repeats_product_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Draft a two-sentence announcement paragraph.",
+        "checks": [
+          {
+            "name": "draft_keeps_all_launch_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Revise the announcement to be shorter, but keep every factual detail unchanged.",
+        "checks": [
+          {
+            "name": "revision_preserves_all_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          },
+          {
+            "name": "revision_does_not_drift",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "July 17",
+              "19 design partners"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "revision",
+      "consistency",
+      "factuality",
+      "launch"
+    ]
+  },
+  {
+    "name": "launch_brief_consistency_08",
+    "description": "Preserve exact launch facts across a draft and revision cycle.",
+    "system_prompt": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it.",
+    "facts": {
+      "product_name": "Beacon Studio",
+      "launch_date": "August 17",
+      "rollout_group": "19 design partners",
+      "launch_url": "beacon-studio.example.com/launch"
+    },
+    "turns": [
+      {
+        "user": "Use these launch facts later: product Beacon Studio, public launch August 17, initial rollout to 19 design partners, and URL beacon-studio.example.com/launch. Reply with a short acknowledgement that repeats the product name and launch date.",
+        "checks": [
+          {
+            "name": "ack_repeats_product_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Draft a two-sentence announcement paragraph.",
+        "checks": [
+          {
+            "name": "draft_keeps_all_launch_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Revise the announcement to be shorter, but keep every factual detail unchanged.",
+        "checks": [
+          {
+            "name": "revision_preserves_all_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          },
+          {
+            "name": "revision_does_not_drift",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "August 18",
+              "20 design partners"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "revision",
+      "consistency",
+      "factuality",
+      "launch"
+    ]
+  },
+  {
+    "name": "launch_brief_consistency_09",
+    "description": "Preserve exact launch facts across a draft and revision cycle.",
+    "system_prompt": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it.",
+    "facts": {
+      "product_name": "Relay Board",
+      "launch_date": "September 18",
+      "rollout_group": "20 design partners",
+      "launch_url": "relay-board.example.com/launch"
+    },
+    "turns": [
+      {
+        "user": "Use these launch facts later: product Relay Board, public launch September 18, initial rollout to 20 design partners, and URL relay-board.example.com/launch. Reply with a short acknowledgement that repeats the product name and launch date.",
+        "checks": [
+          {
+            "name": "ack_repeats_product_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Draft a two-sentence announcement paragraph.",
+        "checks": [
+          {
+            "name": "draft_keeps_all_launch_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Revise the announcement to be shorter, but keep every factual detail unchanged.",
+        "checks": [
+          {
+            "name": "revision_preserves_all_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          },
+          {
+            "name": "revision_does_not_drift",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "September 19",
+              "21 design partners"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "revision",
+      "consistency",
+      "factuality",
+      "launch"
+    ]
+  },
+  {
+    "name": "launch_brief_consistency_10",
+    "description": "Preserve exact launch facts across a draft and revision cycle.",
+    "system_prompt": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it.",
+    "facts": {
+      "product_name": "Crescent Flow",
+      "launch_date": "October 19",
+      "rollout_group": "21 design partners",
+      "launch_url": "crescent-flow.example.com/launch"
+    },
+    "turns": [
+      {
+        "user": "Use these launch facts later: product Crescent Flow, public launch October 19, initial rollout to 21 design partners, and URL crescent-flow.example.com/launch. Reply with a short acknowledgement that repeats the product name and launch date.",
+        "checks": [
+          {
+            "name": "ack_repeats_product_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Draft a two-sentence announcement paragraph.",
+        "checks": [
+          {
+            "name": "draft_keeps_all_launch_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Revise the announcement to be shorter, but keep every factual detail unchanged.",
+        "checks": [
+          {
+            "name": "revision_preserves_all_facts",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{product_name}}",
+              "{{launch_date}}",
+              "{{rollout_group}}",
+              "{{launch_url}}"
+            ]
+          },
+          {
+            "name": "revision_does_not_drift",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "October 20",
+              "22 design partners"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "revision",
+      "consistency",
+      "factuality",
+      "launch"
+    ]
+  },
+  {
+    "name": "contract_review_ordering_01",
+    "description": "Contract review workflow with ordered fact recall and forbidden drift.",
+    "system_prompt": "You are a legal operations assistant. Keep contract facts stable, follow output formatting exactly, and avoid inventing closed issues.",
+    "facts": {
+      "contract_id": "CT-2401",
+      "counterparty": "Acme Retail",
+      "renewal_date": "March 12",
+      "owner_name": "Priya Bennett",
+      "risk_note": "data residency addendum pending"
+    },
+    "turns": [
+      {
+        "user": "Remember these contract review details for later: contract CT-2401, counterparty Acme Retail, renewal deadline March 12, owner Priya Bennett, and note 'data residency addendum pending'. Reply with one short line repeating the contract id and renewal date.",
+        "checks": [
+          {
+            "name": "ack_repeats_contract_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "ack_is_one_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly three bullets labeled Status, Risk, and Owner. Mention the counterparty, the risk note, and the owner name. Do not add a signed date.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "draft_mentions_required_fields",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{counterparty}}",
+              "{{risk_note}}",
+              "{{owner_name}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence in this order: contract id, counterparty, renewal date. Do not mention pricing.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{counterparty}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_pricing",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "pricing"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "contract",
+      "ordering",
+      "memory",
+      "legal"
+    ]
+  },
+  {
+    "name": "contract_review_ordering_02",
+    "description": "Contract review workflow with ordered fact recall and forbidden drift.",
+    "system_prompt": "You are a legal operations assistant. Keep contract facts stable, follow output formatting exactly, and avoid inventing closed issues.",
+    "facts": {
+      "contract_id": "CT-2402",
+      "counterparty": "Blue Mesa Health",
+      "renewal_date": "April 13",
+      "owner_name": "Noah Khan",
+      "risk_note": "subprocessor list still under review"
+    },
+    "turns": [
+      {
+        "user": "Remember these contract review details for later: contract CT-2402, counterparty Blue Mesa Health, renewal deadline April 13, owner Noah Khan, and note 'subprocessor list still under review'. Reply with one short line repeating the contract id and renewal date.",
+        "checks": [
+          {
+            "name": "ack_repeats_contract_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "ack_is_one_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly three bullets labeled Status, Risk, and Owner. Mention the counterparty, the risk note, and the owner name. Do not add a signed date.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "draft_mentions_required_fields",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{counterparty}}",
+              "{{risk_note}}",
+              "{{owner_name}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence in this order: contract id, counterparty, renewal date. Do not mention pricing.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{counterparty}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_pricing",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "pricing"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "contract",
+      "ordering",
+      "memory",
+      "legal"
+    ]
+  },
+  {
+    "name": "contract_review_ordering_03",
+    "description": "Contract review workflow with ordered fact recall and forbidden drift.",
+    "system_prompt": "You are a legal operations assistant. Keep contract facts stable, follow output formatting exactly, and avoid inventing closed issues.",
+    "facts": {
+      "contract_id": "CT-2403",
+      "counterparty": "Lighthouse Energy",
+      "renewal_date": "May 14",
+      "owner_name": "Elena Morris",
+      "risk_note": "insurance certificate expires this quarter"
+    },
+    "turns": [
+      {
+        "user": "Remember these contract review details for later: contract CT-2403, counterparty Lighthouse Energy, renewal deadline May 14, owner Elena Morris, and note 'insurance certificate expires this quarter'. Reply with one short line repeating the contract id and renewal date.",
+        "checks": [
+          {
+            "name": "ack_repeats_contract_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "ack_is_one_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly three bullets labeled Status, Risk, and Owner. Mention the counterparty, the risk note, and the owner name. Do not add a signed date.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "draft_mentions_required_fields",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{counterparty}}",
+              "{{risk_note}}",
+              "{{owner_name}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence in this order: contract id, counterparty, renewal date. Do not mention pricing.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{counterparty}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_pricing",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "pricing"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "contract",
+      "ordering",
+      "memory",
+      "legal"
+    ]
+  },
+  {
+    "name": "contract_review_ordering_04",
+    "description": "Contract review workflow with ordered fact recall and forbidden drift.",
+    "system_prompt": "You are a legal operations assistant. Keep contract facts stable, follow output formatting exactly, and avoid inventing closed issues.",
+    "facts": {
+      "contract_id": "CT-2404",
+      "counterparty": "Summit Logistics",
+      "renewal_date": "June 15",
+      "owner_name": "Marcus Garcia",
+      "risk_note": "security exhibit needs updated signatures"
+    },
+    "turns": [
+      {
+        "user": "Remember these contract review details for later: contract CT-2404, counterparty Summit Logistics, renewal deadline June 15, owner Marcus Garcia, and note 'security exhibit needs updated signatures'. Reply with one short line repeating the contract id and renewal date.",
+        "checks": [
+          {
+            "name": "ack_repeats_contract_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "ack_is_one_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly three bullets labeled Status, Risk, and Owner. Mention the counterparty, the risk note, and the owner name. Do not add a signed date.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "draft_mentions_required_fields",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{counterparty}}",
+              "{{risk_note}}",
+              "{{owner_name}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence in this order: contract id, counterparty, renewal date. Do not mention pricing.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{counterparty}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_pricing",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "pricing"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "contract",
+      "ordering",
+      "memory",
+      "legal"
+    ]
+  },
+  {
+    "name": "contract_review_ordering_05",
+    "description": "Contract review workflow with ordered fact recall and forbidden drift.",
+    "system_prompt": "You are a legal operations assistant. Keep contract facts stable, follow output formatting exactly, and avoid inventing closed issues.",
+    "facts": {
+      "contract_id": "CT-2405",
+      "counterparty": "Cedar Finance",
+      "renewal_date": "July 16",
+      "owner_name": "Riley Kim",
+      "risk_note": "redline on limitation of liability remains open"
+    },
+    "turns": [
+      {
+        "user": "Remember these contract review details for later: contract CT-2405, counterparty Cedar Finance, renewal deadline July 16, owner Riley Kim, and note 'redline on limitation of liability remains open'. Reply with one short line repeating the contract id and renewal date.",
+        "checks": [
+          {
+            "name": "ack_repeats_contract_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "ack_is_one_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly three bullets labeled Status, Risk, and Owner. Mention the counterparty, the risk note, and the owner name. Do not add a signed date.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "draft_mentions_required_fields",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{counterparty}}",
+              "{{risk_note}}",
+              "{{owner_name}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence in this order: contract id, counterparty, renewal date. Do not mention pricing.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{counterparty}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_pricing",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "pricing"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "contract",
+      "ordering",
+      "memory",
+      "legal"
+    ]
+  },
+  {
+    "name": "contract_review_ordering_06",
+    "description": "Contract review workflow with ordered fact recall and forbidden drift.",
+    "system_prompt": "You are a legal operations assistant. Keep contract facts stable, follow output formatting exactly, and avoid inventing closed issues.",
+    "facts": {
+      "contract_id": "CT-2406",
+      "counterparty": "Brightline Schools",
+      "renewal_date": "August 17",
+      "owner_name": "Sofia Sullivan",
+      "risk_note": "access-control appendix not yet approved"
+    },
+    "turns": [
+      {
+        "user": "Remember these contract review details for later: contract CT-2406, counterparty Brightline Schools, renewal deadline August 17, owner Sofia Sullivan, and note 'access-control appendix not yet approved'. Reply with one short line repeating the contract id and renewal date.",
+        "checks": [
+          {
+            "name": "ack_repeats_contract_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "ack_is_one_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly three bullets labeled Status, Risk, and Owner. Mention the counterparty, the risk note, and the owner name. Do not add a signed date.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "draft_mentions_required_fields",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{counterparty}}",
+              "{{risk_note}}",
+              "{{owner_name}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence in this order: contract id, counterparty, renewal date. Do not mention pricing.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{counterparty}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_pricing",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "pricing"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "contract",
+      "ordering",
+      "memory",
+      "legal"
+    ]
+  },
+  {
+    "name": "contract_review_ordering_07",
+    "description": "Contract review workflow with ordered fact recall and forbidden drift.",
+    "system_prompt": "You are a legal operations assistant. Keep contract facts stable, follow output formatting exactly, and avoid inventing closed issues.",
+    "facts": {
+      "contract_id": "CT-2407",
+      "counterparty": "Granite Telecom",
+      "renewal_date": "September 18",
+      "owner_name": "Theo Patel",
+      "risk_note": "privacy schedule requires final markup"
+    },
+    "turns": [
+      {
+        "user": "Remember these contract review details for later: contract CT-2407, counterparty Granite Telecom, renewal deadline September 18, owner Theo Patel, and note 'privacy schedule requires final markup'. Reply with one short line repeating the contract id and renewal date.",
+        "checks": [
+          {
+            "name": "ack_repeats_contract_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "ack_is_one_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly three bullets labeled Status, Risk, and Owner. Mention the counterparty, the risk note, and the owner name. Do not add a signed date.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "draft_mentions_required_fields",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{counterparty}}",
+              "{{risk_note}}",
+              "{{owner_name}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence in this order: contract id, counterparty, renewal date. Do not mention pricing.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{counterparty}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_pricing",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "pricing"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "contract",
+      "ordering",
+      "memory",
+      "legal"
+    ]
+  },
+  {
+    "name": "contract_review_ordering_08",
+    "description": "Contract review workflow with ordered fact recall and forbidden drift.",
+    "system_prompt": "You are a legal operations assistant. Keep contract facts stable, follow output formatting exactly, and avoid inventing closed issues.",
+    "facts": {
+      "contract_id": "CT-2408",
+      "counterparty": "Pioneer Foods",
+      "renewal_date": "October 19",
+      "owner_name": "Mina Lopez",
+      "risk_note": "audit-rights clause still disputed"
+    },
+    "turns": [
+      {
+        "user": "Remember these contract review details for later: contract CT-2408, counterparty Pioneer Foods, renewal deadline October 19, owner Mina Lopez, and note 'audit-rights clause still disputed'. Reply with one short line repeating the contract id and renewal date.",
+        "checks": [
+          {
+            "name": "ack_repeats_contract_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "ack_is_one_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly three bullets labeled Status, Risk, and Owner. Mention the counterparty, the risk note, and the owner name. Do not add a signed date.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "draft_mentions_required_fields",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{counterparty}}",
+              "{{risk_note}}",
+              "{{owner_name}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence in this order: contract id, counterparty, renewal date. Do not mention pricing.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{counterparty}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_pricing",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "pricing"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "contract",
+      "ordering",
+      "memory",
+      "legal"
+    ]
+  },
+  {
+    "name": "contract_review_ordering_09",
+    "description": "Contract review workflow with ordered fact recall and forbidden drift.",
+    "system_prompt": "You are a legal operations assistant. Keep contract facts stable, follow output formatting exactly, and avoid inventing closed issues.",
+    "facts": {
+      "contract_id": "CT-2409",
+      "counterparty": "Meridian Labs",
+      "renewal_date": "November 20",
+      "owner_name": "Jordan Nguyen",
+      "risk_note": "termination notice language needs revision"
+    },
+    "turns": [
+      {
+        "user": "Remember these contract review details for later: contract CT-2409, counterparty Meridian Labs, renewal deadline November 20, owner Jordan Nguyen, and note 'termination notice language needs revision'. Reply with one short line repeating the contract id and renewal date.",
+        "checks": [
+          {
+            "name": "ack_repeats_contract_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "ack_is_one_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly three bullets labeled Status, Risk, and Owner. Mention the counterparty, the risk note, and the owner name. Do not add a signed date.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "draft_mentions_required_fields",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{counterparty}}",
+              "{{risk_note}}",
+              "{{owner_name}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence in this order: contract id, counterparty, renewal date. Do not mention pricing.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{counterparty}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_pricing",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "pricing"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "contract",
+      "ordering",
+      "memory",
+      "legal"
+    ]
+  },
+  {
+    "name": "contract_review_ordering_10",
+    "description": "Contract review workflow with ordered fact recall and forbidden drift.",
+    "system_prompt": "You are a legal operations assistant. Keep contract facts stable, follow output formatting exactly, and avoid inventing closed issues.",
+    "facts": {
+      "contract_id": "CT-2410",
+      "counterparty": "Juniper Media",
+      "renewal_date": "December 21",
+      "owner_name": "Avery Shah",
+      "risk_note": "governing-law fallback is unresolved"
+    },
+    "turns": [
+      {
+        "user": "Remember these contract review details for later: contract CT-2410, counterparty Juniper Media, renewal deadline December 21, owner Avery Shah, and note 'governing-law fallback is unresolved'. Reply with one short line repeating the contract id and renewal date.",
+        "checks": [
+          {
+            "name": "ack_repeats_contract_and_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "ack_is_one_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly three bullets labeled Status, Risk, and Owner. Mention the counterparty, the risk note, and the owner name. Do not add a signed date.",
+        "checks": [
+          {
+            "name": "uses_three_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 3
+          },
+          {
+            "name": "draft_mentions_required_fields",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{counterparty}}",
+              "{{risk_note}}",
+              "{{owner_name}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence in this order: contract id, counterparty, renewal date. Do not mention pricing.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{contract_id}}",
+              "{{counterparty}}",
+              "{{renewal_date}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_pricing",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "pricing"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "contract",
+      "ordering",
+      "memory",
+      "legal"
+    ]
+  },
+  {
+    "name": "outage_update_guardrail_01",
+    "description": "Outage status updates with explicit no-resolution guardrails.",
+    "system_prompt": "You are an incident communications assistant. Keep incident facts precise, do not claim resolution unless the user says so, and preserve ordering when asked.",
+    "facts": {
+      "incident_id": "INC-3201",
+      "service_name": "billing API",
+      "severity": "SEV-1",
+      "eta": "09:15 UTC"
+    },
+    "turns": [
+      {
+        "user": "Remember this incident for later: INC-3201, service billing API, severity SEV-1, next mitigation update at 09:15 UTC. Reply with one sentence confirming the incident id and severity.",
+        "checks": [
+          {
+            "name": "ack_repeats_incident_and_severity",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{severity}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Give exactly two bullets: impact and ETA. Mention billing API and 09:15 UTC. Do not say the incident is resolved.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_service_and_eta",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{service_name}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "omits_resolved_claim",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "resolved"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Write one sentence in this order: incident id, service name, severity, ETA.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{service_name}}",
+              "{{severity}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "final_sentence_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "incident",
+      "guardrail",
+      "ordering",
+      "ops"
+    ]
+  },
+  {
+    "name": "outage_update_guardrail_02",
+    "description": "Outage status updates with explicit no-resolution guardrails.",
+    "system_prompt": "You are an incident communications assistant. Keep incident facts precise, do not claim resolution unless the user says so, and preserve ordering when asked.",
+    "facts": {
+      "incident_id": "INC-3202",
+      "service_name": "search indexer",
+      "severity": "SEV-2",
+      "eta": "10:45 UTC"
+    },
+    "turns": [
+      {
+        "user": "Remember this incident for later: INC-3202, service search indexer, severity SEV-2, next mitigation update at 10:45 UTC. Reply with one sentence confirming the incident id and severity.",
+        "checks": [
+          {
+            "name": "ack_repeats_incident_and_severity",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{severity}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Give exactly two bullets: impact and ETA. Mention search indexer and 10:45 UTC. Do not say the incident is resolved.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_service_and_eta",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{service_name}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "omits_resolved_claim",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "resolved"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Write one sentence in this order: incident id, service name, severity, ETA.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{service_name}}",
+              "{{severity}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "final_sentence_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "incident",
+      "guardrail",
+      "ordering",
+      "ops"
+    ]
+  },
+  {
+    "name": "outage_update_guardrail_03",
+    "description": "Outage status updates with explicit no-resolution guardrails.",
+    "system_prompt": "You are an incident communications assistant. Keep incident facts precise, do not claim resolution unless the user says so, and preserve ordering when asked.",
+    "facts": {
+      "incident_id": "INC-3203",
+      "service_name": "identity gateway",
+      "severity": "SEV-3",
+      "eta": "11:15 UTC"
+    },
+    "turns": [
+      {
+        "user": "Remember this incident for later: INC-3203, service identity gateway, severity SEV-3, next mitigation update at 11:15 UTC. Reply with one sentence confirming the incident id and severity.",
+        "checks": [
+          {
+            "name": "ack_repeats_incident_and_severity",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{severity}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Give exactly two bullets: impact and ETA. Mention identity gateway and 11:15 UTC. Do not say the incident is resolved.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_service_and_eta",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{service_name}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "omits_resolved_claim",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "resolved"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Write one sentence in this order: incident id, service name, severity, ETA.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{service_name}}",
+              "{{severity}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "final_sentence_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "incident",
+      "guardrail",
+      "ordering",
+      "ops"
+    ]
+  },
+  {
+    "name": "outage_update_guardrail_04",
+    "description": "Outage status updates with explicit no-resolution guardrails.",
+    "system_prompt": "You are an incident communications assistant. Keep incident facts precise, do not claim resolution unless the user says so, and preserve ordering when asked.",
+    "facts": {
+      "incident_id": "INC-3204",
+      "service_name": "notification fanout",
+      "severity": "SEV-2",
+      "eta": "12:45 UTC"
+    },
+    "turns": [
+      {
+        "user": "Remember this incident for later: INC-3204, service notification fanout, severity SEV-2, next mitigation update at 12:45 UTC. Reply with one sentence confirming the incident id and severity.",
+        "checks": [
+          {
+            "name": "ack_repeats_incident_and_severity",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{severity}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Give exactly two bullets: impact and ETA. Mention notification fanout and 12:45 UTC. Do not say the incident is resolved.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_service_and_eta",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{service_name}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "omits_resolved_claim",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "resolved"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Write one sentence in this order: incident id, service name, severity, ETA.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{service_name}}",
+              "{{severity}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "final_sentence_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "incident",
+      "guardrail",
+      "ordering",
+      "ops"
+    ]
+  },
+  {
+    "name": "outage_update_guardrail_05",
+    "description": "Outage status updates with explicit no-resolution guardrails.",
+    "system_prompt": "You are an incident communications assistant. Keep incident facts precise, do not claim resolution unless the user says so, and preserve ordering when asked.",
+    "facts": {
+      "incident_id": "INC-3205",
+      "service_name": "document renderer",
+      "severity": "SEV-1",
+      "eta": "13:15 UTC"
+    },
+    "turns": [
+      {
+        "user": "Remember this incident for later: INC-3205, service document renderer, severity SEV-1, next mitigation update at 13:15 UTC. Reply with one sentence confirming the incident id and severity.",
+        "checks": [
+          {
+            "name": "ack_repeats_incident_and_severity",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{severity}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Give exactly two bullets: impact and ETA. Mention document renderer and 13:15 UTC. Do not say the incident is resolved.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_service_and_eta",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{service_name}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "omits_resolved_claim",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "resolved"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Write one sentence in this order: incident id, service name, severity, ETA.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{service_name}}",
+              "{{severity}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "final_sentence_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "incident",
+      "guardrail",
+      "ordering",
+      "ops"
+    ]
+  },
+  {
+    "name": "outage_update_guardrail_06",
+    "description": "Outage status updates with explicit no-resolution guardrails.",
+    "system_prompt": "You are an incident communications assistant. Keep incident facts precise, do not claim resolution unless the user says so, and preserve ordering when asked.",
+    "facts": {
+      "incident_id": "INC-3206",
+      "service_name": "checkout service",
+      "severity": "SEV-3",
+      "eta": "14:45 UTC"
+    },
+    "turns": [
+      {
+        "user": "Remember this incident for later: INC-3206, service checkout service, severity SEV-3, next mitigation update at 14:45 UTC. Reply with one sentence confirming the incident id and severity.",
+        "checks": [
+          {
+            "name": "ack_repeats_incident_and_severity",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{severity}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Give exactly two bullets: impact and ETA. Mention checkout service and 14:45 UTC. Do not say the incident is resolved.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_service_and_eta",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{service_name}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "omits_resolved_claim",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "resolved"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Write one sentence in this order: incident id, service name, severity, ETA.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{service_name}}",
+              "{{severity}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "final_sentence_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "incident",
+      "guardrail",
+      "ordering",
+      "ops"
+    ]
+  },
+  {
+    "name": "outage_update_guardrail_07",
+    "description": "Outage status updates with explicit no-resolution guardrails.",
+    "system_prompt": "You are an incident communications assistant. Keep incident facts precise, do not claim resolution unless the user says so, and preserve ordering when asked.",
+    "facts": {
+      "incident_id": "INC-3207",
+      "service_name": "analytics ingest",
+      "severity": "SEV-2",
+      "eta": "15:15 UTC"
+    },
+    "turns": [
+      {
+        "user": "Remember this incident for later: INC-3207, service analytics ingest, severity SEV-2, next mitigation update at 15:15 UTC. Reply with one sentence confirming the incident id and severity.",
+        "checks": [
+          {
+            "name": "ack_repeats_incident_and_severity",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{severity}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Give exactly two bullets: impact and ETA. Mention analytics ingest and 15:15 UTC. Do not say the incident is resolved.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_service_and_eta",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{service_name}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "omits_resolved_claim",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "resolved"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Write one sentence in this order: incident id, service name, severity, ETA.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{service_name}}",
+              "{{severity}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "final_sentence_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "incident",
+      "guardrail",
+      "ordering",
+      "ops"
+    ]
+  },
+  {
+    "name": "outage_update_guardrail_08",
+    "description": "Outage status updates with explicit no-resolution guardrails.",
+    "system_prompt": "You are an incident communications assistant. Keep incident facts precise, do not claim resolution unless the user says so, and preserve ordering when asked.",
+    "facts": {
+      "incident_id": "INC-3208",
+      "service_name": "admin console",
+      "severity": "SEV-1",
+      "eta": "16:45 UTC"
+    },
+    "turns": [
+      {
+        "user": "Remember this incident for later: INC-3208, service admin console, severity SEV-1, next mitigation update at 16:45 UTC. Reply with one sentence confirming the incident id and severity.",
+        "checks": [
+          {
+            "name": "ack_repeats_incident_and_severity",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{severity}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Give exactly two bullets: impact and ETA. Mention admin console and 16:45 UTC. Do not say the incident is resolved.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_service_and_eta",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{service_name}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "omits_resolved_claim",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "resolved"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Write one sentence in this order: incident id, service name, severity, ETA.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{service_name}}",
+              "{{severity}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "final_sentence_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "incident",
+      "guardrail",
+      "ordering",
+      "ops"
+    ]
+  },
+  {
+    "name": "outage_update_guardrail_09",
+    "description": "Outage status updates with explicit no-resolution guardrails.",
+    "system_prompt": "You are an incident communications assistant. Keep incident facts precise, do not claim resolution unless the user says so, and preserve ordering when asked.",
+    "facts": {
+      "incident_id": "INC-3209",
+      "service_name": "catalog sync",
+      "severity": "SEV-3",
+      "eta": "17:15 UTC"
+    },
+    "turns": [
+      {
+        "user": "Remember this incident for later: INC-3209, service catalog sync, severity SEV-3, next mitigation update at 17:15 UTC. Reply with one sentence confirming the incident id and severity.",
+        "checks": [
+          {
+            "name": "ack_repeats_incident_and_severity",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{severity}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Give exactly two bullets: impact and ETA. Mention catalog sync and 17:15 UTC. Do not say the incident is resolved.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_service_and_eta",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{service_name}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "omits_resolved_claim",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "resolved"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Write one sentence in this order: incident id, service name, severity, ETA.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{service_name}}",
+              "{{severity}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "final_sentence_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "incident",
+      "guardrail",
+      "ordering",
+      "ops"
+    ]
+  },
+  {
+    "name": "outage_update_guardrail_10",
+    "description": "Outage status updates with explicit no-resolution guardrails.",
+    "system_prompt": "You are an incident communications assistant. Keep incident facts precise, do not claim resolution unless the user says so, and preserve ordering when asked.",
+    "facts": {
+      "incident_id": "INC-3210",
+      "service_name": "support inbox",
+      "severity": "SEV-2",
+      "eta": "18:45 UTC"
+    },
+    "turns": [
+      {
+        "user": "Remember this incident for later: INC-3210, service support inbox, severity SEV-2, next mitigation update at 18:45 UTC. Reply with one sentence confirming the incident id and severity.",
+        "checks": [
+          {
+            "name": "ack_repeats_incident_and_severity",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{severity}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Give exactly two bullets: impact and ETA. Mention support inbox and 18:45 UTC. Do not say the incident is resolved.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_service_and_eta",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{service_name}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "omits_resolved_claim",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "resolved"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Write one sentence in this order: incident id, service name, severity, ETA.",
+        "checks": [
+          {
+            "name": "final_sentence_preserves_order",
+            "rule": "ordered_substrings",
+            "weight": 1.0,
+            "needles": [
+              "{{incident_id}}",
+              "{{service_name}}",
+              "{{severity}}",
+              "{{eta}}"
+            ]
+          },
+          {
+            "name": "final_sentence_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "incident",
+      "guardrail",
+      "ordering",
+      "ops"
+    ]
+  },
+  {
+    "name": "escalation_channel_routing_01",
+    "description": "Escalation routing with backup channel alternatives and forbidden mention checks.",
+    "system_prompt": "You are an escalation routing assistant. Keep channel names exact, follow formatting requests precisely, and avoid introducing unsupported escalation paths.",
+    "facts": {
+      "request_id": "ESC-5101",
+      "primary_channel": "PagerDuty bridge",
+      "backup_slack": "#pagerduty-bridge-backup",
+      "backup_email": "pagerduty-bridge@alerts.example.com"
+    },
+    "turns": [
+      {
+        "user": "Remember these escalation channels for later: request ESC-5101, primary channel PagerDuty bridge, backup Slack #pagerduty-bridge-backup, and backup email pagerduty-bridge@alerts.example.com. Reply with one short acknowledgement that repeats the request id and primary channel.",
+        "checks": [
+          {
+            "name": "ack_repeats_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly two bullets telling the operator what to do if PagerDuty bridge fails. Mention ESC-5101 and use at least one backup channel: #pagerduty-bridge-backup or pagerduty-bridge@alerts.example.com.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_request_id",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}"
+            ]
+          },
+          {
+            "name": "uses_one_backup_channel",
+            "rule": "contains_any",
+            "weight": 1.0,
+            "needles": [
+              "{{backup_slack}}",
+              "{{backup_email}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence that includes the request id and the primary channel, and do not mention SMS.",
+        "checks": [
+          {
+            "name": "final_sentence_mentions_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_sms",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "SMS"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "routing",
+      "alternatives",
+      "ops",
+      "channels"
+    ]
+  },
+  {
+    "name": "escalation_channel_routing_02",
+    "description": "Escalation routing with backup channel alternatives and forbidden mention checks.",
+    "system_prompt": "You are an escalation routing assistant. Keep channel names exact, follow formatting requests precisely, and avoid introducing unsupported escalation paths.",
+    "facts": {
+      "request_id": "ESC-5102",
+      "primary_channel": "on-call hotline",
+      "backup_slack": "#on-call-hotline-backup",
+      "backup_email": "on-call-hotline@alerts.example.com"
+    },
+    "turns": [
+      {
+        "user": "Remember these escalation channels for later: request ESC-5102, primary channel on-call hotline, backup Slack #on-call-hotline-backup, and backup email on-call-hotline@alerts.example.com. Reply with one short acknowledgement that repeats the request id and primary channel.",
+        "checks": [
+          {
+            "name": "ack_repeats_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly two bullets telling the operator what to do if on-call hotline fails. Mention ESC-5102 and use at least one backup channel: #on-call-hotline-backup or on-call-hotline@alerts.example.com.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_request_id",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}"
+            ]
+          },
+          {
+            "name": "uses_one_backup_channel",
+            "rule": "contains_any",
+            "weight": 1.0,
+            "needles": [
+              "{{backup_slack}}",
+              "{{backup_email}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence that includes the request id and the primary channel, and do not mention SMS.",
+        "checks": [
+          {
+            "name": "final_sentence_mentions_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_sms",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "SMS"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "routing",
+      "alternatives",
+      "ops",
+      "channels"
+    ]
+  },
+  {
+    "name": "escalation_channel_routing_03",
+    "description": "Escalation routing with backup channel alternatives and forbidden mention checks.",
+    "system_prompt": "You are an escalation routing assistant. Keep channel names exact, follow formatting requests precisely, and avoid introducing unsupported escalation paths.",
+    "facts": {
+      "request_id": "ESC-5103",
+      "primary_channel": "priority incident line",
+      "backup_slack": "#priority-incident-line-backup",
+      "backup_email": "priority-incident-line@alerts.example.com"
+    },
+    "turns": [
+      {
+        "user": "Remember these escalation channels for later: request ESC-5103, primary channel priority incident line, backup Slack #priority-incident-line-backup, and backup email priority-incident-line@alerts.example.com. Reply with one short acknowledgement that repeats the request id and primary channel.",
+        "checks": [
+          {
+            "name": "ack_repeats_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly two bullets telling the operator what to do if priority incident line fails. Mention ESC-5103 and use at least one backup channel: #priority-incident-line-backup or priority-incident-line@alerts.example.com.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_request_id",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}"
+            ]
+          },
+          {
+            "name": "uses_one_backup_channel",
+            "rule": "contains_any",
+            "weight": 1.0,
+            "needles": [
+              "{{backup_slack}}",
+              "{{backup_email}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence that includes the request id and the primary channel, and do not mention SMS.",
+        "checks": [
+          {
+            "name": "final_sentence_mentions_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_sms",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "SMS"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "routing",
+      "alternatives",
+      "ops",
+      "channels"
+    ]
+  },
+  {
+    "name": "escalation_channel_routing_04",
+    "description": "Escalation routing with backup channel alternatives and forbidden mention checks.",
+    "system_prompt": "You are an escalation routing assistant. Keep channel names exact, follow formatting requests precisely, and avoid introducing unsupported escalation paths.",
+    "facts": {
+      "request_id": "ESC-5104",
+      "primary_channel": "operations bridge",
+      "backup_slack": "#operations-bridge-backup",
+      "backup_email": "operations-bridge@alerts.example.com"
+    },
+    "turns": [
+      {
+        "user": "Remember these escalation channels for later: request ESC-5104, primary channel operations bridge, backup Slack #operations-bridge-backup, and backup email operations-bridge@alerts.example.com. Reply with one short acknowledgement that repeats the request id and primary channel.",
+        "checks": [
+          {
+            "name": "ack_repeats_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly two bullets telling the operator what to do if operations bridge fails. Mention ESC-5104 and use at least one backup channel: #operations-bridge-backup or operations-bridge@alerts.example.com.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_request_id",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}"
+            ]
+          },
+          {
+            "name": "uses_one_backup_channel",
+            "rule": "contains_any",
+            "weight": 1.0,
+            "needles": [
+              "{{backup_slack}}",
+              "{{backup_email}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence that includes the request id and the primary channel, and do not mention SMS.",
+        "checks": [
+          {
+            "name": "final_sentence_mentions_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_sms",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "SMS"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "routing",
+      "alternatives",
+      "ops",
+      "channels"
+    ]
+  },
+  {
+    "name": "escalation_channel_routing_05",
+    "description": "Escalation routing with backup channel alternatives and forbidden mention checks.",
+    "system_prompt": "You are an escalation routing assistant. Keep channel names exact, follow formatting requests precisely, and avoid introducing unsupported escalation paths.",
+    "facts": {
+      "request_id": "ESC-5105",
+      "primary_channel": "war-room channel",
+      "backup_slack": "#war-room-channel-backup",
+      "backup_email": "war-room-channel@alerts.example.com"
+    },
+    "turns": [
+      {
+        "user": "Remember these escalation channels for later: request ESC-5105, primary channel war-room channel, backup Slack #war-room-channel-backup, and backup email war-room-channel@alerts.example.com. Reply with one short acknowledgement that repeats the request id and primary channel.",
+        "checks": [
+          {
+            "name": "ack_repeats_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly two bullets telling the operator what to do if war-room channel fails. Mention ESC-5105 and use at least one backup channel: #war-room-channel-backup or war-room-channel@alerts.example.com.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_request_id",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}"
+            ]
+          },
+          {
+            "name": "uses_one_backup_channel",
+            "rule": "contains_any",
+            "weight": 1.0,
+            "needles": [
+              "{{backup_slack}}",
+              "{{backup_email}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence that includes the request id and the primary channel, and do not mention SMS.",
+        "checks": [
+          {
+            "name": "final_sentence_mentions_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_sms",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "SMS"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "routing",
+      "alternatives",
+      "ops",
+      "channels"
+    ]
+  },
+  {
+    "name": "escalation_channel_routing_06",
+    "description": "Escalation routing with backup channel alternatives and forbidden mention checks.",
+    "system_prompt": "You are an escalation routing assistant. Keep channel names exact, follow formatting requests precisely, and avoid introducing unsupported escalation paths.",
+    "facts": {
+      "request_id": "ESC-5106",
+      "primary_channel": "response hotline",
+      "backup_slack": "#response-hotline-backup",
+      "backup_email": "response-hotline@alerts.example.com"
+    },
+    "turns": [
+      {
+        "user": "Remember these escalation channels for later: request ESC-5106, primary channel response hotline, backup Slack #response-hotline-backup, and backup email response-hotline@alerts.example.com. Reply with one short acknowledgement that repeats the request id and primary channel.",
+        "checks": [
+          {
+            "name": "ack_repeats_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly two bullets telling the operator what to do if response hotline fails. Mention ESC-5106 and use at least one backup channel: #response-hotline-backup or response-hotline@alerts.example.com.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_request_id",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}"
+            ]
+          },
+          {
+            "name": "uses_one_backup_channel",
+            "rule": "contains_any",
+            "weight": 1.0,
+            "needles": [
+              "{{backup_slack}}",
+              "{{backup_email}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence that includes the request id and the primary channel, and do not mention SMS.",
+        "checks": [
+          {
+            "name": "final_sentence_mentions_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_sms",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "SMS"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "routing",
+      "alternatives",
+      "ops",
+      "channels"
+    ]
+  },
+  {
+    "name": "escalation_channel_routing_07",
+    "description": "Escalation routing with backup channel alternatives and forbidden mention checks.",
+    "system_prompt": "You are an escalation routing assistant. Keep channel names exact, follow formatting requests precisely, and avoid introducing unsupported escalation paths.",
+    "facts": {
+      "request_id": "ESC-5107",
+      "primary_channel": "incident bridge",
+      "backup_slack": "#incident-bridge-backup",
+      "backup_email": "incident-bridge@alerts.example.com"
+    },
+    "turns": [
+      {
+        "user": "Remember these escalation channels for later: request ESC-5107, primary channel incident bridge, backup Slack #incident-bridge-backup, and backup email incident-bridge@alerts.example.com. Reply with one short acknowledgement that repeats the request id and primary channel.",
+        "checks": [
+          {
+            "name": "ack_repeats_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly two bullets telling the operator what to do if incident bridge fails. Mention ESC-5107 and use at least one backup channel: #incident-bridge-backup or incident-bridge@alerts.example.com.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_request_id",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}"
+            ]
+          },
+          {
+            "name": "uses_one_backup_channel",
+            "rule": "contains_any",
+            "weight": 1.0,
+            "needles": [
+              "{{backup_slack}}",
+              "{{backup_email}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence that includes the request id and the primary channel, and do not mention SMS.",
+        "checks": [
+          {
+            "name": "final_sentence_mentions_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_sms",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "SMS"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "routing",
+      "alternatives",
+      "ops",
+      "channels"
+    ]
+  },
+  {
+    "name": "escalation_channel_routing_08",
+    "description": "Escalation routing with backup channel alternatives and forbidden mention checks.",
+    "system_prompt": "You are an escalation routing assistant. Keep channel names exact, follow formatting requests precisely, and avoid introducing unsupported escalation paths.",
+    "facts": {
+      "request_id": "ESC-5108",
+      "primary_channel": "escalation desk",
+      "backup_slack": "#escalation-desk-backup",
+      "backup_email": "escalation-desk@alerts.example.com"
+    },
+    "turns": [
+      {
+        "user": "Remember these escalation channels for later: request ESC-5108, primary channel escalation desk, backup Slack #escalation-desk-backup, and backup email escalation-desk@alerts.example.com. Reply with one short acknowledgement that repeats the request id and primary channel.",
+        "checks": [
+          {
+            "name": "ack_repeats_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly two bullets telling the operator what to do if escalation desk fails. Mention ESC-5108 and use at least one backup channel: #escalation-desk-backup or escalation-desk@alerts.example.com.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_request_id",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}"
+            ]
+          },
+          {
+            "name": "uses_one_backup_channel",
+            "rule": "contains_any",
+            "weight": 1.0,
+            "needles": [
+              "{{backup_slack}}",
+              "{{backup_email}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence that includes the request id and the primary channel, and do not mention SMS.",
+        "checks": [
+          {
+            "name": "final_sentence_mentions_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_sms",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "SMS"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "routing",
+      "alternatives",
+      "ops",
+      "channels"
+    ]
+  },
+  {
+    "name": "escalation_channel_routing_09",
+    "description": "Escalation routing with backup channel alternatives and forbidden mention checks.",
+    "system_prompt": "You are an escalation routing assistant. Keep channel names exact, follow formatting requests precisely, and avoid introducing unsupported escalation paths.",
+    "facts": {
+      "request_id": "ESC-5109",
+      "primary_channel": "triage hotline",
+      "backup_slack": "#triage-hotline-backup",
+      "backup_email": "triage-hotline@alerts.example.com"
+    },
+    "turns": [
+      {
+        "user": "Remember these escalation channels for later: request ESC-5109, primary channel triage hotline, backup Slack #triage-hotline-backup, and backup email triage-hotline@alerts.example.com. Reply with one short acknowledgement that repeats the request id and primary channel.",
+        "checks": [
+          {
+            "name": "ack_repeats_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly two bullets telling the operator what to do if triage hotline fails. Mention ESC-5109 and use at least one backup channel: #triage-hotline-backup or triage-hotline@alerts.example.com.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_request_id",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}"
+            ]
+          },
+          {
+            "name": "uses_one_backup_channel",
+            "rule": "contains_any",
+            "weight": 1.0,
+            "needles": [
+              "{{backup_slack}}",
+              "{{backup_email}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence that includes the request id and the primary channel, and do not mention SMS.",
+        "checks": [
+          {
+            "name": "final_sentence_mentions_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_sms",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "SMS"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "routing",
+      "alternatives",
+      "ops",
+      "channels"
+    ]
+  },
+  {
+    "name": "escalation_channel_routing_10",
+    "description": "Escalation routing with backup channel alternatives and forbidden mention checks.",
+    "system_prompt": "You are an escalation routing assistant. Keep channel names exact, follow formatting requests precisely, and avoid introducing unsupported escalation paths.",
+    "facts": {
+      "request_id": "ESC-5110",
+      "primary_channel": "command bridge",
+      "backup_slack": "#command-bridge-backup",
+      "backup_email": "command-bridge@alerts.example.com"
+    },
+    "turns": [
+      {
+        "user": "Remember these escalation channels for later: request ESC-5110, primary channel command bridge, backup Slack #command-bridge-backup, and backup email command-bridge@alerts.example.com. Reply with one short acknowledgement that repeats the request id and primary channel.",
+        "checks": [
+          {
+            "name": "ack_repeats_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "ack_is_single_line",
+            "rule": "line_count_at_most",
+            "weight": 1.0,
+            "max": 1
+          }
+        ]
+      },
+      {
+        "user": "Write exactly two bullets telling the operator what to do if command bridge fails. Mention ESC-5110 and use at least one backup channel: #command-bridge-backup or command-bridge@alerts.example.com.",
+        "checks": [
+          {
+            "name": "uses_two_bullets",
+            "rule": "bullet_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "mentions_request_id",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}"
+            ]
+          },
+          {
+            "name": "uses_one_backup_channel",
+            "rule": "contains_any",
+            "weight": 1.0,
+            "needles": [
+              "{{backup_slack}}",
+              "{{backup_email}}"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Give one sentence that includes the request id and the primary channel, and do not mention SMS.",
+        "checks": [
+          {
+            "name": "final_sentence_mentions_request_and_primary",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "{{request_id}}",
+              "{{primary_channel}}"
+            ]
+          },
+          {
+            "name": "final_sentence_omits_sms",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "SMS"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "routing",
+      "alternatives",
+      "ops",
+      "channels"
+    ]
+  }
+]

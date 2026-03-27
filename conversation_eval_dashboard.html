@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Conversation Eval Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --panel-2: #fafafa;
+  --text: #000000;
+  --muted: #303030;
+  --border: #000000;
+  --pass: #000000;
+  --pass-text: #ffffff;
+  --fail: #ffffff;
+  --fail-text: #000000;
+  --bar: #d2d2d2;
+  --accent: #b8b8b8;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.45;
+  overflow-x: hidden;
+}
+main { width: 100%; max-width: none; margin: 0; padding: 24px clamp(12px, 2vw, 28px); }
+h1, h2, h3 { margin: 0 0 12px 0; }
+p, li { color: var(--text); }
+small, .muted { color: var(--muted); }
+header {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.subtitle { color: var(--muted); max-width: 1000px; }
+.section {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  margin-bottom: 26px;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 16px;
+}
+.metric-card {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  min-height: 100px;
+}
+.metric-label { color: var(--muted); font-size: 0.92rem; margin-bottom: 8px; }
+.metric-value { font-size: 1.4rem; font-weight: 700; overflow-wrap: anywhere; }
+.metric-sub { color: var(--muted); font-size: 0.9rem; margin-top: 6px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+th, td {
+  text-align: left;
+  padding: 14px 12px;
+  border-top: 1px solid var(--border);
+  vertical-align: top;
+}
+th {
+  color: var(--muted);
+  font-weight: 600;
+  background: #fcfcfc;
+}
+.name { font-weight: 700; margin-bottom: 4px; }
+.badge {
+  display: inline-block;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.pass { background: var(--pass); color: var(--pass-text); }
+.fail { background: var(--fail); color: var(--fail-text); }
+.bar-wrap {
+  position: relative;
+  min-width: 150px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  height: 28px;
+  overflow: hidden;
+}
+.bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--bar), var(--accent));
+  opacity: 1;
+}
+.bar-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  font-weight: 600;
+  color: var(--text);
+}
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #fcfcfc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  margin: 8px 0 0 0;
+}
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  background: #fcfcfc;
+  padding: 2px 4px;
+  border-radius: 6px;
+}
+details {
+  border-radius: 10px;
+}
+summary {
+  cursor: pointer;
+}
+.check-list {
+  margin: 8px 0 0 0;
+  padding-left: 18px;
+}
+.trace-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  margin-top: 16px;
+  background: var(--panel-2);
+}
+.trace-head {
+  color: var(--muted);
+  margin-bottom: 10px;
+  font-size: 0.92rem;
+}
+.trace-label {
+  font-weight: 700;
+  margin: 4px 0 6px 0;
+}
+.trace-checks {
+  margin-top: 16px;
+}
+.trace-checks summary {
+  font-weight: 600;
+  color: var(--muted);
+}
+.trace-checks table {
+  margin-top: 12px;
+}
+.section-details summary {
+  list-style: none;
+}
+.section-details summary::-webkit-details-marker {
+  display: none;
+}
+.section-summary {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.section-details[open] summary {
+  margin-bottom: 12px;
+}
+.scenario-detail {
+  display: block;
+  margin-top: 20px;
+  border: 1px solid var(--border);
+  padding: 18px;
+  border-radius: 14px;
+  background: var(--panel-2);
+}
+ul.tight { margin: 8px 0 0 0; padding-left: 18px; }
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 24px;
+}
+.benchmark-detail-grid {
+  grid-template-columns: 1fr;
+}
+.turn-table-section {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.turn-table-section .bar-wrap {
+  min-width: 0;
+  width: auto;
+  height: auto;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  overflow: visible;
+}
+.turn-table-section .bar {
+  display: none;
+}
+.turn-table-section .bar-text {
+  position: static;
+  display: inline;
+  padding: 0;
+}
+.footer { color: var(--muted); font-size: 0.9rem; margin-top: 18px; }
+@media (max-width: 980px) {
+  .grid-2 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>Conversation evaluation dashboard</h1>
+  <div class="subtitle">
+    This view separates the fast benchmark summary from the deeper replay/debug trace. It is built from
+    <code>conversation_eval_20260326_203653_fa56ccca.json</code> and is meant to answer two questions quickly: “did this run look good?”
+    and “why did it score that way?”
+  </div>
+</header>
+
+<section class="section">
+  <h2>Run summary</h2>
+  <div class="metrics"><div class="metric-card"><div class="metric-label">Model</div><div class="metric-value">Qwen/Qwen3.5-4B</div><div class="metric-sub">qwen3_5_disable_thinking</div></div><div class="metric-card"><div class="metric-label">Overall score</div><div class="metric-value">80.95%</div><div class="metric-sub">17/21 checks passed</div></div><div class="metric-card"><div class="metric-label">Scenarios</div><div class="metric-value">0/1</div><div class="metric-sub">passed</div></div><div class="metric-card"><div class="metric-label">Total latency</div><div class="metric-value">14,565 ms</div><div class="metric-sub">all turns</div></div><div class="metric-card"><div class="metric-label">Completion tokens</div><div class="metric-value">224</div><div class="metric-sub">all turns</div></div><div class="metric-card"><div class="metric-label">Fingerprint</div><div class="metric-value"><code>fa56cccab9e5…</code></div><div class="metric-sub">workload id</div></div></div>
+  <div class="footer">
+    Run ID <code>20260326T2036530700_fa56ccca</code> • started 2026-03-26T20:36:39-07:00 • finished 2026-03-26T20:36:53-07:00
+  </div>
+</section>
+
+<div class="grid-2">
+  <section class="section">
+    <h2>Scenario performance</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Scenario</th>
+          <th>Status</th>
+          <th>Score</th>
+          <th>Turns</th>
+          <th>Checks</th>
+          <th>Total latency</th>
+          <th>Completion tokens</th>
+          <th>Final prompt tokens</th>
+        </tr>
+      </thead>
+      <tbody><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Ten distinct prompts where each answer must stay correct while using a required word an exact number of times.</div></td><td><span class="badge fail">FAIL</span></td><td>80.95%</td><td>10</td><td>21</td><td><div class="bar-wrap"><div class="bar" style="width:100%"></div><span class="bar-text">14,565 ms</span></div></td><td>224</td><td>641</td></tr></tbody>
+    </table>
+  </section>
+</div>
+
+<div class="grid-2 benchmark-detail-grid">
+  <section class="section turn-table-section">
+    <h2>Turn-level benchmark view</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Scenario / turn</th>
+          <th>Latency</th>
+          <th>Prompt tokens</th>
+          <th>Completion tokens</th>
+          <th>Checks</th>
+          <th>Stop</th>
+          <th>User message</th>
+          <th>Assistant message</th>
+          <th>Check details</th>
+        </tr>
+      </thead>
+      <tbody><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 1</div></td><td><div class="bar-wrap"><div class="bar" style="width:82%"></div><span class="bar-text">1,693 ms</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:10%"></div><span class="bar-text">66</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:64%"></div><span class="bar-text">22</span></div></td><td>2/2</td><td>stop</td><td><details><summary>What is 12 + 15? Answer in one sentence and use the lowercase word &quot;note&quot; exactly 2 times.</summary><pre>What is 12 + 15? Answer in one sentence and use the lowercase word &quot;note&quot; exactly 2 times.</pre></details></td><td><details><summary>12 plus 15 equals 27, and this note is a note about the sum.</summary><pre>12 plus 15 equals 27, and this note is a note about the sum.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><span class="badge pass">pass</span> <code>answer_mentions_27</code> — regex matched</li><li><span class="badge pass">pass</span> <code>uses_note_exactly_two_times</code> — word count for &#x27;note&#x27; 2 == 2</li></ul></details></td></tr><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 2</div></td><td><div class="bar-wrap"><div class="bar" style="width:89%"></div><span class="bar-text">1,830 ms</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:22%"></div><span class="bar-text">142</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:61%"></div><span class="bar-text">21</span></div></td><td>2/2</td><td>stop</td><td><details><summary>Policy: airport rideshare is reimbursable, minibar is never reimbursable. Is a $19 minibar charge reimbursabl…</summary><pre>Policy: airport rideshare is reimbursable, minibar is never reimbursable. Is a $19 minibar charge reimbursable? Answer directly and use the lowercase word &quot;clear&quot; exactly 2 times.</pre></details></td><td><details><summary>The clear rule states the minibar is never reimbursable, so the clear answer is no.</summary><pre>The clear rule states the minibar is never reimbursable, so the clear answer is no.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><span class="badge pass">pass</span> <code>answer_rejects_minibar</code> — regex matched</li><li><span class="badge pass">pass</span> <code>uses_clear_exactly_two_times</code> — word count for &#x27;clear&#x27; 2 == 2</li></ul></details></td></tr><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 3</div></td><td><div class="bar-wrap"><div class="bar" style="width:62%"></div><span class="bar-text">1,271 ms</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:31%"></div><span class="bar-text">204</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:50%"></div><span class="bar-text">17</span></div></td><td>2/2</td><td>stop</td><td><details><summary>Ticket SUP-7714 belongs to Mina Patel. Who owns the ticket? Answer directly and use the lowercase word &quot;recor…</summary><pre>Ticket SUP-7714 belongs to Mina Patel. Who owns the ticket? Answer directly and use the lowercase word &quot;record&quot; exactly 2 times.</pre></details></td><td><details><summary>The record shows Mina Patel owns the ticket, and this record confirms her ownership.</summary><pre>The record shows Mina Patel owns the ticket, and this record confirms her ownership.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><span class="badge pass">pass</span> <code>answer_mentions_owner</code> — all required substrings present</li><li><span class="badge pass">pass</span> <code>uses_record_exactly_two_times</code> — word count for &#x27;record&#x27; 2 == 2</li></ul></details></td></tr><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 4</div></td><td><div class="bar-wrap"><div class="bar" style="width:58%"></div><span class="bar-text">1,202 ms</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:40%"></div><span class="bar-text">260</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:73%"></div><span class="bar-text">25</span></div></td><td>2/2</td><td>stop</td><td><details><summary>The launch date is July 22. What is the launch date? Answer directly and use the lowercase word &quot;date&quot; exactl…</summary><pre>The launch date is July 22. What is the launch date? Answer directly and use the lowercase word &quot;date&quot; exactly 3 times.</pre></details></td><td><details><summary>The launch date is July 22, which is the specific date we are discussing, and this date is confirmed.</summary><pre>The launch date is July 22, which is the specific date we are discussing, and this date is confirmed.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><span class="badge pass">pass</span> <code>answer_mentions_launch_date</code> — all required substrings present</li><li><span class="badge pass">pass</span> <code>uses_date_exactly_three_times</code> — word count for &#x27;date&#x27; 3 == 3</li></ul></details></td></tr><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 5</div></td><td><div class="bar-wrap"><div class="bar" style="width:59%"></div><span class="bar-text">1,213 ms</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:51%"></div><span class="bar-text">328</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:50%"></div><span class="bar-text">17</span></div></td><td>2/2</td><td>stop</td><td><details><summary>Which option is cheaper: Plan A at $39 or Plan B at $52? Answer directly and use the lowercase word &quot;price&quot; e…</summary><pre>Which option is cheaper: Plan A at $39 or Plan B at $52? Answer directly and use the lowercase word &quot;price&quot; exactly 2 times.</pre></details></td><td><details><summary>Plan A is cheaper because its price is lower than the price of Plan B.</summary><pre>Plan A is cheaper because its price is lower than the price of Plan B.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><span class="badge pass">pass</span> <code>answer_picks_plan_a</code> — regex matched</li><li><span class="badge pass">pass</span> <code>uses_price_exactly_two_times</code> — word count for &#x27;price&#x27; 2 == 2</li></ul></details></td></tr><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 6</div></td><td><div class="bar-wrap"><div class="bar" style="width:49%"></div><span class="bar-text">1,021 ms</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:59%"></div><span class="bar-text">381</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:58%"></div><span class="bar-text">20</span></div></td><td>2/2</td><td>stop</td><td><details><summary>Legal review is complete. Is legal review complete? Answer yes or no and use the lowercase word &quot;legal&quot; exact…</summary><pre>Legal review is complete. Is legal review complete? Answer yes or no and use the lowercase word &quot;legal&quot; exactly 3 times.</pre></details></td><td><details><summary>Yes, the legal review is complete, and this legal status is confirmed by the legal team.</summary><pre>Yes, the legal review is complete, and this legal status is confirmed by the legal team.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><span class="badge pass">pass</span> <code>answer_says_legal_complete</code> — regex matched</li><li><span class="badge pass">pass</span> <code>uses_legal_exactly_three_times</code> — word count for &#x27;legal&#x27; 3 == 3</li></ul></details></td></tr><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 7</div></td><td><div class="bar-wrap"><div class="bar" style="width:79%"></div><span class="bar-text">1,635 ms</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:69%"></div><span class="bar-text">445</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:76%"></div><span class="bar-text">26</span></div></td><td>1/2</td><td>stop</td><td><details><summary>BUG-431 is open and high severity. What is the strongest reason not to launch? Answer directly and use the lo…</summary><pre>BUG-431 is open and high severity. What is the strongest reason not to launch? Answer directly and use the lowercase word &quot;risk&quot; exactly 2 times.</pre></details></td><td><details><summary>The strongest reason not to launch is the high risk associated with this open bug, which creates a significan…</summary><pre>The strongest reason not to launch is the high risk associated with this open bug, which creates a significant risk for the release.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><span class="badge fail">fail</span> <code>answer_mentions_bug_risk</code> — missing: [&#x27;BUG-431&#x27;]</li><li><span class="badge pass">pass</span> <code>uses_risk_exactly_two_times</code> — word count for &#x27;risk&#x27; 2 == 2</li></ul></details></td></tr><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 8</div></td><td><div class="bar-wrap"><div class="bar" style="width:68%"></div><span class="bar-text">1,406 ms</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:80%"></div><span class="bar-text">513</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:70%"></div><span class="bar-text">24</span></div></td><td>2/2</td><td>stop</td><td><details><summary>Fallback date is August 5. If launch slips, what fallback date should we use? Answer directly and use the low…</summary><pre>Fallback date is August 5. If launch slips, what fallback date should we use? Answer directly and use the lowercase word &quot;fallback&quot; exactly 2 times.</pre></details></td><td><details><summary>If the launch slips, we should use the fallback date of August 5, which is the designated fallback date.</summary><pre>If the launch slips, we should use the fallback date of August 5, which is the designated fallback date.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><span class="badge pass">pass</span> <code>answer_mentions_fallback_date</code> — all required substrings present</li><li><span class="badge pass">pass</span> <code>uses_fallback_exactly_two_times</code> — word count for &#x27;fallback&#x27; 2 == 2</li></ul></details></td></tr><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 9</div></td><td><div class="bar-wrap"><div class="bar" style="width:60%"></div><span class="bar-text">1,247 ms</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:89%"></div><span class="bar-text">576</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:52%"></div><span class="bar-text">18</span></div></td><td>2/2</td><td>stop</td><td><details><summary>Documentation is complete but support is not ready. Which item is not ready? Answer directly and use the lowe…</summary><pre>Documentation is complete but support is not ready. Which item is not ready? Answer directly and use the lowercase word &quot;status&quot; exactly 2 times.</pre></details></td><td><details><summary>The status shows support is not ready, and this status indicates the item is missing.</summary><pre>The status shows support is not ready, and this status indicates the item is missing.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><span class="badge pass">pass</span> <code>answer_mentions_support_not_ready</code> — regex matched</li><li><span class="badge pass">pass</span> <code>uses_status_exactly_two_times</code> — word count for &#x27;status&#x27; 2 == 2</li></ul></details></td></tr><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 10</div></td><td><div class="bar-wrap"><div class="bar" style="width:100%"></div><span class="bar-text">2,046 ms</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:100%"></div><span class="bar-text">641</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:100%"></div><span class="bar-text">34</span></div></td><td>0/3</td><td>stop</td><td><details><summary>Should Atlas Relay launch on July 22 if BUG-431 is still open? Answer directly in exactly two sentences and u…</summary><pre>Should Atlas Relay launch on July 22 if BUG-431 is still open? Answer directly in exactly two sentences and use the lowercase word &quot;confirm&quot; exactly 3 times.</pre></details></td><td><details><summary>We cannot confirm the launch on July 22 because BUG-431 is open. We must confirm that the bug is fixed before…</summary><pre>We cannot confirm the launch on July 22 because BUG-431 is open. We must confirm that the bug is fixed before confirming any release date.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><span class="badge fail">fail</span> <code>uses_confirm_exactly_three_times</code> — word count for &#x27;confirm&#x27; 2 != 3</li><li><span class="badge fail">fail</span> <code>final_answer_directly_says_no</code> — regex did not match: (?is)^\s*(no\b|not yet\b|do not launch|should not launch|delay)</li><li><span class="badge fail">fail</span> <code>final_answer_mentions_bug_reason</code> — missing: [&#x27;Atlas Relay&#x27;]</li></ul></details></td></tr></tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <details class="section-details">
+      <summary><span class="section-summary">Rule coverage</span></summary>
+      <table>
+        <thead>
+          <tr><th>Rule</th><th>Count</th><th>Share</th></tr>
+        </thead>
+        <tbody><tr><td><code>word_count_equals</code></td><td><div class="bar-wrap"><div class="bar" style="width:100%"></div><span class="bar-text">10</span></div></td><td>47.62%</td></tr><tr><td><code>regex</code></td><td><div class="bar-wrap"><div class="bar" style="width:60%"></div><span class="bar-text">6</span></div></td><td>28.57%</td></tr><tr><td><code>contains_all</code></td><td><div class="bar-wrap"><div class="bar" style="width:50%"></div><span class="bar-text">5</span></div></td><td>23.81%</td></tr></tbody>
+      </table>
+      <p class="muted" style="margin-top:12px;">
+        Rule coverage matters because it shows whether the suite is testing multiple failure shapes or mostly
+        repeating one scoring style.
+      </p>
+    </details>
+  </section>
+</div>
+
+<section class="section">
+  <h2>Replay trace</h2>
+  <p class="muted">
+    Use this section for failure analysis and benchmark authoring. Each scenario can be opened to inspect the
+    exact user prompt, assistant reply, and deterministic check outcomes turn by turn.
+  </p>
+  <details class='scenario-detail'><summary><strong>keyword_count_accuracy_10_turn</strong> — Ten distinct prompts where each answer must stay correct while using a required word an exact number of times.</summary><div class='trace-card'><div class='trace-head'>Turn 1 • 1,693 ms • prompt 66 • completion 22</div><div class='trace-block'><div class='trace-label'>User</div><pre>What is 12 + 15? Answer in one sentence and use the lowercase word &quot;note&quot; exactly 2 times.</pre></div><div class='trace-block'><div class='trace-label'>Assistant</div><pre>12 plus 15 equals 27, and this note is a note about the sum.</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Status</th><th>Details</th></tr></thead><tbody><tr><td><code>answer_mentions_27</code></td><td><code>regex</code></td><td><span class="badge pass">PASS</span></td><td>regex matched</td></tr><tr><td><code>uses_note_exactly_two_times</code></td><td><code>word_count_equals</code></td><td><span class="badge pass">PASS</span></td><td>word count for &#x27;note&#x27; 2 == 2</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 2 • 1,830 ms • prompt 142 • completion 21</div><div class='trace-block'><div class='trace-label'>User</div><pre>Policy: airport rideshare is reimbursable, minibar is never reimbursable. Is a $19 minibar charge reimbursable? Answer directly and use the lowercase word &quot;clear&quot; exactly 2 times.</pre></div><div class='trace-block'><div class='trace-label'>Assistant</div><pre>The clear rule states the minibar is never reimbursable, so the clear answer is no.</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Status</th><th>Details</th></tr></thead><tbody><tr><td><code>answer_rejects_minibar</code></td><td><code>regex</code></td><td><span class="badge pass">PASS</span></td><td>regex matched</td></tr><tr><td><code>uses_clear_exactly_two_times</code></td><td><code>word_count_equals</code></td><td><span class="badge pass">PASS</span></td><td>word count for &#x27;clear&#x27; 2 == 2</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 3 • 1,271 ms • prompt 204 • completion 17</div><div class='trace-block'><div class='trace-label'>User</div><pre>Ticket SUP-7714 belongs to Mina Patel. Who owns the ticket? Answer directly and use the lowercase word &quot;record&quot; exactly 2 times.</pre></div><div class='trace-block'><div class='trace-label'>Assistant</div><pre>The record shows Mina Patel owns the ticket, and this record confirms her ownership.</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Status</th><th>Details</th></tr></thead><tbody><tr><td><code>answer_mentions_owner</code></td><td><code>contains_all</code></td><td><span class="badge pass">PASS</span></td><td>all required substrings present</td></tr><tr><td><code>uses_record_exactly_two_times</code></td><td><code>word_count_equals</code></td><td><span class="badge pass">PASS</span></td><td>word count for &#x27;record&#x27; 2 == 2</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 4 • 1,202 ms • prompt 260 • completion 25</div><div class='trace-block'><div class='trace-label'>User</div><pre>The launch date is July 22. What is the launch date? Answer directly and use the lowercase word &quot;date&quot; exactly 3 times.</pre></div><div class='trace-block'><div class='trace-label'>Assistant</div><pre>The launch date is July 22, which is the specific date we are discussing, and this date is confirmed.</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Status</th><th>Details</th></tr></thead><tbody><tr><td><code>answer_mentions_launch_date</code></td><td><code>contains_all</code></td><td><span class="badge pass">PASS</span></td><td>all required substrings present</td></tr><tr><td><code>uses_date_exactly_three_times</code></td><td><code>word_count_equals</code></td><td><span class="badge pass">PASS</span></td><td>word count for &#x27;date&#x27; 3 == 3</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 5 • 1,213 ms • prompt 328 • completion 17</div><div class='trace-block'><div class='trace-label'>User</div><pre>Which option is cheaper: Plan A at $39 or Plan B at $52? Answer directly and use the lowercase word &quot;price&quot; exactly 2 times.</pre></div><div class='trace-block'><div class='trace-label'>Assistant</div><pre>Plan A is cheaper because its price is lower than the price of Plan B.</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Status</th><th>Details</th></tr></thead><tbody><tr><td><code>answer_picks_plan_a</code></td><td><code>regex</code></td><td><span class="badge pass">PASS</span></td><td>regex matched</td></tr><tr><td><code>uses_price_exactly_two_times</code></td><td><code>word_count_equals</code></td><td><span class="badge pass">PASS</span></td><td>word count for &#x27;price&#x27; 2 == 2</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 6 • 1,021 ms • prompt 381 • completion 20</div><div class='trace-block'><div class='trace-label'>User</div><pre>Legal review is complete. Is legal review complete? Answer yes or no and use the lowercase word &quot;legal&quot; exactly 3 times.</pre></div><div class='trace-block'><div class='trace-label'>Assistant</div><pre>Yes, the legal review is complete, and this legal status is confirmed by the legal team.</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Status</th><th>Details</th></tr></thead><tbody><tr><td><code>answer_says_legal_complete</code></td><td><code>regex</code></td><td><span class="badge pass">PASS</span></td><td>regex matched</td></tr><tr><td><code>uses_legal_exactly_three_times</code></td><td><code>word_count_equals</code></td><td><span class="badge pass">PASS</span></td><td>word count for &#x27;legal&#x27; 3 == 3</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 7 • 1,635 ms • prompt 445 • completion 26</div><div class='trace-block'><div class='trace-label'>User</div><pre>BUG-431 is open and high severity. What is the strongest reason not to launch? Answer directly and use the lowercase word &quot;risk&quot; exactly 2 times.</pre></div><div class='trace-block'><div class='trace-label'>Assistant</div><pre>The strongest reason not to launch is the high risk associated with this open bug, which creates a significant risk for the release.</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Status</th><th>Details</th></tr></thead><tbody><tr><td><code>answer_mentions_bug_risk</code></td><td><code>contains_all</code></td><td><span class="badge fail">FAIL</span></td><td>missing: [&#x27;BUG-431&#x27;]</td></tr><tr><td><code>uses_risk_exactly_two_times</code></td><td><code>word_count_equals</code></td><td><span class="badge pass">PASS</span></td><td>word count for &#x27;risk&#x27; 2 == 2</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 8 • 1,406 ms • prompt 513 • completion 24</div><div class='trace-block'><div class='trace-label'>User</div><pre>Fallback date is August 5. If launch slips, what fallback date should we use? Answer directly and use the lowercase word &quot;fallback&quot; exactly 2 times.</pre></div><div class='trace-block'><div class='trace-label'>Assistant</div><pre>If the launch slips, we should use the fallback date of August 5, which is the designated fallback date.</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Status</th><th>Details</th></tr></thead><tbody><tr><td><code>answer_mentions_fallback_date</code></td><td><code>contains_all</code></td><td><span class="badge pass">PASS</span></td><td>all required substrings present</td></tr><tr><td><code>uses_fallback_exactly_two_times</code></td><td><code>word_count_equals</code></td><td><span class="badge pass">PASS</span></td><td>word count for &#x27;fallback&#x27; 2 == 2</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 9 • 1,247 ms • prompt 576 • completion 18</div><div class='trace-block'><div class='trace-label'>User</div><pre>Documentation is complete but support is not ready. Which item is not ready? Answer directly and use the lowercase word &quot;status&quot; exactly 2 times.</pre></div><div class='trace-block'><div class='trace-label'>Assistant</div><pre>The status shows support is not ready, and this status indicates the item is missing.</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Status</th><th>Details</th></tr></thead><tbody><tr><td><code>answer_mentions_support_not_ready</code></td><td><code>regex</code></td><td><span class="badge pass">PASS</span></td><td>regex matched</td></tr><tr><td><code>uses_status_exactly_two_times</code></td><td><code>word_count_equals</code></td><td><span class="badge pass">PASS</span></td><td>word count for &#x27;status&#x27; 2 == 2</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 10 • 2,046 ms • prompt 641 • completion 34</div><div class='trace-block'><div class='trace-label'>User</div><pre>Should Atlas Relay launch on July 22 if BUG-431 is still open? Answer directly in exactly two sentences and use the lowercase word &quot;confirm&quot; exactly 3 times.</pre></div><div class='trace-block'><div class='trace-label'>Assistant</div><pre>We cannot confirm the launch on July 22 because BUG-431 is open. We must confirm that the bug is fixed before confirming any release date.</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Status</th><th>Details</th></tr></thead><tbody><tr><td><code>uses_confirm_exactly_three_times</code></td><td><code>word_count_equals</code></td><td><span class="badge fail">FAIL</span></td><td>word count for &#x27;confirm&#x27; 2 != 3</td></tr><tr><td><code>final_answer_directly_says_no</code></td><td><code>regex</code></td><td><span class="badge fail">FAIL</span></td><td>regex did not match: (?is)^\s*(no\b|not yet\b|do not launch|should not launch|delay)</td></tr><tr><td><code>final_answer_mentions_bug_reason</code></td><td><code>contains_all</code></td><td><span class="badge fail">FAIL</span></td><td>missing: [&#x27;Atlas Relay&#x27;]</td></tr></tbody></table></div></details>
+</section>
+</main>
+<script>
+document.querySelectorAll(".trace-card > table").forEach((table) => {
+  const details = document.createElement("details");
+  details.className = "trace-checks";
+
+  const summary = document.createElement("summary");
+  summary.textContent = "Checks";
+
+  table.before(details);
+  details.appendChild(summary);
+  details.appendChild(table);
+});
+
+document.querySelectorAll("details").forEach((element) => {
+  element.open = false;
+});
+document.querySelectorAll(".turn-table-section details").forEach((element) => {
+  element.open = true;
+});
+const firstReplayScenario = document.querySelector(".scenario-detail");
+if (firstReplayScenario) {
+  firstReplayScenario.open = true;
+}
+</script>
+</body>
+</html>

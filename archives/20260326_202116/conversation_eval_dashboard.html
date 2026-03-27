@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Conversation Eval Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --panel-2: #fafafa;
+  --text: #000000;
+  --muted: #303030;
+  --border: #000000;
+  --pass: #000000;
+  --pass-text: #ffffff;
+  --fail: #ffffff;
+  --fail-text: #000000;
+  --bar: #d2d2d2;
+  --accent: #b8b8b8;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.45;
+  overflow-x: hidden;
+}
+main { width: 100%; max-width: none; margin: 0; padding: 24px clamp(12px, 2vw, 28px); }
+h1, h2, h3 { margin: 0 0 12px 0; }
+p, li { color: var(--text); }
+small, .muted { color: var(--muted); }
+header {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.subtitle { color: var(--muted); max-width: 1000px; }
+.section {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  margin-bottom: 26px;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 16px;
+}
+.metric-card {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  min-height: 100px;
+}
+.metric-label { color: var(--muted); font-size: 0.92rem; margin-bottom: 8px; }
+.metric-value { font-size: 1.4rem; font-weight: 700; overflow-wrap: anywhere; }
+.metric-sub { color: var(--muted); font-size: 0.9rem; margin-top: 6px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+th, td {
+  text-align: left;
+  padding: 14px 12px;
+  border-top: 1px solid var(--border);
+  vertical-align: top;
+}
+th {
+  color: var(--muted);
+  font-weight: 600;
+  background: #fcfcfc;
+}
+.name { font-weight: 700; margin-bottom: 4px; }
+.badge {
+  display: inline-block;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.pass { background: var(--pass); color: var(--pass-text); }
+.fail { background: var(--fail); color: var(--fail-text); }
+.bar-wrap {
+  position: relative;
+  min-width: 150px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  height: 28px;
+  overflow: hidden;
+}
+.bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--bar), var(--accent));
+  opacity: 1;
+}
+.bar-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  font-weight: 600;
+  color: var(--text);
+}
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #fcfcfc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  margin: 8px 0 0 0;
+}
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  background: #fcfcfc;
+  padding: 2px 4px;
+  border-radius: 6px;
+}
+details {
+  border-radius: 10px;
+}
+summary {
+  cursor: pointer;
+}
+.check-list {
+  margin: 8px 0 0 0;
+  padding-left: 18px;
+}
+.trace-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  margin-top: 16px;
+  background: var(--panel-2);
+}
+.trace-head {
+  color: var(--muted);
+  margin-bottom: 10px;
+  font-size: 0.92rem;
+}
+.trace-label {
+  font-weight: 700;
+  margin: 4px 0 6px 0;
+}
+.trace-checks {
+  margin-top: 16px;
+}
+.trace-checks summary {
+  font-weight: 600;
+  color: var(--muted);
+}
+.trace-checks table {
+  margin-top: 12px;
+}
+.section-details summary {
+  list-style: none;
+}
+.section-details summary::-webkit-details-marker {
+  display: none;
+}
+.section-summary {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.section-details[open] summary {
+  margin-bottom: 12px;
+}
+.scenario-detail {
+  display: block;
+  margin-top: 20px;
+  border: 1px solid var(--border);
+  padding: 18px;
+  border-radius: 14px;
+  background: var(--panel-2);
+}
+ul.tight { margin: 8px 0 0 0; padding-left: 18px; }
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 24px;
+}
+.benchmark-detail-grid {
+  grid-template-columns: 1fr;
+}
+.turn-table-section {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.turn-table-section .bar-wrap {
+  min-width: 0;
+  width: auto;
+  height: auto;
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+  overflow: visible;
+}
+.turn-table-section .bar {
+  display: none;
+}
+.turn-table-section .bar-text {
+  position: static;
+  display: inline;
+  padding: 0;
+}
+.footer { color: var(--muted); font-size: 0.9rem; margin-top: 18px; }
+@media (max-width: 980px) {
+  .grid-2 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>Conversation evaluation dashboard</h1>
+  <div class="subtitle">
+    This view separates the fast benchmark summary from the deeper replay/debug trace. It is built from
+    <code>conversation_eval_20260326_172257_5a535ceb.json</code> and is meant to answer two questions quickly: “did this run look good?”
+    and “why did it score that way?”
+  </div>
+</header>
+
+<section class="section">
+  <h2>Run summary</h2>
+  <div class="metrics"><div class="metric-card"><div class="metric-label">Model</div><div class="metric-value">Qwen/Qwen3.5-4B</div><div class="metric-sub">qwen3_5_disable_thinking</div></div><div class="metric-card"><div class="metric-label">Overall score</div><div class="metric-value">100.00%</div><div class="metric-sub">21/21 checks passed</div></div><div class="metric-card"><div class="metric-label">Scenarios</div><div class="metric-value">3/3</div><div class="metric-sub">passed</div></div><div class="metric-card"><div class="metric-label">Total latency</div><div class="metric-value">18,669 ms</div><div class="metric-sub">all turns</div></div><div class="metric-card"><div class="metric-label">Completion tokens</div><div class="metric-value">363</div><div class="metric-sub">all turns</div></div><div class="metric-card"><div class="metric-label">Fingerprint</div><div class="metric-value"><code>5a535ceba1a4…</code></div><div class="metric-sub">workload id</div></div></div>
+  <div class="footer">
+    Run ID <code>20260326T1722570700_5a535ceb</code> • started 2026-03-26T17:22:38-07:00 • finished 2026-03-26T17:22:57-07:00
+  </div>
+</section>
+
+<div class="grid-2">
+  <section class="section">
+    <h2>Scenario performance</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Scenario</th>
+          <th>Status</th>
+          <th>Score</th>
+          <th>Turns</th>
+          <th>Checks</th>
+          <th>Total latency</th>
+          <th>Completion tokens</th>
+          <th>Final prompt tokens</th>
+        </tr>
+      </thead>
+      <tbody><tr><td><div class='name'>expense_policy_memory</div><div class='muted'>Tests whether the assistant can carry policy facts forward, classify multiple items correctly, and avoid reintroducing rejected items later.</div></td><td><span class="badge pass">PASS</span></td><td>100.00%</td><td>3</td><td>9</td><td><div class="bar-wrap"><div class="bar" style="width:100%"></div><span class="bar-text">9,133 ms</span></div></td><td>150</td><td>306</td></tr><tr><td><div class='name'>support_handoff_precision</div><div class='muted'>Tests conversational discipline, exact field formatting, and retention of facts introduced across multiple turns.</div></td><td><span class="badge pass">PASS</span></td><td>100.00%</td><td>2</td><td>8</td><td><div class="bar-wrap"><div class="bar" style="width:43%"></div><span class="bar-text">3,990 ms</span></div></td><td>94</td><td>176</td></tr><tr><td><div class='name'>launch_brief_consistency</div><div class='muted'>Tests whether the assistant preserves exact factual details across a drafting and revision cycle rather than drifting toward a looser summary.</div></td><td><span class="badge pass">PASS</span></td><td>100.00%</td><td>3</td><td>4</td><td><div class="bar-wrap"><div class="bar" style="width:60%"></div><span class="bar-text">5,546 ms</span></div></td><td>119</td><td>198</td></tr></tbody>
+    </table>
+  </section>
+</div>
+
+<div class="grid-2 benchmark-detail-grid">
+  <section class="section turn-table-section">
+    <h2>Turn-level benchmark view</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Scenario / turn</th>
+          <th>Latency</th>
+          <th>Prompt tokens</th>
+          <th>Completion tokens</th>
+          <th>Checks</th>
+          <th>Stop</th>
+          <th>User message</th>
+          <th>Assistant message</th>
+          <th>Check details</th>
+        </tr>
+      </thead>
+      <tbody><tr><td><div class='name'>expense_policy_memory</div><div class='muted'>Turn 1</div></td><td><div class="bar-wrap"><div class="bar" style="width:100%"></div><span class="bar-text">4,957 ms</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:39%"></div><span class="bar-text">120</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:70%"></div><span class="bar-text">49</span></div></td><td>2/2</td><td>stop</td><td><details><summary>I&#x27;m going to give you a reimbursement policy to use later. Hotel: up to $180/night with receipt. Meals: up to…</summary><pre>I&#x27;m going to give you a reimbursement policy to use later. Hotel: up to $180/night with receipt. Meals: up to $65/day. Airport rideshare is reimbursable. Minibar or alcohol is never reimbursable. My trip code is TRIP-4821. Reply with one sentence confirming the trip code and the hotel and meal caps.</pre></details></td><td><details><summary>I have received your reimbursement policy for trip code TRIP-4821, which includes a hotel cap of $180/night,…</summary><pre>I have received your reimbursement policy for trip code TRIP-4821, which includes a hotel cap of $180/night, a meal cap of $65/day, and the exclusion of minibar or alcohol.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><span class="badge pass">pass</span> <code>acknowledges_key_policy_facts</code> — all required substrings present</li><li><span class="badge pass">pass</span> <code>ack_is_compact</code> — non-empty line count 1 &lt;= 2</li></ul></details></td></tr><tr><td><div class='name'>expense_policy_memory</div><div class='muted'>Turn 2</div></td><td><div class="bar-wrap"><div class="bar" style="width:51%"></div><span class="bar-text">2,561 ms</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:67%"></div><span class="bar-text">208</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:100%"></div><span class="bar-text">70</span></div></td><td>4/4</td><td>stop</td><td><details><summary>Now evaluate these expenses and answer in exactly three bullets: $172 hotel, $24 airport rideshare, $19 minib…</summary><pre>Now evaluate these expenses and answer in exactly three bullets: $172 hotel, $24 airport rideshare, $19 minibar.</pre></details></td><td><details><summary>* The $172 hotel expense is reimbursable as it falls within the $180/night cap. * The $24 airport rideshare e…</summary><pre>*   The $172 hotel expense is reimbursable as it falls within the $180/night cap.
+*   The $24 airport rideshare expense is reimbursable per policy.
+*   The $19 minibar expense is not reimbursable as alcohol and minibar items are never covered.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><span class="badge pass">pass</span> <code>uses_three_bullets</code> — bullet count 3 == 3</li><li><span class="badge pass">pass</span> <code>hotel_is_approved</code> — regex matched</li><li><span class="badge pass">pass</span> <code>rideshare_is_approved</code> — regex matched</li><li><span class="badge pass">pass</span> <code>minibar_is_rejected</code> — regex matched</li></ul></details></td></tr><tr><td><div class='name'>expense_policy_memory</div><div class='muted'>Turn 3</div></td><td><div class="bar-wrap"><div class="bar" style="width:32%"></div><span class="bar-text">1,615 ms</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:100%"></div><span class="bar-text">306</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:44%"></div><span class="bar-text">31</span></div></td><td>3/3</td><td>stop</td><td><details><summary>Give me a one-sentence summary of only the approved items and include the trip code exactly.</summary><pre>Give me a one-sentence summary of only the approved items and include the trip code exactly.</pre></details></td><td><details><summary>For trip code TRIP-4821, the approved expenses are the $172 hotel and the $24 airport rideshare.</summary><pre>For trip code TRIP-4821, the approved expenses are the $172 hotel and the $24 airport rideshare.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><span class="badge pass">pass</span> <code>summary_keeps_trip_code</code> — all required substrings present</li><li><span class="badge pass">pass</span> <code>summary_mentions_both_approved_items</code> — regex matched</li><li><span class="badge pass">pass</span> <code>summary_omits_rejected_item</code> — regex absent as expected</li></ul></details></td></tr><tr><td><div class='name'>support_handoff_precision</div><div class='muted'>Turn 1</div></td><td><div class="bar-wrap"><div class="bar" style="width:31%"></div><span class="bar-text">1,558 ms</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:31%"></div><span class="bar-text">95</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:40%"></div><span class="bar-text">28</span></div></td><td>1/1</td><td>stop</td><td><details><summary>I need a support handoff note later. Facts to remember: customer Mina Patel, ticket SUP-7714, issue started r…</summary><pre>I need a support handoff note later. Facts to remember: customer Mina Patel, ticket SUP-7714, issue started right after a password reset, and it only reproduces in staging. Before drafting anything, ask me exactly one clarifying question.</pre></details></td><td><details><summary>To ensure the handoff note is accurate, could you confirm if the password reset was performed by the customer…</summary><pre>To ensure the handoff note is accurate, could you confirm if the password reset was performed by the customer themselves or by an administrator?</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><span class="badge pass">pass</span> <code>asks_one_clarifying_question</code> — question count 1 == 1</li></ul></details></td></tr><tr><td><div class='name'>support_handoff_precision</div><div class='muted'>Turn 2</div></td><td><div class="bar-wrap"><div class="bar" style="width:49%"></div><span class="bar-text">2,432 ms</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:57%"></div><span class="bar-text">176</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:94%"></div><span class="bar-text">66</span></div></td><td>7/7</td><td>stop</td><td><details><summary>The affected region is us-west-2 and there were no 2FA errors. Now draft the handoff note using exactly these…</summary><pre>The affected region is us-west-2 and there were no 2FA errors. Now draft the handoff note using exactly these labels on separate lines: Ticket, Customer, Problem, Environment, Region, Next Step.</pre></details></td><td><details><summary>Ticket: SUP-7714 Customer: Mina Patel Problem: Issue reproduces only in staging immediately following a passw…</summary><pre>Ticket: SUP-7714
+Customer: Mina Patel
+Problem: Issue reproduces only in staging immediately following a password reset; no 2FA errors observed.
+Environment: Staging
+Region: us-west-2
+Next Step: Investigate password reset logic and authentication flow specifically within the staging environment.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><span class="badge pass">pass</span> <code>ticket_line_exact</code> — regex matched</li><li><span class="badge pass">pass</span> <code>customer_line_exact</code> — regex matched</li><li><span class="badge pass">pass</span> <code>problem_mentions_password_reset</code> — regex matched</li><li><span class="badge pass">pass</span> <code>environment_line_exact</code> — regex matched</li><li><span class="badge pass">pass</span> <code>region_line_exact</code> — regex matched</li><li><span class="badge pass">pass</span> <code>mentions_no_2fa_errors</code> — regex matched</li><li><span class="badge pass">pass</span> <code>next_step_line_present</code> — regex matched</li></ul></details></td></tr><tr><td><div class='name'>launch_brief_consistency</div><div class='muted'>Turn 1</div></td><td><div class="bar-wrap"><div class="bar" style="width:25%"></div><span class="bar-text">1,251 ms</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:27%"></div><span class="bar-text">85</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:22%"></div><span class="bar-text">16</span></div></td><td>1/1</td><td>stop</td><td><details><summary>Use these launch facts later: product Northwind Copilot, public launch June 18, initial rollout to 12 design…</summary><pre>Use these launch facts later: product Northwind Copilot, public launch June 18, initial rollout to 12 design partners, and URL northwind.ai/copilot. Reply with a short acknowledgement that repeats the product name and launch date.</pre></details></td><td><details><summary>Product: Northwind Copilot, Launch Date: June 18.</summary><pre>Product: Northwind Copilot, Launch Date: June 18.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><span class="badge pass">pass</span> <code>ack_repeats_product_and_date</code> — all required substrings present</li></ul></details></td></tr><tr><td><div class='name'>launch_brief_consistency</div><div class='muted'>Turn 2</div></td><td><div class="bar-wrap"><div class="bar" style="width:49%"></div><span class="bar-text">2,439 ms</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:38%"></div><span class="bar-text">118</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:80%"></div><span class="bar-text">56</span></div></td><td>1/1</td><td>stop</td><td><details><summary>Draft a two-sentence announcement paragraph.</summary><pre>Draft a two-sentence announcement paragraph.</pre></details></td><td><details><summary>We are thrilled to announce the public launch of Northwind Copilot on June 18, marking a new era of intellige…</summary><pre>We are thrilled to announce the public launch of Northwind Copilot on June 18, marking a new era of intelligent design assistance. Following an exclusive preview with 12 design partners, the platform is now live at northwind.ai/copilot for everyone to explore.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><span class="badge pass">pass</span> <code>draft_keeps_all_launch_facts</code> — all required substrings present</li></ul></details></td></tr><tr><td><div class='name'>launch_brief_consistency</div><div class='muted'>Turn 3</div></td><td><div class="bar-wrap"><div class="bar" style="width:37%"></div><span class="bar-text">1,856 ms</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:64%"></div><span class="bar-text">198</span></div></td><td><div class="bar-wrap"><div class="bar" style="width:67%"></div><span class="bar-text">47</span></div></td><td>2/2</td><td>stop</td><td><details><summary>Revise the announcement to be shorter, but keep every factual detail unchanged.</summary><pre>Revise the announcement to be shorter, but keep every factual detail unchanged.</pre></details></td><td><details><summary>We are excited to announce the public launch of Northwind Copilot on June 18, following an exclusive rollout…</summary><pre>We are excited to announce the public launch of Northwind Copilot on June 18, following an exclusive rollout to 12 design partners. The platform is now live at northwind.ai/copilot for everyone to explore.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><span class="badge pass">pass</span> <code>revision_preserves_all_facts</code> — all required substrings present</li><li><span class="badge pass">pass</span> <code>revision_does_not_drift</code> — no forbidden substrings present</li></ul></details></td></tr></tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <details class="section-details">
+      <summary><span class="section-summary">Rule coverage</span></summary>
+      <table>
+        <thead>
+          <tr><th>Rule</th><th>Count</th><th>Share</th></tr>
+        </thead>
+        <tbody><tr><td><code>regex</code></td><td><div class="bar-wrap"><div class="bar" style="width:100%"></div><span class="bar-text">11</span></div></td><td>52.38%</td></tr><tr><td><code>contains_all</code></td><td><div class="bar-wrap"><div class="bar" style="width:45%"></div><span class="bar-text">5</span></div></td><td>23.81%</td></tr><tr><td><code>line_count_at_most</code></td><td><div class="bar-wrap"><div class="bar" style="width:9%"></div><span class="bar-text">1</span></div></td><td>4.76%</td></tr><tr><td><code>bullet_count_equals</code></td><td><div class="bar-wrap"><div class="bar" style="width:9%"></div><span class="bar-text">1</span></div></td><td>4.76%</td></tr><tr><td><code>regex_none</code></td><td><div class="bar-wrap"><div class="bar" style="width:9%"></div><span class="bar-text">1</span></div></td><td>4.76%</td></tr><tr><td><code>question_count_equals</code></td><td><div class="bar-wrap"><div class="bar" style="width:9%"></div><span class="bar-text">1</span></div></td><td>4.76%</td></tr><tr><td><code>contains_none</code></td><td><div class="bar-wrap"><div class="bar" style="width:9%"></div><span class="bar-text">1</span></div></td><td>4.76%</td></tr></tbody>
+      </table>
+      <p class="muted" style="margin-top:12px;">
+        Rule coverage matters because it shows whether the suite is testing multiple failure shapes or mostly
+        repeating one scoring style.
+      </p>
+    </details>
+  </section>
+</div>
+
+<section class="section">
+  <h2>Replay trace</h2>
+  <p class="muted">
+    Use this section for failure analysis and benchmark authoring. Each scenario can be opened to inspect the
+    exact user prompt, assistant reply, and deterministic check outcomes turn by turn.
+  </p>
+  <details class='scenario-detail'><summary><strong>expense_policy_memory</strong> — Tests whether the assistant can carry policy facts forward, classify multiple items correctly, and avoid reintroducing rejected items later.</summary><div class='trace-card'><div class='trace-head'>Turn 1 • 4,957 ms • prompt 120 • completion 49</div><div class='trace-block'><div class='trace-label'>User</div><pre>I&#x27;m going to give you a reimbursement policy to use later. Hotel: up to $180/night with receipt. Meals: up to $65/day. Airport rideshare is reimbursable. Minibar or alcohol is never reimbursable. My trip code is TRIP-4821. Reply with one sentence confirming the trip code and the hotel and meal caps.</pre></div><div class='trace-block'><div class='trace-label'>Assistant</div><pre>I have received your reimbursement policy for trip code TRIP-4821, which includes a hotel cap of $180/night, a meal cap of $65/day, and the exclusion of minibar or alcohol.</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Status</th><th>Details</th></tr></thead><tbody><tr><td><code>acknowledges_key_policy_facts</code></td><td><code>contains_all</code></td><td><span class="badge pass">PASS</span></td><td>all required substrings present</td></tr><tr><td><code>ack_is_compact</code></td><td><code>line_count_at_most</code></td><td><span class="badge pass">PASS</span></td><td>non-empty line count 1 &lt;= 2</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 2 • 2,561 ms • prompt 208 • completion 70</div><div class='trace-block'><div class='trace-label'>User</div><pre>Now evaluate these expenses and answer in exactly three bullets: $172 hotel, $24 airport rideshare, $19 minibar.</pre></div><div class='trace-block'><div class='trace-label'>Assistant</div><pre>*   The $172 hotel expense is reimbursable as it falls within the $180/night cap.
+*   The $24 airport rideshare expense is reimbursable per policy.
+*   The $19 minibar expense is not reimbursable as alcohol and minibar items are never covered.</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Status</th><th>Details</th></tr></thead><tbody><tr><td><code>uses_three_bullets</code></td><td><code>bullet_count_equals</code></td><td><span class="badge pass">PASS</span></td><td>bullet count 3 == 3</td></tr><tr><td><code>hotel_is_approved</code></td><td><code>regex</code></td><td><span class="badge pass">PASS</span></td><td>regex matched</td></tr><tr><td><code>rideshare_is_approved</code></td><td><code>regex</code></td><td><span class="badge pass">PASS</span></td><td>regex matched</td></tr><tr><td><code>minibar_is_rejected</code></td><td><code>regex</code></td><td><span class="badge pass">PASS</span></td><td>regex matched</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 3 • 1,615 ms • prompt 306 • completion 31</div><div class='trace-block'><div class='trace-label'>User</div><pre>Give me a one-sentence summary of only the approved items and include the trip code exactly.</pre></div><div class='trace-block'><div class='trace-label'>Assistant</div><pre>For trip code TRIP-4821, the approved expenses are the $172 hotel and the $24 airport rideshare.</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Status</th><th>Details</th></tr></thead><tbody><tr><td><code>summary_keeps_trip_code</code></td><td><code>contains_all</code></td><td><span class="badge pass">PASS</span></td><td>all required substrings present</td></tr><tr><td><code>summary_mentions_both_approved_items</code></td><td><code>regex</code></td><td><span class="badge pass">PASS</span></td><td>regex matched</td></tr><tr><td><code>summary_omits_rejected_item</code></td><td><code>regex_none</code></td><td><span class="badge pass">PASS</span></td><td>regex absent as expected</td></tr></tbody></table></div></details><details class='scenario-detail'><summary><strong>support_handoff_precision</strong> — Tests conversational discipline, exact field formatting, and retention of facts introduced across multiple turns.</summary><div class='trace-card'><div class='trace-head'>Turn 1 • 1,558 ms • prompt 95 • completion 28</div><div class='trace-block'><div class='trace-label'>User</div><pre>I need a support handoff note later. Facts to remember: customer Mina Patel, ticket SUP-7714, issue started right after a password reset, and it only reproduces in staging. Before drafting anything, ask me exactly one clarifying question.</pre></div><div class='trace-block'><div class='trace-label'>Assistant</div><pre>To ensure the handoff note is accurate, could you confirm if the password reset was performed by the customer themselves or by an administrator?</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Status</th><th>Details</th></tr></thead><tbody><tr><td><code>asks_one_clarifying_question</code></td><td><code>question_count_equals</code></td><td><span class="badge pass">PASS</span></td><td>question count 1 == 1</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 2 • 2,432 ms • prompt 176 • completion 66</div><div class='trace-block'><div class='trace-label'>User</div><pre>The affected region is us-west-2 and there were no 2FA errors. Now draft the handoff note using exactly these labels on separate lines: Ticket, Customer, Problem, Environment, Region, Next Step.</pre></div><div class='trace-block'><div class='trace-label'>Assistant</div><pre>Ticket: SUP-7714
+Customer: Mina Patel
+Problem: Issue reproduces only in staging immediately following a password reset; no 2FA errors observed.
+Environment: Staging
+Region: us-west-2
+Next Step: Investigate password reset logic and authentication flow specifically within the staging environment.</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Status</th><th>Details</th></tr></thead><tbody><tr><td><code>ticket_line_exact</code></td><td><code>regex</code></td><td><span class="badge pass">PASS</span></td><td>regex matched</td></tr><tr><td><code>customer_line_exact</code></td><td><code>regex</code></td><td><span class="badge pass">PASS</span></td><td>regex matched</td></tr><tr><td><code>problem_mentions_password_reset</code></td><td><code>regex</code></td><td><span class="badge pass">PASS</span></td><td>regex matched</td></tr><tr><td><code>environment_line_exact</code></td><td><code>regex</code></td><td><span class="badge pass">PASS</span></td><td>regex matched</td></tr><tr><td><code>region_line_exact</code></td><td><code>regex</code></td><td><span class="badge pass">PASS</span></td><td>regex matched</td></tr><tr><td><code>mentions_no_2fa_errors</code></td><td><code>regex</code></td><td><span class="badge pass">PASS</span></td><td>regex matched</td></tr><tr><td><code>next_step_line_present</code></td><td><code>regex</code></td><td><span class="badge pass">PASS</span></td><td>regex matched</td></tr></tbody></table></div></details><details class='scenario-detail'><summary><strong>launch_brief_consistency</strong> — Tests whether the assistant preserves exact factual details across a drafting and revision cycle rather than drifting toward a looser summary.</summary><div class='trace-card'><div class='trace-head'>Turn 1 • 1,251 ms • prompt 85 • completion 16</div><div class='trace-block'><div class='trace-label'>User</div><pre>Use these launch facts later: product Northwind Copilot, public launch June 18, initial rollout to 12 design partners, and URL northwind.ai/copilot. Reply with a short acknowledgement that repeats the product name and launch date.</pre></div><div class='trace-block'><div class='trace-label'>Assistant</div><pre>Product: Northwind Copilot, Launch Date: June 18.</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Status</th><th>Details</th></tr></thead><tbody><tr><td><code>ack_repeats_product_and_date</code></td><td><code>contains_all</code></td><td><span class="badge pass">PASS</span></td><td>all required substrings present</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 2 • 2,439 ms • prompt 118 • completion 56</div><div class='trace-block'><div class='trace-label'>User</div><pre>Draft a two-sentence announcement paragraph.</pre></div><div class='trace-block'><div class='trace-label'>Assistant</div><pre>We are thrilled to announce the public launch of Northwind Copilot on June 18, marking a new era of intelligent design assistance. Following an exclusive preview with 12 design partners, the platform is now live at northwind.ai/copilot for everyone to explore.</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Status</th><th>Details</th></tr></thead><tbody><tr><td><code>draft_keeps_all_launch_facts</code></td><td><code>contains_all</code></td><td><span class="badge pass">PASS</span></td><td>all required substrings present</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 3 • 1,856 ms • prompt 198 • completion 47</div><div class='trace-block'><div class='trace-label'>User</div><pre>Revise the announcement to be shorter, but keep every factual detail unchanged.</pre></div><div class='trace-block'><div class='trace-label'>Assistant</div><pre>We are excited to announce the public launch of Northwind Copilot on June 18, following an exclusive rollout to 12 design partners. The platform is now live at northwind.ai/copilot for everyone to explore.</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Status</th><th>Details</th></tr></thead><tbody><tr><td><code>revision_preserves_all_facts</code></td><td><code>contains_all</code></td><td><span class="badge pass">PASS</span></td><td>all required substrings present</td></tr><tr><td><code>revision_does_not_drift</code></td><td><code>contains_none</code></td><td><span class="badge pass">PASS</span></td><td>no forbidden substrings present</td></tr></tbody></table></div></details>
+</section>
+</main>
+<script>
+document.querySelectorAll(".trace-card > table").forEach((table) => {
+  const details = document.createElement("details");
+  details.className = "trace-checks";
+
+  const summary = document.createElement("summary");
+  summary.textContent = "Checks";
+
+  table.before(details);
+  details.appendChild(summary);
+  details.appendChild(table);
+});
+
+document.querySelectorAll("details").forEach((element) => {
+  element.open = false;
+});
+document.querySelectorAll(".turn-table-section details").forEach((element) => {
+  element.open = true;
+});
+const firstReplayScenario = document.querySelector(".scenario-detail");
+if (firstReplayScenario) {
+  firstReplayScenario.open = true;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Conversation Eval Dataset Viewer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --bg: #ffffff;
+  --panel: #ffffff;
+  --panel-2: #fafafa;
+  --text: #000000;
+  --muted: #303030;
+  --border: #000000;
+  --pass: #000000;
+  --pass-text: #ffffff;
+  --fail: #ffffff;
+  --fail-text: #000000;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.45;
+  overflow-x: hidden;
+}
+main { width: 100%; max-width: none; margin: 0; padding: 24px clamp(12px, 2vw, 28px); }
+h1, h2, h3 { margin: 0 0 12px 0; }
+p, li { color: var(--text); }
+small, .muted { color: var(--muted); }
+header {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.subtitle { color: var(--muted); max-width: 1000px; }
+.section {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  margin-bottom: 26px;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 16px;
+}
+.metric-card {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  min-height: 100px;
+}
+.metric-label { color: var(--muted); font-size: 0.92rem; margin-bottom: 8px; }
+.metric-value { font-size: 1.4rem; font-weight: 700; overflow-wrap: anywhere; }
+.metric-sub { color: var(--muted); font-size: 0.9rem; margin-top: 6px; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+th, td {
+  text-align: left;
+  padding: 14px 12px;
+  border-top: 1px solid var(--border);
+  vertical-align: top;
+}
+th {
+  color: var(--muted);
+  font-weight: 600;
+  background: #fcfcfc;
+}
+.name { font-weight: 700; margin-bottom: 4px; }
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #fcfcfc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  margin: 8px 0 0 0;
+}
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  background: #fcfcfc;
+  padding: 2px 4px;
+  border-radius: 6px;
+}
+details {
+  border-radius: 10px;
+}
+summary {
+  cursor: pointer;
+}
+.check-list {
+  margin: 8px 0 0 0;
+  padding-left: 18px;
+}
+.trace-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  margin-top: 16px;
+  background: var(--panel-2);
+}
+.trace-head {
+  color: var(--muted);
+  margin-bottom: 10px;
+  font-size: 0.92rem;
+}
+.trace-label {
+  font-weight: 700;
+  margin: 4px 0 6px 0;
+}
+.trace-checks {
+  margin-top: 16px;
+}
+.trace-checks summary {
+  font-weight: 600;
+  color: var(--muted);
+}
+.trace-checks table {
+  margin-top: 12px;
+}
+.family-detail {
+  display: block;
+  margin-top: 20px;
+  border: 1px solid var(--border);
+  padding: 18px;
+  border-radius: 14px;
+  background: var(--panel);
+}
+.family-detail > summary {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.family-meta {
+  margin-top: 12px;
+}
+.section-details summary {
+  list-style: none;
+}
+.section-details summary::-webkit-details-marker {
+  display: none;
+}
+.section-summary {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.section-details[open] summary {
+  margin-bottom: 12px;
+}
+.scenario-detail {
+  display: block;
+  margin-top: 20px;
+  border: 1px solid var(--border);
+  padding: 18px;
+  border-radius: 14px;
+  background: var(--panel-2);
+}
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.pill {
+  display: inline-block;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.82rem;
+  background: #fcfcfc;
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 24px;
+}
+.benchmark-detail-grid {
+  grid-template-columns: 1fr;
+}
+.group-row td {
+  background: var(--panel-2);
+  font-weight: 700;
+  border-top: 1px solid var(--border);
+}
+.turn-table-section {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.footer { color: var(--muted); font-size: 0.9rem; margin-top: 18px; }
+@media (max-width: 980px) {
+  .grid-2 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>Conversation evaluation dataset viewer</h1>
+  <div class="subtitle">
+    This view shows the dataset definition itself, not scored model output. It is built from
+    <code>next_run_keyword_count_10_turn.json</code> and is meant to answer two questions quickly: “what does this dataset cover?”
+    and “what exact scenario and check logic will the harness run?”
+  </div>
+</header>
+
+<section class="section">
+  <h2>Dataset summary</h2>
+  <div class="metrics"><div class="metric-card"><div class="metric-label">Dataset file</div><div class="metric-value">next_run_keyword_count_10_turn.json</div><div class="metric-sub">scenario source</div></div><div class="metric-card"><div class="metric-label">Scenario families</div><div class="metric-value">1</div><div class="metric-sub">unique families</div></div><div class="metric-card"><div class="metric-label">Scenarios</div><div class="metric-value">1</div><div class="metric-sub">total scenarios</div></div><div class="metric-card"><div class="metric-label">Turns</div><div class="metric-value">10</div><div class="metric-sub">all scenarios</div></div><div class="metric-card"><div class="metric-label">Checks</div><div class="metric-value">31</div><div class="metric-sub">all turns</div></div><div class="metric-card"><div class="metric-label">Unique rules</div><div class="metric-value">4</div><div class="metric-sub">rule types</div></div><div class="metric-card"><div class="metric-label">Unique tags</div><div class="metric-value">4</div><div class="metric-sub">tag labels</div></div><div class="metric-card"><div class="metric-label">Avg checks / turn</div><div class="metric-value">3.10</div><div class="metric-sub">dataset density</div></div></div>
+  <div class="footer">
+    Source <code>scenario_datasets/next_run_keyword_count_10_turn.json</code>
+  </div>
+</section>
+
+<div class="grid-2">
+  <section class="section">
+    <h2>Family coverage</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Family</th>
+          <th>Scenarios</th>
+          <th>Turns</th>
+          <th>Checks</th>
+          <th>Top rules</th>
+        </tr>
+      </thead>
+      <tbody><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>single-eval, keyword-count, contracts</div></td><td>1</td><td>10</td><td>31</td><td>word_count_equals, sentence_count_equals, regex</td></tr></tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <h2>Tag coverage</h2>
+    <table>
+      <thead>
+        <tr><th>Tag</th><th>Count</th><th>Share</th></tr>
+      </thead>
+      <tbody><tr><td><code>single-eval</code></td><td>1</td><td>25.00%</td></tr><tr><td><code>keyword-count</code></td><td>1</td><td>25.00%</td></tr><tr><td><code>contracts</code></td><td>1</td><td>25.00%</td></tr><tr><td><code>composable</code></td><td>1</td><td>25.00%</td></tr></tbody>
+    </table>
+  </section>
+</div>
+
+<div class="grid-2 benchmark-detail-grid">
+  <section class="section turn-table-section">
+    <h2>Turn-level dataset view</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Scenario / turn</th>
+          <th>Checks</th>
+          <th>Rules</th>
+          <th>User message</th>
+          <th>Check details</th>
+        </tr>
+      </thead>
+      <tbody><tr class='group-row'><td colspan='5'>keyword_count_accuracy_10_turn</td></tr><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 1</div></td><td>3</td><td>word_count_equals, sentence_count_equals, regex</td><td><details><summary>What is 12 + 15? Answer in one sentence and use the lowercase word &quot;note&quot; exactly 2 times.</summary><pre>What is 12 + 15? Answer in one sentence and use the lowercase word &quot;note&quot; exactly 2 times.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><code>uses_note_exactly_2_times</code> — <code>word_count_equals</code> — count=2</li><li><code>uses_exactly_1_sentences</code> — <code>sentence_count_equals</code> — count=1</li><li><code>answer_mentions_27</code> — <code>regex</code> — (?is)\b27\b</li></ul></details></td></tr><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 2</div></td><td>3</td><td>word_count_equals, sentence_count_equals, regex</td><td><details><summary>Policy: airport rideshare is reimbursable, minibar is never reimbursable. Is a $19 minibar charge reimbursabl…</summary><pre>Policy: airport rideshare is reimbursable, minibar is never reimbursable. Is a $19 minibar charge reimbursable? Answer in one sentence and use the lowercase word &quot;clear&quot; exactly 2 times.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><code>uses_clear_exactly_2_times</code> — <code>word_count_equals</code> — count=2</li><li><code>uses_exactly_1_sentences</code> — <code>sentence_count_equals</code> — count=1</li><li><code>answer_rejects_minibar</code> — <code>regex</code> — (?is)(minibar|\$19).*((not|never|isn&#x27;t|is not).*(reimburs|covered|eligi…</li></ul></details></td></tr><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 3</div></td><td>3</td><td>word_count_equals, sentence_count_equals, contains_all</td><td><details><summary>Ticket SUP-7714 belongs to Mina Patel. Who owns the ticket? Answer in one sentence and use the lowercase word…</summary><pre>Ticket SUP-7714 belongs to Mina Patel. Who owns the ticket? Answer in one sentence and use the lowercase word &quot;record&quot; exactly 2 times.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><code>uses_record_exactly_2_times</code> — <code>word_count_equals</code> — count=2</li><li><code>uses_exactly_1_sentences</code> — <code>sentence_count_equals</code> — count=1</li><li><code>answer_mentions_owner</code> — <code>contains_all</code> — 1 needles</li></ul></details></td></tr><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 4</div></td><td>3</td><td>word_count_equals, sentence_count_equals, contains_all</td><td><details><summary>The launch date is July 22. What is the launch date? Answer in one sentence and use the lowercase word &quot;date&quot;…</summary><pre>The launch date is July 22. What is the launch date? Answer in one sentence and use the lowercase word &quot;date&quot; exactly 3 times.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><code>uses_date_exactly_3_times</code> — <code>word_count_equals</code> — count=3</li><li><code>uses_exactly_1_sentences</code> — <code>sentence_count_equals</code> — count=1</li><li><code>answer_mentions_launch_date</code> — <code>contains_all</code> — 1 needles</li></ul></details></td></tr><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 5</div></td><td>3</td><td>word_count_equals, sentence_count_equals, regex</td><td><details><summary>Which option is cheaper: Plan A at $39 or Plan B at $52? Answer in one sentence and use the lowercase word &quot;p…</summary><pre>Which option is cheaper: Plan A at $39 or Plan B at $52? Answer in one sentence and use the lowercase word &quot;price&quot; exactly 2 times.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><code>uses_price_exactly_2_times</code> — <code>word_count_equals</code> — count=2</li><li><code>uses_exactly_1_sentences</code> — <code>sentence_count_equals</code> — count=1</li><li><code>answer_picks_plan_a</code> — <code>regex</code> — (?is)(plan a|\$39).*(cheaper|lower)</li></ul></details></td></tr><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 6</div></td><td>3</td><td>word_count_equals, sentence_count_equals, regex</td><td><details><summary>Legal review is complete. Is legal review complete? Answer in one sentence and use the lowercase word &quot;legal&quot;…</summary><pre>Legal review is complete. Is legal review complete? Answer in one sentence and use the lowercase word &quot;legal&quot; exactly 3 times.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><code>uses_legal_exactly_3_times</code> — <code>word_count_equals</code> — count=3</li><li><code>uses_exactly_1_sentences</code> — <code>sentence_count_equals</code> — count=1</li><li><code>answer_says_legal_complete</code> — <code>regex</code> — (?is)\byes\b.*complete|complete.*\byes\b|legal.*complete</li></ul></details></td></tr><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 7</div></td><td>3</td><td>word_count_equals, sentence_count_equals, contains_all</td><td><details><summary>BUG-431 is open and high severity. What is the strongest reason not to launch? Answer in one sentence and use…</summary><pre>BUG-431 is open and high severity. What is the strongest reason not to launch? Answer in one sentence and use the lowercase word &quot;risk&quot; exactly 2 times.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><code>uses_risk_exactly_2_times</code> — <code>word_count_equals</code> — count=2</li><li><code>uses_exactly_1_sentences</code> — <code>sentence_count_equals</code> — count=1</li><li><code>answer_mentions_bug_risk</code> — <code>contains_all</code> — 2 needles</li></ul></details></td></tr><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 8</div></td><td>3</td><td>word_count_equals, sentence_count_equals, contains_all</td><td><details><summary>Fallback date is August 5. If launch slips, what fallback date should we use? Answer in one sentence and use…</summary><pre>Fallback date is August 5. If launch slips, what fallback date should we use? Answer in one sentence and use the lowercase word &quot;fallback&quot; exactly 2 times.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><code>uses_fallback_exactly_2_times</code> — <code>word_count_equals</code> — count=2</li><li><code>uses_exactly_1_sentences</code> — <code>sentence_count_equals</code> — count=1</li><li><code>answer_mentions_fallback_date</code> — <code>contains_all</code> — 1 needles</li></ul></details></td></tr><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 9</div></td><td>3</td><td>word_count_equals, sentence_count_equals, regex</td><td><details><summary>Documentation is complete but support is not ready. Which item is not ready? Answer in one sentence and use t…</summary><pre>Documentation is complete but support is not ready. Which item is not ready? Answer in one sentence and use the lowercase word &quot;status&quot; exactly 2 times.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><code>uses_status_exactly_2_times</code> — <code>word_count_equals</code> — count=2</li><li><code>uses_exactly_1_sentences</code> — <code>sentence_count_equals</code> — count=1</li><li><code>answer_mentions_support_not_ready</code> — <code>regex</code> — (?is)support.*(not ready|isn&#x27;t ready|is not ready)</li></ul></details></td></tr><tr><td><div class='name'>keyword_count_accuracy_10_turn</div><div class='muted'>Turn 10</div></td><td>4</td><td>word_count_equals, sentence_count_equals, regex, contains_all</td><td><details><summary>Should Atlas Relay launch on July 22 if BUG-431 is still open? Answer in exactly 2 sentences and use the lowe…</summary><pre>Should Atlas Relay launch on July 22 if BUG-431 is still open? Answer in exactly 2 sentences and use the lowercase word &quot;confirm&quot; exactly 3 times.</pre></details></td><td><details><summary>Checks</summary><ul class='check-list'><li><code>uses_confirm_exactly_3_times</code> — <code>word_count_equals</code> — count=3</li><li><code>uses_exactly_2_sentences</code> — <code>sentence_count_equals</code> — count=2</li><li><code>final_answer_directly_says_no</code> — <code>regex</code> — (?is)^\s*(no\b|not yet\b|do not launch|should not launch|delay)</li><li><code>final_answer_mentions_bug_reason</code> — <code>contains_all</code> — 4 needles</li></ul></details></td></tr></tbody>
+    </table>
+  </section>
+
+  <section class="section">
+    <details class="section-details">
+      <summary><span class="section-summary">Rule coverage</span></summary>
+      <table>
+        <thead>
+          <tr><th>Rule</th><th>Count</th><th>Share</th></tr>
+        </thead>
+        <tbody><tr><td><code>word_count_equals</code></td><td>10</td><td>32.26%</td></tr><tr><td><code>sentence_count_equals</code></td><td>10</td><td>32.26%</td></tr><tr><td><code>regex</code></td><td>6</td><td>19.35%</td></tr><tr><td><code>contains_all</code></td><td>5</td><td>16.13%</td></tr></tbody>
+      </table>
+    </details>
+  </section>
+</div>
+
+<section class="section">
+  <h2>Scenario library</h2>
+  <p class="muted">
+    Use this section to inspect the exact system prompt, facts, turns, and deterministic checks that define the dataset.
+  </p>
+  <details class='family-detail'><summary><strong>keyword_count_accuracy_10_turn</strong> — 1 scenarios • 10 turns • 31 checks</summary><div class='family-meta'><div class='pill-row'><span class="pill">single-eval</span><span class="pill">keyword-count</span><span class="pill">contracts</span><span class="pill">composable</span></div></div><details class='scenario-detail'><summary><strong>keyword_count_accuracy_10_turn</strong> — Ten distinct prompts where each answer must remain correct while satisfying an explicit keyword-count output contract.</summary><div class='trace-block'><div class='trace-label'>System prompt</div><pre>You are a careful assistant. Answer each question directly, keep the answer correct, and satisfy the exact output contract without adding unrelated filler.</pre></div><div class='trace-block'><div class='trace-label'>Facts</div><pre>—</pre></div><div class='trace-block'><div class='trace-label'>Tags</div><div class='pill-row'><span class="pill">single-eval</span><span class="pill">keyword-count</span><span class="pill">contracts</span><span class="pill">composable</span></div></div><div class='trace-card'><div class='trace-head'>Turn 1 • 3 checks • word_count_equals, sentence_count_equals, regex</div><div class='trace-block'><div class='trace-label'>User</div><pre>What is 12 + 15? Answer in one sentence and use the lowercase word &quot;note&quot; exactly 2 times.</pre></div><div class='trace-block'><div class='trace-label'>Input contract</div><pre>{
+  &quot;task_type&quot;: &quot;arithmetic&quot;,
+  &quot;question&quot;: &quot;What is 12 + 15?&quot;,
+  &quot;answer_semantics&quot;: &quot;State the numeric sum.&quot;
+}</pre></div><div class='trace-block'><div class='trace-label'>Output contract</div><pre>{
+  &quot;sentence_count&quot;: 1,
+  &quot;keyword&quot;: &quot;note&quot;,
+  &quot;keyword_count&quot;: 2
+}</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Key params</th><th>Description</th></tr></thead><tbody><tr><td><code>uses_note_exactly_2_times</code></td><td><code>word_count_equals</code></td><td>count=2</td><td>—</td></tr><tr><td><code>uses_exactly_1_sentences</code></td><td><code>sentence_count_equals</code></td><td>count=1</td><td>—</td></tr><tr><td><code>answer_mentions_27</code></td><td><code>regex</code></td><td>(?is)\b27\b</td><td>—</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 2 • 3 checks • word_count_equals, sentence_count_equals, regex</div><div class='trace-block'><div class='trace-label'>User</div><pre>Policy: airport rideshare is reimbursable, minibar is never reimbursable. Is a $19 minibar charge reimbursable? Answer in one sentence and use the lowercase word &quot;clear&quot; exactly 2 times.</pre></div><div class='trace-block'><div class='trace-label'>Input contract</div><pre>{
+  &quot;task_type&quot;: &quot;policy_classification&quot;,
+  &quot;question&quot;: &quot;Is a $19 minibar charge reimbursable?&quot;,
+  &quot;facts&quot;: [
+    &quot;airport rideshare is reimbursable&quot;,
+    &quot;minibar is never reimbursable&quot;
+  ]
+}</pre></div><div class='trace-block'><div class='trace-label'>Output contract</div><pre>{
+  &quot;sentence_count&quot;: 1,
+  &quot;keyword&quot;: &quot;clear&quot;,
+  &quot;keyword_count&quot;: 2
+}</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Key params</th><th>Description</th></tr></thead><tbody><tr><td><code>uses_clear_exactly_2_times</code></td><td><code>word_count_equals</code></td><td>count=2</td><td>—</td></tr><tr><td><code>uses_exactly_1_sentences</code></td><td><code>sentence_count_equals</code></td><td>count=1</td><td>—</td></tr><tr><td><code>answer_rejects_minibar</code></td><td><code>regex</code></td><td>(?is)(minibar|\$19).*((not|never|isn&#x27;t|is not).*(reimburs|covered|eligi…</td><td>—</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 3 • 3 checks • word_count_equals, sentence_count_equals, contains_all</div><div class='trace-block'><div class='trace-label'>User</div><pre>Ticket SUP-7714 belongs to Mina Patel. Who owns the ticket? Answer in one sentence and use the lowercase word &quot;record&quot; exactly 2 times.</pre></div><div class='trace-block'><div class='trace-label'>Input contract</div><pre>{
+  &quot;task_type&quot;: &quot;entity_lookup&quot;,
+  &quot;question&quot;: &quot;Who owns ticket SUP-7714?&quot;,
+  &quot;answer_semantics&quot;: &quot;Return the owner&#x27;s name.&quot;
+}</pre></div><div class='trace-block'><div class='trace-label'>Output contract</div><pre>{
+  &quot;sentence_count&quot;: 1,
+  &quot;keyword&quot;: &quot;record&quot;,
+  &quot;keyword_count&quot;: 2
+}</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Key params</th><th>Description</th></tr></thead><tbody><tr><td><code>uses_record_exactly_2_times</code></td><td><code>word_count_equals</code></td><td>count=2</td><td>—</td></tr><tr><td><code>uses_exactly_1_sentences</code></td><td><code>sentence_count_equals</code></td><td>count=1</td><td>—</td></tr><tr><td><code>answer_mentions_owner</code></td><td><code>contains_all</code></td><td>1 needles</td><td>—</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 4 • 3 checks • word_count_equals, sentence_count_equals, contains_all</div><div class='trace-block'><div class='trace-label'>User</div><pre>The launch date is July 22. What is the launch date? Answer in one sentence and use the lowercase word &quot;date&quot; exactly 3 times.</pre></div><div class='trace-block'><div class='trace-label'>Input contract</div><pre>{
+  &quot;task_type&quot;: &quot;date_recall&quot;,
+  &quot;question&quot;: &quot;What is the launch date?&quot;,
+  &quot;answer_semantics&quot;: &quot;Return the exact date.&quot;
+}</pre></div><div class='trace-block'><div class='trace-label'>Output contract</div><pre>{
+  &quot;sentence_count&quot;: 1,
+  &quot;keyword&quot;: &quot;date&quot;,
+  &quot;keyword_count&quot;: 3
+}</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Key params</th><th>Description</th></tr></thead><tbody><tr><td><code>uses_date_exactly_3_times</code></td><td><code>word_count_equals</code></td><td>count=3</td><td>—</td></tr><tr><td><code>uses_exactly_1_sentences</code></td><td><code>sentence_count_equals</code></td><td>count=1</td><td>—</td></tr><tr><td><code>answer_mentions_launch_date</code></td><td><code>contains_all</code></td><td>1 needles</td><td>—</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 5 • 3 checks • word_count_equals, sentence_count_equals, regex</div><div class='trace-block'><div class='trace-label'>User</div><pre>Which option is cheaper: Plan A at $39 or Plan B at $52? Answer in one sentence and use the lowercase word &quot;price&quot; exactly 2 times.</pre></div><div class='trace-block'><div class='trace-label'>Input contract</div><pre>{
+  &quot;task_type&quot;: &quot;comparison&quot;,
+  &quot;question&quot;: &quot;Which option is cheaper?&quot;,
+  &quot;options&quot;: [
+    &quot;Plan A at $39&quot;,
+    &quot;Plan B at $52&quot;
+  ]
+}</pre></div><div class='trace-block'><div class='trace-label'>Output contract</div><pre>{
+  &quot;sentence_count&quot;: 1,
+  &quot;keyword&quot;: &quot;price&quot;,
+  &quot;keyword_count&quot;: 2
+}</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Key params</th><th>Description</th></tr></thead><tbody><tr><td><code>uses_price_exactly_2_times</code></td><td><code>word_count_equals</code></td><td>count=2</td><td>—</td></tr><tr><td><code>uses_exactly_1_sentences</code></td><td><code>sentence_count_equals</code></td><td>count=1</td><td>—</td></tr><tr><td><code>answer_picks_plan_a</code></td><td><code>regex</code></td><td>(?is)(plan a|\$39).*(cheaper|lower)</td><td>—</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 6 • 3 checks • word_count_equals, sentence_count_equals, regex</div><div class='trace-block'><div class='trace-label'>User</div><pre>Legal review is complete. Is legal review complete? Answer in one sentence and use the lowercase word &quot;legal&quot; exactly 3 times.</pre></div><div class='trace-block'><div class='trace-label'>Input contract</div><pre>{
+  &quot;task_type&quot;: &quot;status_check&quot;,
+  &quot;question&quot;: &quot;Is legal review complete?&quot;,
+  &quot;expected_status&quot;: &quot;yes&quot;
+}</pre></div><div class='trace-block'><div class='trace-label'>Output contract</div><pre>{
+  &quot;sentence_count&quot;: 1,
+  &quot;keyword&quot;: &quot;legal&quot;,
+  &quot;keyword_count&quot;: 3
+}</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Key params</th><th>Description</th></tr></thead><tbody><tr><td><code>uses_legal_exactly_3_times</code></td><td><code>word_count_equals</code></td><td>count=3</td><td>—</td></tr><tr><td><code>uses_exactly_1_sentences</code></td><td><code>sentence_count_equals</code></td><td>count=1</td><td>—</td></tr><tr><td><code>answer_says_legal_complete</code></td><td><code>regex</code></td><td>(?is)\byes\b.*complete|complete.*\byes\b|legal.*complete</td><td>—</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 7 • 3 checks • word_count_equals, sentence_count_equals, contains_all</div><div class='trace-block'><div class='trace-label'>User</div><pre>BUG-431 is open and high severity. What is the strongest reason not to launch? Answer in one sentence and use the lowercase word &quot;risk&quot; exactly 2 times.</pre></div><div class='trace-block'><div class='trace-label'>Input contract</div><pre>{
+  &quot;task_type&quot;: &quot;risk_summary&quot;,
+  &quot;question&quot;: &quot;What is the strongest reason not to launch?&quot;,
+  &quot;facts&quot;: [
+    &quot;BUG-431 is open&quot;,
+    &quot;severity is high&quot;
+  ]
+}</pre></div><div class='trace-block'><div class='trace-label'>Output contract</div><pre>{
+  &quot;sentence_count&quot;: 1,
+  &quot;keyword&quot;: &quot;risk&quot;,
+  &quot;keyword_count&quot;: 2
+}</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Key params</th><th>Description</th></tr></thead><tbody><tr><td><code>uses_risk_exactly_2_times</code></td><td><code>word_count_equals</code></td><td>count=2</td><td>—</td></tr><tr><td><code>uses_exactly_1_sentences</code></td><td><code>sentence_count_equals</code></td><td>count=1</td><td>—</td></tr><tr><td><code>answer_mentions_bug_risk</code></td><td><code>contains_all</code></td><td>2 needles</td><td>—</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 8 • 3 checks • word_count_equals, sentence_count_equals, contains_all</div><div class='trace-block'><div class='trace-label'>User</div><pre>Fallback date is August 5. If launch slips, what fallback date should we use? Answer in one sentence and use the lowercase word &quot;fallback&quot; exactly 2 times.</pre></div><div class='trace-block'><div class='trace-label'>Input contract</div><pre>{
+  &quot;task_type&quot;: &quot;fallback_recall&quot;,
+  &quot;question&quot;: &quot;What fallback date should we use?&quot;,
+  &quot;answer_semantics&quot;: &quot;Return the fallback date exactly.&quot;
+}</pre></div><div class='trace-block'><div class='trace-label'>Output contract</div><pre>{
+  &quot;sentence_count&quot;: 1,
+  &quot;keyword&quot;: &quot;fallback&quot;,
+  &quot;keyword_count&quot;: 2
+}</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Key params</th><th>Description</th></tr></thead><tbody><tr><td><code>uses_fallback_exactly_2_times</code></td><td><code>word_count_equals</code></td><td>count=2</td><td>—</td></tr><tr><td><code>uses_exactly_1_sentences</code></td><td><code>sentence_count_equals</code></td><td>count=1</td><td>—</td></tr><tr><td><code>answer_mentions_fallback_date</code></td><td><code>contains_all</code></td><td>1 needles</td><td>—</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 9 • 3 checks • word_count_equals, sentence_count_equals, regex</div><div class='trace-block'><div class='trace-label'>User</div><pre>Documentation is complete but support is not ready. Which item is not ready? Answer in one sentence and use the lowercase word &quot;status&quot; exactly 2 times.</pre></div><div class='trace-block'><div class='trace-label'>Input contract</div><pre>{
+  &quot;task_type&quot;: &quot;status_disambiguation&quot;,
+  &quot;question&quot;: &quot;Which item is not ready?&quot;,
+  &quot;facts&quot;: [
+    &quot;documentation is complete&quot;,
+    &quot;support is not ready&quot;
+  ]
+}</pre></div><div class='trace-block'><div class='trace-label'>Output contract</div><pre>{
+  &quot;sentence_count&quot;: 1,
+  &quot;keyword&quot;: &quot;status&quot;,
+  &quot;keyword_count&quot;: 2
+}</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Key params</th><th>Description</th></tr></thead><tbody><tr><td><code>uses_status_exactly_2_times</code></td><td><code>word_count_equals</code></td><td>count=2</td><td>—</td></tr><tr><td><code>uses_exactly_1_sentences</code></td><td><code>sentence_count_equals</code></td><td>count=1</td><td>—</td></tr><tr><td><code>answer_mentions_support_not_ready</code></td><td><code>regex</code></td><td>(?is)support.*(not ready|isn&#x27;t ready|is not ready)</td><td>—</td></tr></tbody></table></div><div class='trace-card'><div class='trace-head'>Turn 10 • 4 checks • word_count_equals, sentence_count_equals, regex, contains_all</div><div class='trace-block'><div class='trace-label'>User</div><pre>Should Atlas Relay launch on July 22 if BUG-431 is still open? Answer in exactly 2 sentences and use the lowercase word &quot;confirm&quot; exactly 3 times.</pre></div><div class='trace-block'><div class='trace-label'>Input contract</div><pre>{
+  &quot;task_type&quot;: &quot;decision&quot;,
+  &quot;question&quot;: &quot;Should Atlas Relay launch on July 22 if BUG-431 is still open?&quot;,
+  &quot;decision_rule&quot;: &quot;The answer should directly decline launch because the named bug is still open.&quot;
+}</pre></div><div class='trace-block'><div class='trace-label'>Output contract</div><pre>{
+  &quot;sentence_count&quot;: 2,
+  &quot;keyword&quot;: &quot;confirm&quot;,
+  &quot;keyword_count&quot;: 3
+}</pre></div><table><thead><tr><th>Check</th><th>Rule</th><th>Key params</th><th>Description</th></tr></thead><tbody><tr><td><code>uses_confirm_exactly_3_times</code></td><td><code>word_count_equals</code></td><td>count=3</td><td>—</td></tr><tr><td><code>uses_exactly_2_sentences</code></td><td><code>sentence_count_equals</code></td><td>count=2</td><td>—</td></tr><tr><td><code>final_answer_directly_says_no</code></td><td><code>regex</code></td><td>(?is)^\s*(no\b|not yet\b|do not launch|should not launch|delay)</td><td>—</td></tr><tr><td><code>final_answer_mentions_bug_reason</code></td><td><code>contains_all</code></td><td>4 needles</td><td>—</td></tr></tbody></table></div></details></details>
+</section>
+</main>
+<script>
+document.querySelectorAll(".trace-card > table").forEach((table) => {
+  const details = document.createElement("details");
+  details.className = "trace-checks";
+
+  const summary = document.createElement("summary");
+  summary.textContent = "Checks";
+
+  table.before(details);
+  details.appendChild(summary);
+  details.appendChild(table);
+});
+
+document.querySelectorAll("details").forEach((element) => {
+  element.open = false;
+});
+document.querySelectorAll(".turn-table-section details").forEach((element) => {
+  element.open = true;
+});
+const firstScenario = document.querySelector(".scenario-detail");
+if (firstScenario) {
+  firstScenario.open = true;
+}
+const firstFamily = document.querySelector(".family-detail");
+if (firstFamily) {
+  firstFamily.open = true;
+}
+</script>
+</body>
+</html>

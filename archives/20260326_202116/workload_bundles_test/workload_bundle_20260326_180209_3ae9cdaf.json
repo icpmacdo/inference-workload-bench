@@ -1,0 +1,648 @@
+{
+  "meta": {
+    "started_at": "2026-03-26T18:02:09-07:00",
+    "finished_at": "2026-03-26T18:02:09-07:00",
+    "run_fingerprint": "3ae9cdafe12e8bbd9421c0979f4544745ace0c715de358ae71bce79514c8d48b",
+    "bundle_id": "20260326T1802090700_3ae9cdaf"
+  },
+  "config": {
+    "base_model": "Qwen/Qwen3.5-4B",
+    "model_path": null,
+    "base_url": null,
+    "renderer_name": null,
+    "max_tokens": 768,
+    "temperature": 0.2,
+    "top_p": 0.9,
+    "top_k": 40,
+    "seed": 7,
+    "output_dir": "workload_bundles_test",
+    "pattern_names": [
+      "support_escalation"
+    ],
+    "spec_file": null,
+    "instance_count": 1,
+    "compile_only": true,
+    "list_patterns": false,
+    "list_rules": false,
+    "self_test": false,
+    "resolved_renderer_name": null
+  },
+  "authored_specs": [
+    {
+      "name": "support_escalation",
+      "description": "A support escalation workload with one clarifying question and a strict handoff.",
+      "family": "support_escalation",
+      "tags": [
+        "support",
+        "clarification",
+        "handoff",
+        "no-drift"
+      ],
+      "system_prompt": "You are a support operations assistant. Follow formatting instructions exactly, retain incident details across turns, and do not invent missing evidence.",
+      "interaction_pattern": {
+        "clarification_count": 1,
+        "revision_count": 0,
+        "final_artifact": "handoff_note",
+        "pressure_tags": [
+          "clarification",
+          "formatting",
+          "state_preserved",
+          "no_drift"
+        ],
+        "turn_count_hint": 4
+      },
+      "hidden_state_template": {
+        "fact_pools": {
+          "ticket_id": [
+            "SUP-7714",
+            "SUP-9132",
+            "SUP-4805"
+          ],
+          "customer_name": [
+            "Mina Patel",
+            "Jordan Alvarez",
+            "Riley Chen"
+          ],
+          "trigger": [
+            "password reset",
+            "email change",
+            "SSO reconnect"
+          ],
+          "environment": [
+            "staging",
+            "sandbox",
+            "preprod"
+          ],
+          "region": [
+            "us-west-2",
+            "eu-west-1",
+            "ap-southeast-1"
+          ],
+          "absent_issue": [
+            "2FA errors",
+            "billing failures",
+            "email bounces"
+          ],
+          "next_step": [
+            "Investigate the authentication flow in the affected environment.",
+            "Audit the reset flow and session state in the affected environment.",
+            "Trace the sign-in path in the affected environment."
+          ]
+        },
+        "mutable_facts": [],
+        "distractors": {
+          "wrong_region": [
+            "us-east-1",
+            "eu-central-1",
+            "ap-northeast-1"
+          ]
+        },
+        "omission_keys": [],
+        "canaries": [
+          {
+            "key": "ticket_id",
+            "mode": "recall"
+          },
+          {
+            "key": "customer_name",
+            "mode": "recall"
+          },
+          {
+            "key": "region",
+            "mode": "recall"
+          }
+        ]
+      },
+      "mask_policy": {
+        "direction": "assistant_only",
+        "masked_phases": [
+          "clarification_response",
+          "final_handoff"
+        ],
+        "visible_anchor_assistant_steps": [],
+        "fill_order": "sequential"
+      },
+      "artifact_contract": {
+        "required_fields": [
+          "Ticket",
+          "Customer",
+          "Problem",
+          "Environment",
+          "Region",
+          "Next Step"
+        ]
+      },
+      "style_options": {
+        "intake_variants": [
+          "I need a support handoff note later. Facts to remember: customer {{facts.customer_name}}, ticket {{facts.ticket_id}}, issue started right after a {{facts.trigger}}, and it only reproduces in {{facts.environment}}. Before drafting anything, ask me exactly one clarifying question.",
+          "Please hold these details for a support handoff: customer {{facts.customer_name}}, ticket {{facts.ticket_id}}, issue began right after a {{facts.trigger}}, and it only repros in {{facts.environment}}. Before you draft anything, ask exactly one clarifying question."
+        ]
+      }
+    }
+  ],
+  "compiled_instances": [
+    {
+      "instance_id": "support_escalation-001-f2a5ed7a",
+      "family": "support_escalation",
+      "seed": 7,
+      "spec_fingerprint": "07bdce5d52b50dec3b15a968118df3e6e7337d18b5ed7ca42563b13ddab70d9e",
+      "instance_fingerprint": "f2a5ed7a7195ea5b6fd262faeb67652d924f60455d9661bf5f9f95d110928a04",
+      "interaction_pattern": {
+        "clarification_count": 1,
+        "revision_count": 0,
+        "final_artifact": "handoff_note",
+        "pressure_tags": [
+          "clarification",
+          "formatting",
+          "state_preserved",
+          "no_drift"
+        ],
+        "turn_count_hint": 4
+      },
+      "hidden_state": {
+        "facts": {
+          "ticket_id": "SUP-9132",
+          "customer_name": "Mina Patel",
+          "trigger": "email change",
+          "environment": "preprod",
+          "region": "us-west-2",
+          "absent_issue": "2FA errors",
+          "next_step": "Trace the sign-in path in the affected environment."
+        },
+        "facts_current": {
+          "ticket_id": "SUP-9132",
+          "customer_name": "Mina Patel",
+          "trigger": "email change",
+          "environment": "preprod",
+          "region": "us-west-2",
+          "absent_issue": "2FA errors",
+          "next_step": "Trace the sign-in path in the affected environment."
+        },
+        "distractors": {
+          "wrong_region": "us-east-1"
+        },
+        "mutable": {},
+        "omission_keys": [],
+        "omission_values": [],
+        "canaries": {
+          "ticket_id": {
+            "key": "ticket_id",
+            "mode": "recall",
+            "phase": null,
+            "description": "",
+            "initial_value": "SUP-9132",
+            "current_value": "SUP-9132"
+          },
+          "customer_name": {
+            "key": "customer_name",
+            "mode": "recall",
+            "phase": null,
+            "description": "",
+            "initial_value": "Mina Patel",
+            "current_value": "Mina Patel"
+          },
+          "region": {
+            "key": "region",
+            "mode": "recall",
+            "phase": null,
+            "description": "",
+            "initial_value": "us-west-2",
+            "current_value": "us-west-2"
+          }
+        }
+      },
+      "mask_policy": {
+        "direction": "assistant_only",
+        "masked_phases": [
+          "clarification_response",
+          "final_handoff"
+        ],
+        "visible_anchor_assistant_steps": [],
+        "fill_order": "sequential"
+      },
+      "steps": [
+        {
+          "step_id": "system_context",
+          "phase": "system_context",
+          "role": "system",
+          "source": "authored_anchor",
+          "masked": false,
+          "content": "You are a support operations assistant. Follow formatting instructions exactly, retain incident details across turns, and do not invent missing evidence."
+        },
+        {
+          "step_id": "intake_request",
+          "phase": "intake_request",
+          "role": "user",
+          "source": "authored_anchor",
+          "masked": false,
+          "content": "Please hold these details for a support handoff: customer Mina Patel, ticket SUP-9132, issue began right after a email change, and it only repros in preprod. Before you draft anything, ask exactly one clarifying question."
+        },
+        {
+          "step_id": "clarification_response",
+          "phase": "clarification_response",
+          "role": "assistant",
+          "source": "model_fill",
+          "masked": true,
+          "content": null
+        },
+        {
+          "step_id": "followup_details",
+          "phase": "followup_details",
+          "role": "user",
+          "source": "authored_anchor",
+          "masked": false,
+          "content": "The affected region is us-west-2 and there were no 2FA errors. Now draft the handoff note using exactly these labels on separate lines: Ticket, Customer, Problem, Environment, Region, Next Step. Use the values exactly as given."
+        },
+        {
+          "step_id": "final_handoff",
+          "phase": "final_handoff",
+          "role": "assistant",
+          "source": "model_fill",
+          "masked": true,
+          "content": null
+        }
+      ],
+      "checks": [
+        {
+          "step_id": "clarification_response",
+          "phase": "clarification_response",
+          "name": "asks_one_clarifying_question",
+          "rule": "question_count_equals",
+          "weight": 1.0,
+          "params": {
+            "count": 1
+          }
+        },
+        {
+          "step_id": "clarification_response",
+          "phase": "clarification_response",
+          "name": "clarification_is_compact",
+          "rule": "line_count_at_most",
+          "weight": 1.0,
+          "params": {
+            "max": 2
+          }
+        },
+        {
+          "step_id": "final_handoff",
+          "phase": "final_handoff",
+          "name": "ticket_field_exact",
+          "rule": "field_equals",
+          "weight": 1.0,
+          "params": {
+            "field": "Ticket",
+            "value": "SUP-9132"
+          }
+        },
+        {
+          "step_id": "final_handoff",
+          "phase": "final_handoff",
+          "name": "customer_field_exact",
+          "rule": "field_equals",
+          "weight": 1.0,
+          "params": {
+            "field": "Customer",
+            "value": "Mina Patel"
+          }
+        },
+        {
+          "step_id": "final_handoff",
+          "phase": "final_handoff",
+          "name": "environment_field_exact",
+          "rule": "field_equals",
+          "weight": 1.0,
+          "params": {
+            "field": "Environment",
+            "value": "preprod",
+            "case_sensitive": false
+          }
+        },
+        {
+          "step_id": "final_handoff",
+          "phase": "final_handoff",
+          "name": "region_field_exact",
+          "rule": "field_equals",
+          "weight": 1.0,
+          "params": {
+            "field": "Region",
+            "value": "us-west-2"
+          }
+        },
+        {
+          "step_id": "final_handoff",
+          "phase": "final_handoff",
+          "name": "problem_mentions_trigger",
+          "rule": "regex",
+          "weight": 1.0,
+          "params": {
+            "pattern": "(?im)^Problem:.*email change.*$"
+          }
+        },
+        {
+          "step_id": "final_handoff",
+          "phase": "final_handoff",
+          "name": "mentions_absent_issue_correctly",
+          "rule": "regex",
+          "weight": 1.0,
+          "params": {
+            "pattern": "(?is)(no|without).*(?:2FA errors)"
+          }
+        },
+        {
+          "step_id": "final_handoff",
+          "phase": "final_handoff",
+          "name": "next_step_present",
+          "rule": "regex",
+          "weight": 1.0,
+          "params": {
+            "pattern": "(?im)^Next Step:\\s*\\S.+$"
+          }
+        },
+        {
+          "step_id": "final_handoff",
+          "phase": "final_handoff",
+          "name": "key_state_preserved",
+          "rule": "state_preserved",
+          "weight": 1.0,
+          "params": {
+            "expected_values": [
+              "SUP-9132",
+              "Mina Patel",
+              "preprod",
+              "us-west-2"
+            ]
+          }
+        }
+      ],
+      "workload_metadata": {
+        "name": "support_escalation",
+        "description": "A support escalation workload with one clarifying question and a strict handoff.",
+        "tags": [
+          "support",
+          "clarification",
+          "handoff",
+          "no-drift"
+        ],
+        "family": "support_escalation",
+        "pressure_tags": [
+          "clarification",
+          "formatting",
+          "state_preserved",
+          "no_drift"
+        ],
+        "final_artifact": "handoff_note",
+        "clarification_count": 1,
+        "revision_count": 0,
+        "turn_count": 4,
+        "masked_step_count": 2,
+        "masked_phases": [
+          "clarification_response",
+          "final_handoff"
+        ],
+        "visible_anchor_assistant_steps": []
+      }
+    }
+  ],
+  "summary": {
+    "compile_only": true,
+    "authored_spec_count": 1,
+    "compiled_instance_count": 1,
+    "masked_step_count": 2,
+    "run_result_count": 0,
+    "passed_instances": null,
+    "failed_instances": null,
+    "total_checks": null,
+    "passed_checks": null,
+    "failed_checks": null,
+    "score": null,
+    "max_score": null,
+    "score_pct": null,
+    "total_latency_ms": null,
+    "total_prompt_tokens": null,
+    "total_completion_tokens": null
+  },
+  "export_payloads": {
+    "inferencex_v1": {
+      "schema_version": "inferencex_v1",
+      "instances": [
+        {
+          "instance_id": "support_escalation-001-f2a5ed7a",
+          "family": "support_escalation",
+          "workload_metadata": {
+            "name": "support_escalation",
+            "description": "A support escalation workload with one clarifying question and a strict handoff.",
+            "tags": [
+              "support",
+              "clarification",
+              "handoff",
+              "no-drift"
+            ],
+            "family": "support_escalation",
+            "pressure_tags": [
+              "clarification",
+              "formatting",
+              "state_preserved",
+              "no_drift"
+            ],
+            "final_artifact": "handoff_note",
+            "clarification_count": 1,
+            "revision_count": 0,
+            "turn_count": 4,
+            "masked_step_count": 2,
+            "masked_phases": [
+              "clarification_response",
+              "final_handoff"
+            ],
+            "visible_anchor_assistant_steps": []
+          },
+          "conversation": [
+            {
+              "step_id": "system_context",
+              "phase": "system_context",
+              "role": "system",
+              "source": "authored_anchor",
+              "masked": false,
+              "content": "You are a support operations assistant. Follow formatting instructions exactly, retain incident details across turns, and do not invent missing evidence."
+            },
+            {
+              "step_id": "intake_request",
+              "phase": "intake_request",
+              "role": "user",
+              "source": "authored_anchor",
+              "masked": false,
+              "content": "Please hold these details for a support handoff: customer Mina Patel, ticket SUP-9132, issue began right after a email change, and it only repros in preprod. Before you draft anything, ask exactly one clarifying question."
+            },
+            {
+              "step_id": "clarification_response",
+              "phase": "clarification_response",
+              "role": "assistant",
+              "source": "model_fill",
+              "masked": true,
+              "content": null
+            },
+            {
+              "step_id": "followup_details",
+              "phase": "followup_details",
+              "role": "user",
+              "source": "authored_anchor",
+              "masked": false,
+              "content": "The affected region is us-west-2 and there were no 2FA errors. Now draft the handoff note using exactly these labels on separate lines: Ticket, Customer, Problem, Environment, Region, Next Step. Use the values exactly as given."
+            },
+            {
+              "step_id": "final_handoff",
+              "phase": "final_handoff",
+              "role": "assistant",
+              "source": "model_fill",
+              "masked": true,
+              "content": null
+            }
+          ],
+          "mask_annotations": [
+            {
+              "step_id": "system_context",
+              "phase": "system_context",
+              "masked": false,
+              "source": "authored_anchor"
+            },
+            {
+              "step_id": "intake_request",
+              "phase": "intake_request",
+              "masked": false,
+              "source": "authored_anchor"
+            },
+            {
+              "step_id": "clarification_response",
+              "phase": "clarification_response",
+              "masked": true,
+              "source": "model_fill"
+            },
+            {
+              "step_id": "followup_details",
+              "phase": "followup_details",
+              "masked": false,
+              "source": "authored_anchor"
+            },
+            {
+              "step_id": "final_handoff",
+              "phase": "final_handoff",
+              "masked": true,
+              "source": "model_fill"
+            }
+          ],
+          "checks": [
+            {
+              "step_id": "clarification_response",
+              "phase": "clarification_response",
+              "name": "asks_one_clarifying_question",
+              "rule": "question_count_equals",
+              "weight": 1.0,
+              "params": {
+                "count": 1
+              }
+            },
+            {
+              "step_id": "clarification_response",
+              "phase": "clarification_response",
+              "name": "clarification_is_compact",
+              "rule": "line_count_at_most",
+              "weight": 1.0,
+              "params": {
+                "max": 2
+              }
+            },
+            {
+              "step_id": "final_handoff",
+              "phase": "final_handoff",
+              "name": "ticket_field_exact",
+              "rule": "field_equals",
+              "weight": 1.0,
+              "params": {
+                "field": "Ticket",
+                "value": "SUP-9132"
+              }
+            },
+            {
+              "step_id": "final_handoff",
+              "phase": "final_handoff",
+              "name": "customer_field_exact",
+              "rule": "field_equals",
+              "weight": 1.0,
+              "params": {
+                "field": "Customer",
+                "value": "Mina Patel"
+              }
+            },
+            {
+              "step_id": "final_handoff",
+              "phase": "final_handoff",
+              "name": "environment_field_exact",
+              "rule": "field_equals",
+              "weight": 1.0,
+              "params": {
+                "field": "Environment",
+                "value": "preprod",
+                "case_sensitive": false
+              }
+            },
+            {
+              "step_id": "final_handoff",
+              "phase": "final_handoff",
+              "name": "region_field_exact",
+              "rule": "field_equals",
+              "weight": 1.0,
+              "params": {
+                "field": "Region",
+                "value": "us-west-2"
+              }
+            },
+            {
+              "step_id": "final_handoff",
+              "phase": "final_handoff",
+              "name": "problem_mentions_trigger",
+              "rule": "regex",
+              "weight": 1.0,
+              "params": {
+                "pattern": "(?im)^Problem:.*email change.*$"
+              }
+            },
+            {
+              "step_id": "final_handoff",
+              "phase": "final_handoff",
+              "name": "mentions_absent_issue_correctly",
+              "rule": "regex",
+              "weight": 1.0,
+              "params": {
+                "pattern": "(?is)(no|without).*(?:2FA errors)"
+              }
+            },
+            {
+              "step_id": "final_handoff",
+              "phase": "final_handoff",
+              "name": "next_step_present",
+              "rule": "regex",
+              "weight": 1.0,
+              "params": {
+                "pattern": "(?im)^Next Step:\\s*\\S.+$"
+              }
+            },
+            {
+              "step_id": "final_handoff",
+              "phase": "final_handoff",
+              "name": "key_state_preserved",
+              "rule": "state_preserved",
+              "weight": 1.0,
+              "params": {
+                "expected_values": [
+                  "SUP-9132",
+                  "Mina Patel",
+                  "preprod",
+                  "us-west-2"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

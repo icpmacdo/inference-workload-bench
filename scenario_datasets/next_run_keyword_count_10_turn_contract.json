@@ -1,0 +1,244 @@
+{
+  "name": "keyword_count_accuracy_10_turn",
+  "description": "Ten distinct prompts where each answer must remain correct while satisfying an explicit keyword-count output contract.",
+  "system_prompt": "You are a careful assistant. Answer each question directly, keep the answer correct, and satisfy the exact output contract without adding unrelated filler.",
+  "tags": [
+    "single-eval",
+    "keyword-count",
+    "contracts",
+    "composable"
+  ],
+  "turns": [
+    {
+      "question": "What is 12 + 15?",
+      "input_contract": {
+        "task_type": "arithmetic",
+        "question": "What is 12 + 15?",
+        "answer_semantics": "State the numeric sum."
+      },
+      "output_contract": {
+        "sentence_count": 1,
+        "keyword": "note",
+        "keyword_count": 2
+      },
+      "correctness_checks": [
+        {
+          "name": "answer_mentions_27",
+          "rule": "regex",
+          "pattern": "(?is)\\b27\\b"
+        }
+      ]
+    },
+    {
+      "question": "Policy: airport rideshare is reimbursable, minibar is never reimbursable. Is a $19 minibar charge reimbursable?",
+      "input_contract": {
+        "task_type": "policy_classification",
+        "question": "Is a $19 minibar charge reimbursable?",
+        "facts": [
+          "airport rideshare is reimbursable",
+          "minibar is never reimbursable"
+        ]
+      },
+      "output_contract": {
+        "sentence_count": 1,
+        "keyword": "clear",
+        "keyword_count": 2
+      },
+      "correctness_checks": [
+        {
+          "name": "answer_rejects_minibar",
+          "rule": "regex",
+          "pattern": "(?is)(minibar|\\$19).*((not|never|isn't|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+        }
+      ]
+    },
+    {
+      "question": "Ticket SUP-7714 belongs to Mina Patel. Who owns the ticket?",
+      "input_contract": {
+        "task_type": "entity_lookup",
+        "question": "Who owns ticket SUP-7714?",
+        "answer_semantics": "Return the owner's name."
+      },
+      "output_contract": {
+        "sentence_count": 1,
+        "keyword": "record",
+        "keyword_count": 2
+      },
+      "correctness_checks": [
+        {
+          "name": "answer_mentions_owner",
+          "rule": "contains_all",
+          "needles": [
+            "Mina Patel"
+          ]
+        }
+      ]
+    },
+    {
+      "question": "The launch date is July 22. What is the launch date?",
+      "input_contract": {
+        "task_type": "date_recall",
+        "question": "What is the launch date?",
+        "answer_semantics": "Return the exact date."
+      },
+      "output_contract": {
+        "sentence_count": 1,
+        "keyword": "date",
+        "keyword_count": 3
+      },
+      "correctness_checks": [
+        {
+          "name": "answer_mentions_launch_date",
+          "rule": "contains_all",
+          "needles": [
+            "July 22"
+          ]
+        }
+      ]
+    },
+    {
+      "question": "Which option is cheaper: Plan A at $39 or Plan B at $52?",
+      "input_contract": {
+        "task_type": "comparison",
+        "question": "Which option is cheaper?",
+        "options": [
+          "Plan A at $39",
+          "Plan B at $52"
+        ]
+      },
+      "output_contract": {
+        "sentence_count": 1,
+        "keyword": "price",
+        "keyword_count": 2
+      },
+      "correctness_checks": [
+        {
+          "name": "answer_picks_plan_a",
+          "rule": "regex",
+          "pattern": "(?is)(plan a|\\$39).*(cheaper|lower)"
+        }
+      ]
+    },
+    {
+      "question": "Legal review is complete. Is legal review complete?",
+      "input_contract": {
+        "task_type": "status_check",
+        "question": "Is legal review complete?",
+        "expected_status": "yes"
+      },
+      "output_contract": {
+        "sentence_count": 1,
+        "keyword": "legal",
+        "keyword_count": 3
+      },
+      "correctness_checks": [
+        {
+          "name": "answer_says_legal_complete",
+          "rule": "regex",
+          "pattern": "(?is)\\byes\\b.*complete|complete.*\\byes\\b|legal.*complete"
+        }
+      ]
+    },
+    {
+      "question": "BUG-431 is open and high severity. What is the strongest reason not to launch?",
+      "input_contract": {
+        "task_type": "risk_summary",
+        "question": "What is the strongest reason not to launch?",
+        "facts": [
+          "BUG-431 is open",
+          "severity is high"
+        ]
+      },
+      "output_contract": {
+        "sentence_count": 1,
+        "keyword": "risk",
+        "keyword_count": 2
+      },
+      "correctness_checks": [
+        {
+          "name": "answer_mentions_bug_risk",
+          "rule": "contains_all",
+          "needles": [
+            "BUG-431",
+            "high"
+          ]
+        }
+      ]
+    },
+    {
+      "question": "Fallback date is August 5. If launch slips, what fallback date should we use?",
+      "input_contract": {
+        "task_type": "fallback_recall",
+        "question": "What fallback date should we use?",
+        "answer_semantics": "Return the fallback date exactly."
+      },
+      "output_contract": {
+        "sentence_count": 1,
+        "keyword": "fallback",
+        "keyword_count": 2
+      },
+      "correctness_checks": [
+        {
+          "name": "answer_mentions_fallback_date",
+          "rule": "contains_all",
+          "needles": [
+            "August 5"
+          ]
+        }
+      ]
+    },
+    {
+      "question": "Documentation is complete but support is not ready. Which item is not ready?",
+      "input_contract": {
+        "task_type": "status_disambiguation",
+        "question": "Which item is not ready?",
+        "facts": [
+          "documentation is complete",
+          "support is not ready"
+        ]
+      },
+      "output_contract": {
+        "sentence_count": 1,
+        "keyword": "status",
+        "keyword_count": 2
+      },
+      "correctness_checks": [
+        {
+          "name": "answer_mentions_support_not_ready",
+          "rule": "regex",
+          "pattern": "(?is)support.*(not ready|isn't ready|is not ready)"
+        }
+      ]
+    },
+    {
+      "question": "Should Atlas Relay launch on July 22 if BUG-431 is still open?",
+      "input_contract": {
+        "task_type": "decision",
+        "question": "Should Atlas Relay launch on July 22 if BUG-431 is still open?",
+        "decision_rule": "The answer should directly decline launch because the named bug is still open."
+      },
+      "output_contract": {
+        "sentence_count": 2,
+        "keyword": "confirm",
+        "keyword_count": 3
+      },
+      "correctness_checks": [
+        {
+          "name": "final_answer_directly_says_no",
+          "rule": "regex",
+          "pattern": "(?is)^\\s*(no\\b|not yet\\b|do not launch|should not launch|delay)"
+        },
+        {
+          "name": "final_answer_mentions_bug_reason",
+          "rule": "contains_all",
+          "needles": [
+            "Atlas Relay",
+            "July 22",
+            "BUG-431",
+            "open"
+          ]
+        }
+      ]
+    }
+  ]
+}

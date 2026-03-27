@@ -1,0 +1,791 @@
+{
+  "meta": {
+    "started_at": "2026-03-26T17:22:38-07:00",
+    "finished_at": "2026-03-26T17:22:57-07:00",
+    "run_id": "20260326T1722570700_5a535ceb",
+    "workload_fingerprint": "5a535ceba1a4ef9b81f150d1f680c88c187d10e82788259b26c733f6c56299cb"
+  },
+  "config": {
+    "base_model": "Qwen/Qwen3.5-4B",
+    "model_path": null,
+    "base_url": null,
+    "renderer_name": null,
+    "max_tokens": 768,
+    "temperature": 0.2,
+    "top_p": 0.9,
+    "top_k": 40,
+    "seed": 7,
+    "output_dir": "eval_runs",
+    "scenario_names": [],
+    "scenario_file": null,
+    "list_scenarios": false,
+    "resolved_renderer_name": "qwen3_5_disable_thinking"
+  },
+  "summary": {
+    "scenario_count": 3,
+    "passed_scenarios": 3,
+    "failed_scenarios": 0,
+    "total_checks": 21,
+    "passed_checks": 21,
+    "failed_checks": 0,
+    "score": 21.0,
+    "max_score": 21.0,
+    "score_pct": 100.0,
+    "total_latency_ms": 18669.37,
+    "total_completion_tokens": 363
+  },
+  "scenarios": [
+    {
+      "name": "expense_policy_memory",
+      "description": "Tests whether the assistant can carry policy facts forward, classify multiple items correctly, and avoid reintroducing rejected items later.",
+      "system_prompt": "You are an internal operations assistant. Stay grounded in the conversation, answer directly, and do not invent policy exceptions.",
+      "facts": {
+        "trip_code": "TRIP-4821",
+        "hotel_cap": "$180",
+        "meal_cap": "$65"
+      },
+      "turns": [
+        {
+          "user": "I'm going to give you a reimbursement policy to use later. Hotel: up to $180/night with receipt. Meals: up to $65/day. Airport rideshare is reimbursable. Minibar or alcohol is never reimbursable. My trip code is TRIP-4821. Reply with one sentence confirming the trip code and the hotel and meal caps.",
+          "checks": [
+            {
+              "name": "acknowledges_key_policy_facts",
+              "rule": "contains_all",
+              "weight": 1.0,
+              "description": "The assistant should capture the exact values it must remember.",
+              "needles": [
+                "{{trip_code}}",
+                "{{hotel_cap}}",
+                "{{meal_cap}}"
+              ]
+            },
+            {
+              "name": "ack_is_compact",
+              "rule": "line_count_at_most",
+              "weight": 1.0,
+              "description": "The acknowledgement should stay concise.",
+              "max": 2
+            }
+          ]
+        },
+        {
+          "user": "Now evaluate these expenses and answer in exactly three bullets: $172 hotel, $24 airport rideshare, $19 minibar.",
+          "checks": [
+            {
+              "name": "uses_three_bullets",
+              "rule": "bullet_count_equals",
+              "weight": 1.0,
+              "count": 3
+            },
+            {
+              "name": "hotel_is_approved",
+              "rule": "regex",
+              "weight": 1.0,
+              "pattern": "(?is)(\\$172|hotel).*(reimburs|covered|eligible|approved)"
+            },
+            {
+              "name": "rideshare_is_approved",
+              "rule": "regex",
+              "weight": 1.0,
+              "pattern": "(?is)(\\$24|rideshare).*(reimburs|covered|eligible|approved)"
+            },
+            {
+              "name": "minibar_is_rejected",
+              "rule": "regex",
+              "weight": 1.0,
+              "pattern": "(?is)(\\$19|minibar).*((not|never|isn't|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+            }
+          ]
+        },
+        {
+          "user": "Give me a one-sentence summary of only the approved items and include the trip code exactly.",
+          "checks": [
+            {
+              "name": "summary_keeps_trip_code",
+              "rule": "contains_all",
+              "weight": 1.0,
+              "needles": [
+                "{{trip_code}}"
+              ]
+            },
+            {
+              "name": "summary_mentions_both_approved_items",
+              "rule": "regex",
+              "weight": 1.0,
+              "pattern": "(?is)((hotel|\\$172).*(rideshare|\\$24))|((rideshare|\\$24).*(hotel|\\$172))"
+            },
+            {
+              "name": "summary_omits_rejected_item",
+              "rule": "regex_none",
+              "weight": 1.0,
+              "pattern": "(?is)(minibar|\\$19)"
+            }
+          ]
+        }
+      ],
+      "tags": [
+        "memory",
+        "policy",
+        "consistency"
+      ]
+    },
+    {
+      "name": "support_handoff_precision",
+      "description": "Tests conversational discipline, exact field formatting, and retention of facts introduced across multiple turns.",
+      "system_prompt": "You are a support operations assistant. Follow formatting instructions exactly, retain incident details across turns, and do not invent missing evidence.",
+      "facts": {
+        "ticket_id": "SUP-7714",
+        "customer_name": "Mina Patel",
+        "environment": "staging",
+        "region": "us-west-2"
+      },
+      "turns": [
+        {
+          "user": "I need a support handoff note later. Facts to remember: customer Mina Patel, ticket SUP-7714, issue started right after a password reset, and it only reproduces in staging. Before drafting anything, ask me exactly one clarifying question.",
+          "checks": [
+            {
+              "name": "asks_one_clarifying_question",
+              "rule": "question_count_equals",
+              "weight": 1.0,
+              "count": 1
+            }
+          ]
+        },
+        {
+          "user": "The affected region is us-west-2 and there were no 2FA errors. Now draft the handoff note using exactly these labels on separate lines: Ticket, Customer, Problem, Environment, Region, Next Step.",
+          "checks": [
+            {
+              "name": "ticket_line_exact",
+              "rule": "regex",
+              "weight": 1.0,
+              "pattern": "(?im)^Ticket:\\s*SUP-7714\\s*$"
+            },
+            {
+              "name": "customer_line_exact",
+              "rule": "regex",
+              "weight": 1.0,
+              "pattern": "(?im)^Customer:\\s*Mina Patel\\s*$"
+            },
+            {
+              "name": "problem_mentions_password_reset",
+              "rule": "regex",
+              "weight": 1.0,
+              "pattern": "(?im)^Problem:.*password reset.*$"
+            },
+            {
+              "name": "environment_line_exact",
+              "rule": "regex",
+              "weight": 1.0,
+              "pattern": "(?im)^Environment:\\s*staging\\s*$"
+            },
+            {
+              "name": "region_line_exact",
+              "rule": "regex",
+              "weight": 1.0,
+              "pattern": "(?im)^Region:\\s*us-west-2\\s*$"
+            },
+            {
+              "name": "mentions_no_2fa_errors",
+              "rule": "regex",
+              "weight": 1.0,
+              "pattern": "(?is)(no|without).*(2FA|two-factor).*(errors?)"
+            },
+            {
+              "name": "next_step_line_present",
+              "rule": "regex",
+              "weight": 1.0,
+              "pattern": "(?im)^Next Step:\\s*\\S.+$"
+            }
+          ]
+        }
+      ],
+      "tags": [
+        "formatting",
+        "memory",
+        "handoff"
+      ]
+    },
+    {
+      "name": "launch_brief_consistency",
+      "description": "Tests whether the assistant preserves exact factual details across a drafting and revision cycle rather than drifting toward a looser summary.",
+      "system_prompt": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it.",
+      "facts": {
+        "product_name": "Northwind Copilot",
+        "launch_date": "June 18",
+        "rollout_group": "12 design partners",
+        "launch_url": "northwind.ai/copilot"
+      },
+      "turns": [
+        {
+          "user": "Use these launch facts later: product Northwind Copilot, public launch June 18, initial rollout to 12 design partners, and URL northwind.ai/copilot. Reply with a short acknowledgement that repeats the product name and launch date.",
+          "checks": [
+            {
+              "name": "ack_repeats_product_and_date",
+              "rule": "contains_all",
+              "weight": 1.0,
+              "needles": [
+                "{{product_name}}",
+                "{{launch_date}}"
+              ]
+            }
+          ]
+        },
+        {
+          "user": "Draft a two-sentence announcement paragraph.",
+          "checks": [
+            {
+              "name": "draft_keeps_all_launch_facts",
+              "rule": "contains_all",
+              "weight": 1.0,
+              "needles": [
+                "{{product_name}}",
+                "{{launch_date}}",
+                "{{rollout_group}}",
+                "{{launch_url}}"
+              ]
+            }
+          ]
+        },
+        {
+          "user": "Revise the announcement to be shorter, but keep every factual detail unchanged.",
+          "checks": [
+            {
+              "name": "revision_preserves_all_facts",
+              "rule": "contains_all",
+              "weight": 1.0,
+              "needles": [
+                "{{product_name}}",
+                "{{launch_date}}",
+                "{{rollout_group}}",
+                "{{launch_url}}"
+              ]
+            },
+            {
+              "name": "revision_does_not_drift",
+              "rule": "contains_none",
+              "weight": 1.0,
+              "needles": [
+                "June 19",
+                "13 design partners"
+              ]
+            }
+          ]
+        }
+      ],
+      "tags": [
+        "revision",
+        "consistency",
+        "factuality"
+      ]
+    }
+  ],
+  "results": [
+    {
+      "name": "expense_policy_memory",
+      "description": "Tests whether the assistant can carry policy facts forward, classify multiple items correctly, and avoid reintroducing rejected items later.",
+      "passed": true,
+      "score": 9.0,
+      "max_score": 9.0,
+      "score_pct": 100.0,
+      "traces": [
+        {
+          "index": 1,
+          "user_message": "I'm going to give you a reimbursement policy to use later. Hotel: up to $180/night with receipt. Meals: up to $65/day. Airport rideshare is reimbursable. Minibar or alcohol is never reimbursable. My trip code is TRIP-4821. Reply with one sentence confirming the trip code and the hotel and meal caps.",
+          "prompt_messages": [
+            {
+              "role": "system",
+              "content": "You are an internal operations assistant. Stay grounded in the conversation, answer directly, and do not invent policy exceptions."
+            },
+            {
+              "role": "user",
+              "content": "I'm going to give you a reimbursement policy to use later. Hotel: up to $180/night with receipt. Meals: up to $65/day. Airport rideshare is reimbursable. Minibar or alcohol is never reimbursable. My trip code is TRIP-4821. Reply with one sentence confirming the trip code and the hotel and meal caps."
+            }
+          ],
+          "assistant_message": "I have received your reimbursement policy for trip code TRIP-4821, which includes a hotel cap of $180/night, a meal cap of $65/day, and the exclusion of minibar or alcohol.",
+          "latency_ms": 4957.48,
+          "prompt_tokens": 120,
+          "completion_tokens": 49,
+          "stop_reason": "stop",
+          "checks": [
+            {
+              "name": "acknowledges_key_policy_facts",
+              "rule": "contains_all",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "all required substrings present",
+              "resolved_params": {
+                "needles": [
+                  "TRIP-4821",
+                  "$180",
+                  "$65"
+                ]
+              }
+            },
+            {
+              "name": "ack_is_compact",
+              "rule": "line_count_at_most",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "non-empty line count 1 <= 2",
+              "resolved_params": {
+                "max": 2
+              }
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "user_message": "Now evaluate these expenses and answer in exactly three bullets: $172 hotel, $24 airport rideshare, $19 minibar.",
+          "prompt_messages": [
+            {
+              "role": "system",
+              "content": "You are an internal operations assistant. Stay grounded in the conversation, answer directly, and do not invent policy exceptions."
+            },
+            {
+              "role": "user",
+              "content": "I'm going to give you a reimbursement policy to use later. Hotel: up to $180/night with receipt. Meals: up to $65/day. Airport rideshare is reimbursable. Minibar or alcohol is never reimbursable. My trip code is TRIP-4821. Reply with one sentence confirming the trip code and the hotel and meal caps."
+            },
+            {
+              "role": "assistant",
+              "content": "I have received your reimbursement policy for trip code TRIP-4821, which includes a hotel cap of $180/night, a meal cap of $65/day, and the exclusion of minibar or alcohol."
+            },
+            {
+              "role": "user",
+              "content": "Now evaluate these expenses and answer in exactly three bullets: $172 hotel, $24 airport rideshare, $19 minibar."
+            }
+          ],
+          "assistant_message": "*   The $172 hotel expense is reimbursable as it falls within the $180/night cap.\n*   The $24 airport rideshare expense is reimbursable per policy.\n*   The $19 minibar expense is not reimbursable as alcohol and minibar items are never covered.",
+          "latency_ms": 2561.05,
+          "prompt_tokens": 208,
+          "completion_tokens": 70,
+          "stop_reason": "stop",
+          "checks": [
+            {
+              "name": "uses_three_bullets",
+              "rule": "bullet_count_equals",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "bullet count 3 == 3",
+              "resolved_params": {
+                "count": 3
+              }
+            },
+            {
+              "name": "hotel_is_approved",
+              "rule": "regex",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "regex matched",
+              "resolved_params": {
+                "pattern": "(?is)(\\$172|hotel).*(reimburs|covered|eligible|approved)"
+              }
+            },
+            {
+              "name": "rideshare_is_approved",
+              "rule": "regex",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "regex matched",
+              "resolved_params": {
+                "pattern": "(?is)(\\$24|rideshare).*(reimburs|covered|eligible|approved)"
+              }
+            },
+            {
+              "name": "minibar_is_rejected",
+              "rule": "regex",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "regex matched",
+              "resolved_params": {
+                "pattern": "(?is)(\\$19|minibar).*((not|never|isn't|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+              }
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "user_message": "Give me a one-sentence summary of only the approved items and include the trip code exactly.",
+          "prompt_messages": [
+            {
+              "role": "system",
+              "content": "You are an internal operations assistant. Stay grounded in the conversation, answer directly, and do not invent policy exceptions."
+            },
+            {
+              "role": "user",
+              "content": "I'm going to give you a reimbursement policy to use later. Hotel: up to $180/night with receipt. Meals: up to $65/day. Airport rideshare is reimbursable. Minibar or alcohol is never reimbursable. My trip code is TRIP-4821. Reply with one sentence confirming the trip code and the hotel and meal caps."
+            },
+            {
+              "role": "assistant",
+              "content": "I have received your reimbursement policy for trip code TRIP-4821, which includes a hotel cap of $180/night, a meal cap of $65/day, and the exclusion of minibar or alcohol."
+            },
+            {
+              "role": "user",
+              "content": "Now evaluate these expenses and answer in exactly three bullets: $172 hotel, $24 airport rideshare, $19 minibar."
+            },
+            {
+              "role": "assistant",
+              "content": "*   The $172 hotel expense is reimbursable as it falls within the $180/night cap.\n*   The $24 airport rideshare expense is reimbursable per policy.\n*   The $19 minibar expense is not reimbursable as alcohol and minibar items are never covered."
+            },
+            {
+              "role": "user",
+              "content": "Give me a one-sentence summary of only the approved items and include the trip code exactly."
+            }
+          ],
+          "assistant_message": "For trip code TRIP-4821, the approved expenses are the $172 hotel and the $24 airport rideshare.",
+          "latency_ms": 1614.89,
+          "prompt_tokens": 306,
+          "completion_tokens": 31,
+          "stop_reason": "stop",
+          "checks": [
+            {
+              "name": "summary_keeps_trip_code",
+              "rule": "contains_all",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "all required substrings present",
+              "resolved_params": {
+                "needles": [
+                  "TRIP-4821"
+                ]
+              }
+            },
+            {
+              "name": "summary_mentions_both_approved_items",
+              "rule": "regex",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "regex matched",
+              "resolved_params": {
+                "pattern": "(?is)((hotel|\\$172).*(rideshare|\\$24))|((rideshare|\\$24).*(hotel|\\$172))"
+              }
+            },
+            {
+              "name": "summary_omits_rejected_item",
+              "rule": "regex_none",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "regex absent as expected",
+              "resolved_params": {
+                "pattern": "(?is)(minibar|\\$19)"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "support_handoff_precision",
+      "description": "Tests conversational discipline, exact field formatting, and retention of facts introduced across multiple turns.",
+      "passed": true,
+      "score": 8.0,
+      "max_score": 8.0,
+      "score_pct": 100.0,
+      "traces": [
+        {
+          "index": 1,
+          "user_message": "I need a support handoff note later. Facts to remember: customer Mina Patel, ticket SUP-7714, issue started right after a password reset, and it only reproduces in staging. Before drafting anything, ask me exactly one clarifying question.",
+          "prompt_messages": [
+            {
+              "role": "system",
+              "content": "You are a support operations assistant. Follow formatting instructions exactly, retain incident details across turns, and do not invent missing evidence."
+            },
+            {
+              "role": "user",
+              "content": "I need a support handoff note later. Facts to remember: customer Mina Patel, ticket SUP-7714, issue started right after a password reset, and it only reproduces in staging. Before drafting anything, ask me exactly one clarifying question."
+            }
+          ],
+          "assistant_message": "To ensure the handoff note is accurate, could you confirm if the password reset was performed by the customer themselves or by an administrator?",
+          "latency_ms": 1557.69,
+          "prompt_tokens": 95,
+          "completion_tokens": 28,
+          "stop_reason": "stop",
+          "checks": [
+            {
+              "name": "asks_one_clarifying_question",
+              "rule": "question_count_equals",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "question count 1 == 1",
+              "resolved_params": {
+                "count": 1
+              }
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "user_message": "The affected region is us-west-2 and there were no 2FA errors. Now draft the handoff note using exactly these labels on separate lines: Ticket, Customer, Problem, Environment, Region, Next Step.",
+          "prompt_messages": [
+            {
+              "role": "system",
+              "content": "You are a support operations assistant. Follow formatting instructions exactly, retain incident details across turns, and do not invent missing evidence."
+            },
+            {
+              "role": "user",
+              "content": "I need a support handoff note later. Facts to remember: customer Mina Patel, ticket SUP-7714, issue started right after a password reset, and it only reproduces in staging. Before drafting anything, ask me exactly one clarifying question."
+            },
+            {
+              "role": "assistant",
+              "content": "To ensure the handoff note is accurate, could you confirm if the password reset was performed by the customer themselves or by an administrator?"
+            },
+            {
+              "role": "user",
+              "content": "The affected region is us-west-2 and there were no 2FA errors. Now draft the handoff note using exactly these labels on separate lines: Ticket, Customer, Problem, Environment, Region, Next Step."
+            }
+          ],
+          "assistant_message": "Ticket: SUP-7714\nCustomer: Mina Patel\nProblem: Issue reproduces only in staging immediately following a password reset; no 2FA errors observed.\nEnvironment: Staging\nRegion: us-west-2\nNext Step: Investigate password reset logic and authentication flow specifically within the staging environment.",
+          "latency_ms": 2431.81,
+          "prompt_tokens": 176,
+          "completion_tokens": 66,
+          "stop_reason": "stop",
+          "checks": [
+            {
+              "name": "ticket_line_exact",
+              "rule": "regex",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "regex matched",
+              "resolved_params": {
+                "pattern": "(?im)^Ticket:\\s*SUP-7714\\s*$"
+              }
+            },
+            {
+              "name": "customer_line_exact",
+              "rule": "regex",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "regex matched",
+              "resolved_params": {
+                "pattern": "(?im)^Customer:\\s*Mina Patel\\s*$"
+              }
+            },
+            {
+              "name": "problem_mentions_password_reset",
+              "rule": "regex",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "regex matched",
+              "resolved_params": {
+                "pattern": "(?im)^Problem:.*password reset.*$"
+              }
+            },
+            {
+              "name": "environment_line_exact",
+              "rule": "regex",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "regex matched",
+              "resolved_params": {
+                "pattern": "(?im)^Environment:\\s*staging\\s*$"
+              }
+            },
+            {
+              "name": "region_line_exact",
+              "rule": "regex",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "regex matched",
+              "resolved_params": {
+                "pattern": "(?im)^Region:\\s*us-west-2\\s*$"
+              }
+            },
+            {
+              "name": "mentions_no_2fa_errors",
+              "rule": "regex",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "regex matched",
+              "resolved_params": {
+                "pattern": "(?is)(no|without).*(2FA|two-factor).*(errors?)"
+              }
+            },
+            {
+              "name": "next_step_line_present",
+              "rule": "regex",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "regex matched",
+              "resolved_params": {
+                "pattern": "(?im)^Next Step:\\s*\\S.+$"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "launch_brief_consistency",
+      "description": "Tests whether the assistant preserves exact factual details across a drafting and revision cycle rather than drifting toward a looser summary.",
+      "passed": true,
+      "score": 4.0,
+      "max_score": 4.0,
+      "score_pct": 100.0,
+      "traces": [
+        {
+          "index": 1,
+          "user_message": "Use these launch facts later: product Northwind Copilot, public launch June 18, initial rollout to 12 design partners, and URL northwind.ai/copilot. Reply with a short acknowledgement that repeats the product name and launch date.",
+          "prompt_messages": [
+            {
+              "role": "system",
+              "content": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it."
+            },
+            {
+              "role": "user",
+              "content": "Use these launch facts later: product Northwind Copilot, public launch June 18, initial rollout to 12 design partners, and URL northwind.ai/copilot. Reply with a short acknowledgement that repeats the product name and launch date."
+            }
+          ],
+          "assistant_message": "Product: Northwind Copilot, Launch Date: June 18.",
+          "latency_ms": 1251.19,
+          "prompt_tokens": 85,
+          "completion_tokens": 16,
+          "stop_reason": "stop",
+          "checks": [
+            {
+              "name": "ack_repeats_product_and_date",
+              "rule": "contains_all",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "all required substrings present",
+              "resolved_params": {
+                "needles": [
+                  "Northwind Copilot",
+                  "June 18"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "user_message": "Draft a two-sentence announcement paragraph.",
+          "prompt_messages": [
+            {
+              "role": "system",
+              "content": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it."
+            },
+            {
+              "role": "user",
+              "content": "Use these launch facts later: product Northwind Copilot, public launch June 18, initial rollout to 12 design partners, and URL northwind.ai/copilot. Reply with a short acknowledgement that repeats the product name and launch date."
+            },
+            {
+              "role": "assistant",
+              "content": "Product: Northwind Copilot, Launch Date: June 18."
+            },
+            {
+              "role": "user",
+              "content": "Draft a two-sentence announcement paragraph."
+            }
+          ],
+          "assistant_message": "We are thrilled to announce the public launch of Northwind Copilot on June 18, marking a new era of intelligent design assistance. Following an exclusive preview with 12 design partners, the platform is now live at northwind.ai/copilot for everyone to explore.",
+          "latency_ms": 2438.86,
+          "prompt_tokens": 118,
+          "completion_tokens": 56,
+          "stop_reason": "stop",
+          "checks": [
+            {
+              "name": "draft_keeps_all_launch_facts",
+              "rule": "contains_all",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "all required substrings present",
+              "resolved_params": {
+                "needles": [
+                  "Northwind Copilot",
+                  "June 18",
+                  "12 design partners",
+                  "northwind.ai/copilot"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "user_message": "Revise the announcement to be shorter, but keep every factual detail unchanged.",
+          "prompt_messages": [
+            {
+              "role": "system",
+              "content": "You are a product communications assistant. Keep every explicit fact stable unless the user changes it."
+            },
+            {
+              "role": "user",
+              "content": "Use these launch facts later: product Northwind Copilot, public launch June 18, initial rollout to 12 design partners, and URL northwind.ai/copilot. Reply with a short acknowledgement that repeats the product name and launch date."
+            },
+            {
+              "role": "assistant",
+              "content": "Product: Northwind Copilot, Launch Date: June 18."
+            },
+            {
+              "role": "user",
+              "content": "Draft a two-sentence announcement paragraph."
+            },
+            {
+              "role": "assistant",
+              "content": "We are thrilled to announce the public launch of Northwind Copilot on June 18, marking a new era of intelligent design assistance. Following an exclusive preview with 12 design partners, the platform is now live at northwind.ai/copilot for everyone to explore."
+            },
+            {
+              "role": "user",
+              "content": "Revise the announcement to be shorter, but keep every factual detail unchanged."
+            }
+          ],
+          "assistant_message": "We are excited to announce the public launch of Northwind Copilot on June 18, following an exclusive rollout to 12 design partners. The platform is now live at northwind.ai/copilot for everyone to explore.",
+          "latency_ms": 1856.4,
+          "prompt_tokens": 198,
+          "completion_tokens": 47,
+          "stop_reason": "stop",
+          "checks": [
+            {
+              "name": "revision_preserves_all_facts",
+              "rule": "contains_all",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "all required substrings present",
+              "resolved_params": {
+                "needles": [
+                  "Northwind Copilot",
+                  "June 18",
+                  "12 design partners",
+                  "northwind.ai/copilot"
+                ]
+              }
+            },
+            {
+              "name": "revision_does_not_drift",
+              "rule": "contains_none",
+              "passed": true,
+              "weight": 1.0,
+              "score": 1.0,
+              "details": "no forbidden substrings present",
+              "resolved_params": {
+                "needles": [
+                  "June 19",
+                  "13 design partners"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

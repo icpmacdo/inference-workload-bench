@@ -1,0 +1,388 @@
+[
+  {
+    "name": "keyword_count_accuracy_10_turn",
+    "description": "Ten distinct prompts where each answer must remain correct while satisfying an explicit keyword-count output contract.",
+    "system_prompt": "You are a careful assistant. Answer each question directly, keep the answer correct, and satisfy the exact output contract without adding unrelated filler.",
+    "facts": {},
+    "turns": [
+      {
+        "user": "What is 12 + 15? Answer in one sentence and use the lowercase word \"note\" exactly 2 times.",
+        "input_contract": {
+          "task_type": "arithmetic",
+          "question": "What is 12 + 15?",
+          "answer_semantics": "State the numeric sum."
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword": "note",
+          "keyword_count": 2
+        },
+        "checks": [
+          {
+            "name": "uses_note_exactly_2_times",
+            "rule": "word_count_equals",
+            "weight": 1.0,
+            "word": "note",
+            "count": 2
+          },
+          {
+            "name": "uses_exactly_1_sentences",
+            "rule": "sentence_count_equals",
+            "weight": 1.0,
+            "count": 1
+          },
+          {
+            "name": "answer_mentions_27",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)\\b27\\b"
+          }
+        ]
+      },
+      {
+        "user": "Policy: airport rideshare is reimbursable, minibar is never reimbursable. Is a $19 minibar charge reimbursable? Answer in one sentence and use the lowercase word \"clear\" exactly 2 times.",
+        "input_contract": {
+          "task_type": "policy_classification",
+          "question": "Is a $19 minibar charge reimbursable?",
+          "facts": [
+            "airport rideshare is reimbursable",
+            "minibar is never reimbursable"
+          ]
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword": "clear",
+          "keyword_count": 2
+        },
+        "checks": [
+          {
+            "name": "uses_clear_exactly_2_times",
+            "rule": "word_count_equals",
+            "weight": 1.0,
+            "word": "clear",
+            "count": 2
+          },
+          {
+            "name": "uses_exactly_1_sentences",
+            "rule": "sentence_count_equals",
+            "weight": 1.0,
+            "count": 1
+          },
+          {
+            "name": "answer_rejects_minibar",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(minibar|\\$19).*((not|never|isn't|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        ]
+      },
+      {
+        "user": "Ticket SUP-7714 belongs to Mina Patel. Who owns the ticket? Answer in one sentence and use the lowercase word \"record\" exactly 2 times.",
+        "input_contract": {
+          "task_type": "entity_lookup",
+          "question": "Who owns ticket SUP-7714?",
+          "answer_semantics": "Return the owner's name."
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword": "record",
+          "keyword_count": 2
+        },
+        "checks": [
+          {
+            "name": "uses_record_exactly_2_times",
+            "rule": "word_count_equals",
+            "weight": 1.0,
+            "word": "record",
+            "count": 2
+          },
+          {
+            "name": "uses_exactly_1_sentences",
+            "rule": "sentence_count_equals",
+            "weight": 1.0,
+            "count": 1
+          },
+          {
+            "name": "answer_mentions_owner",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "Mina Patel"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "The launch date is July 22. What is the launch date? Answer in one sentence and use the lowercase word \"date\" exactly 3 times.",
+        "input_contract": {
+          "task_type": "date_recall",
+          "question": "What is the launch date?",
+          "answer_semantics": "Return the exact date."
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword": "date",
+          "keyword_count": 3
+        },
+        "checks": [
+          {
+            "name": "uses_date_exactly_3_times",
+            "rule": "word_count_equals",
+            "weight": 1.0,
+            "word": "date",
+            "count": 3
+          },
+          {
+            "name": "uses_exactly_1_sentences",
+            "rule": "sentence_count_equals",
+            "weight": 1.0,
+            "count": 1
+          },
+          {
+            "name": "answer_mentions_launch_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "July 22"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Which option is cheaper: Plan A at $39 or Plan B at $52? Answer in one sentence and use the lowercase word \"price\" exactly 2 times.",
+        "input_contract": {
+          "task_type": "comparison",
+          "question": "Which option is cheaper?",
+          "options": [
+            "Plan A at $39",
+            "Plan B at $52"
+          ]
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword": "price",
+          "keyword_count": 2
+        },
+        "checks": [
+          {
+            "name": "uses_price_exactly_2_times",
+            "rule": "word_count_equals",
+            "weight": 1.0,
+            "word": "price",
+            "count": 2
+          },
+          {
+            "name": "uses_exactly_1_sentences",
+            "rule": "sentence_count_equals",
+            "weight": 1.0,
+            "count": 1
+          },
+          {
+            "name": "answer_picks_plan_a",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)(plan a|\\$39).*(cheaper|lower)"
+          }
+        ]
+      },
+      {
+        "user": "Legal review is complete. Is legal review complete? Answer in one sentence and use the lowercase word \"legal\" exactly 3 times.",
+        "input_contract": {
+          "task_type": "status_check",
+          "question": "Is legal review complete?",
+          "expected_status": "yes"
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword": "legal",
+          "keyword_count": 3
+        },
+        "checks": [
+          {
+            "name": "uses_legal_exactly_3_times",
+            "rule": "word_count_equals",
+            "weight": 1.0,
+            "word": "legal",
+            "count": 3
+          },
+          {
+            "name": "uses_exactly_1_sentences",
+            "rule": "sentence_count_equals",
+            "weight": 1.0,
+            "count": 1
+          },
+          {
+            "name": "answer_says_legal_complete",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)\\byes\\b.*complete|complete.*\\byes\\b|legal.*complete"
+          }
+        ]
+      },
+      {
+        "user": "BUG-431 is open and high severity. What is the strongest reason not to launch? Answer in one sentence and use the lowercase word \"risk\" exactly 2 times.",
+        "input_contract": {
+          "task_type": "risk_summary",
+          "question": "What is the strongest reason not to launch?",
+          "facts": [
+            "BUG-431 is open",
+            "severity is high"
+          ]
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword": "risk",
+          "keyword_count": 2
+        },
+        "checks": [
+          {
+            "name": "uses_risk_exactly_2_times",
+            "rule": "word_count_equals",
+            "weight": 1.0,
+            "word": "risk",
+            "count": 2
+          },
+          {
+            "name": "uses_exactly_1_sentences",
+            "rule": "sentence_count_equals",
+            "weight": 1.0,
+            "count": 1
+          },
+          {
+            "name": "answer_mentions_bug_risk",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "BUG-431",
+              "high"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Fallback date is August 5. If launch slips, what fallback date should we use? Answer in one sentence and use the lowercase word \"fallback\" exactly 2 times.",
+        "input_contract": {
+          "task_type": "fallback_recall",
+          "question": "What fallback date should we use?",
+          "answer_semantics": "Return the fallback date exactly."
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword": "fallback",
+          "keyword_count": 2
+        },
+        "checks": [
+          {
+            "name": "uses_fallback_exactly_2_times",
+            "rule": "word_count_equals",
+            "weight": 1.0,
+            "word": "fallback",
+            "count": 2
+          },
+          {
+            "name": "uses_exactly_1_sentences",
+            "rule": "sentence_count_equals",
+            "weight": 1.0,
+            "count": 1
+          },
+          {
+            "name": "answer_mentions_fallback_date",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "August 5"
+            ]
+          }
+        ]
+      },
+      {
+        "user": "Documentation is complete but support is not ready. Which item is not ready? Answer in one sentence and use the lowercase word \"status\" exactly 2 times.",
+        "input_contract": {
+          "task_type": "status_disambiguation",
+          "question": "Which item is not ready?",
+          "facts": [
+            "documentation is complete",
+            "support is not ready"
+          ]
+        },
+        "output_contract": {
+          "sentence_count": 1,
+          "keyword": "status",
+          "keyword_count": 2
+        },
+        "checks": [
+          {
+            "name": "uses_status_exactly_2_times",
+            "rule": "word_count_equals",
+            "weight": 1.0,
+            "word": "status",
+            "count": 2
+          },
+          {
+            "name": "uses_exactly_1_sentences",
+            "rule": "sentence_count_equals",
+            "weight": 1.0,
+            "count": 1
+          },
+          {
+            "name": "answer_mentions_support_not_ready",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)support.*(not ready|isn't ready|is not ready)"
+          }
+        ]
+      },
+      {
+        "user": "Should Atlas Relay launch on July 22 if BUG-431 is still open? Answer in exactly 2 sentences and use the lowercase word \"confirm\" exactly 3 times.",
+        "input_contract": {
+          "task_type": "decision",
+          "question": "Should Atlas Relay launch on July 22 if BUG-431 is still open?",
+          "decision_rule": "The answer should directly decline launch because the named bug is still open."
+        },
+        "output_contract": {
+          "sentence_count": 2,
+          "keyword": "confirm",
+          "keyword_count": 3
+        },
+        "checks": [
+          {
+            "name": "uses_confirm_exactly_3_times",
+            "rule": "word_count_equals",
+            "weight": 1.0,
+            "word": "confirm",
+            "count": 3
+          },
+          {
+            "name": "uses_exactly_2_sentences",
+            "rule": "sentence_count_equals",
+            "weight": 1.0,
+            "count": 2
+          },
+          {
+            "name": "final_answer_directly_says_no",
+            "rule": "regex",
+            "weight": 1.0,
+            "pattern": "(?is)^\\s*(no\\b|not yet\\b|do not launch|should not launch|delay)"
+          },
+          {
+            "name": "final_answer_mentions_bug_reason",
+            "rule": "contains_all",
+            "weight": 1.0,
+            "needles": [
+              "Atlas Relay",
+              "July 22",
+              "BUG-431",
+              "open"
+            ]
+          }
+        ]
+      }
+    ],
+    "tags": [
+      "single-eval",
+      "keyword-count",
+      "contracts",
+      "composable"
+    ]
+  }
+]

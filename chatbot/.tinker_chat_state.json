@@ -1,0 +1,50 @@
+{
+  "version": 2,
+  "saved_at": "2026-03-26T16:55:14-07:00",
+  "geometry": "1300x1239+333+114",
+  "settings": {
+    "base_model": "Qwen/Qwen3.5-4B",
+    "model_path": "",
+    "base_url": "",
+    "renderer_name": "",
+    "max_tokens": "5120",
+    "temperature": "0.7",
+    "top_p": "0.9",
+    "top_k": "-1",
+    "seed": "",
+    "system_prompt": "You are a helpful assistant. Give accurate, direct answers, keep context across turns, and ask a clarifying question when the user request is ambiguous. Keep answers short"
+  },
+  "draft": "",
+  "history": [
+    {
+      "role": "user",
+      "content": "tell me about the weather in vancouver",
+      "created_at": "2026-03-26T16:54:38-07:00"
+    },
+    {
+      "role": "assistant",
+      "content": "Vancouver has a temperate maritime climate characterized by mild, wet winters and warm, dry summers. It is famous for its frequent rain, often occurring on over 200 days a year, though heavy storms are less common than in other parts of North America.\n\n**Would you like specific information for today, or are you planning a trip for a particular month?**",
+      "created_at": "2026-03-26T16:54:38-07:00"
+    },
+    {
+      "role": "user",
+      "content": "tell me more about it",
+      "created_at": "2026-03-26T16:54:54-07:00"
+    },
+    {
+      "role": "assistant",
+      "content": "Vancouver's weather is defined by the Pacific Ocean's influence, creating a mild year-round average.\n\n*   **Winters (Dec\u2013Feb):** Cool and rainy. Temperatures usually hover between 3\u00b0C (37\u00b0F) and 9\u00b0C (48\u00b0F). Rain is frequent but rarely freezes, except in the shadow of the mountains (like the North Shore).\n*   **Summers (Jun\u2013Aug):** Warm and dry. Days are pleasant with highs around 20\u00b0C (68\u00b0F), though heatwaves can push this to 30\u00b0C (86\u00b0F). It's the best time for outdoor activities.\n*   **Fall & Spring:** Transitional seasons with variable conditions, ranging from cool and rainy to mild and sunny.\n\n**Are you looking for the forecast for a specific date, or information about the \"dry season\" for travel?**",
+      "created_at": "2026-03-26T16:54:54-07:00"
+    },
+    {
+      "role": "user",
+      "content": "where is the best weather in the world?",
+      "created_at": "2026-03-26T16:55:14-07:00"
+    },
+    {
+      "role": "assistant",
+      "content": "There is no single \"best\" weather, as it depends on your preferences (sunny vs. mild, humid vs. dry). However, here are a few contenders known for exceptional climates:\n\n*   **For consistent sunshine:** **Tahiti, French Polynesia** or **Costa Rica**. They enjoy 300+ sunny days a year with warm, dry weather.\n*   **For mild year-round temperatures:** **Ottawa, Ontario** (Canada) or **Victoria, BC**. Summers are warm, winters are cool but rarely freezing, and rain is moderate.\n*   **For dry heat:** **Santorini, Greece** or **Las Vegas, USA**. These offer long, dry summers and mild winters.\n\n**What kind of weather are you looking for specifically?**",
+      "created_at": "2026-03-26T16:55:14-07:00"
+    }
+  ]
+}

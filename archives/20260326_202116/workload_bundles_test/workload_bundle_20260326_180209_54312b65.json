@@ -1,0 +1,723 @@
+{
+  "meta": {
+    "started_at": "2026-03-26T18:02:09-07:00",
+    "finished_at": "2026-03-26T18:02:09-07:00",
+    "run_fingerprint": "54312b65537deafeabe337bc79eab21dc2d5a61b0f07fc2fbd7d11f5800ba407",
+    "bundle_id": "20260326T1802090700_54312b65"
+  },
+  "config": {
+    "base_model": "Qwen/Qwen3.5-4B",
+    "model_path": null,
+    "base_url": null,
+    "renderer_name": null,
+    "max_tokens": 768,
+    "temperature": 0.2,
+    "top_p": 0.9,
+    "top_k": 40,
+    "seed": 7,
+    "output_dir": "workload_bundles_test",
+    "pattern_names": [
+      "policy_memory"
+    ],
+    "spec_file": null,
+    "instance_count": 1,
+    "compile_only": true,
+    "list_patterns": false,
+    "list_rules": false,
+    "self_test": false,
+    "resolved_renderer_name": null
+  },
+  "authored_specs": [
+    {
+      "name": "policy_memory",
+      "description": "A reimbursement policy workload that stresses carry-forward memory and selective omission.",
+      "family": "policy_memory",
+      "tags": [
+        "policy",
+        "memory",
+        "classification",
+        "selective-omission"
+      ],
+      "system_prompt": "You are an internal operations assistant. Stay grounded in the conversation, answer directly, and do not invent policy exceptions.",
+      "interaction_pattern": {
+        "clarification_count": 0,
+        "revision_count": 0,
+        "final_artifact": "approved_items_summary",
+        "pressure_tags": [
+          "memory",
+          "selective_omission",
+          "carry_forward"
+        ],
+        "turn_count_hint": 6
+      },
+      "hidden_state_template": {
+        "fact_pools": {
+          "trip_code": [
+            "TRIP-4821",
+            "TRIP-5907",
+            "TRIP-6114"
+          ],
+          "hotel_cap": [
+            "$180",
+            "$200",
+            "$220"
+          ],
+          "meal_cap": [
+            "$65",
+            "$70",
+            "$75"
+          ],
+          "hotel_expense": [
+            "$148",
+            "$172",
+            "$179"
+          ],
+          "rideshare_expense": [
+            "$24",
+            "$31",
+            "$42"
+          ],
+          "minibar_expense": [
+            "$17",
+            "$19",
+            "$23"
+          ]
+        },
+        "mutable_facts": [],
+        "distractors": {},
+        "omission_keys": [
+          "minibar_expense"
+        ],
+        "canaries": [
+          {
+            "key": "trip_code",
+            "mode": "recall"
+          },
+          {
+            "key": "hotel_cap",
+            "mode": "recall"
+          },
+          {
+            "key": "meal_cap",
+            "mode": "recall"
+          },
+          {
+            "key": "minibar_expense",
+            "mode": "omit"
+          }
+        ]
+      },
+      "mask_policy": {
+        "direction": "assistant_only",
+        "masked_phases": [
+          "policy_ack",
+          "expense_classification",
+          "approved_summary"
+        ],
+        "visible_anchor_assistant_steps": [],
+        "fill_order": "sequential"
+      },
+      "artifact_contract": {
+        "required_fields": [
+          "Trip Code",
+          "Approved Items"
+        ]
+      },
+      "style_options": {
+        "policy_variants": [
+          "I'm going to give you a reimbursement policy to use later. Hotel: up to {{facts.hotel_cap}}/night with receipt. Meals: up to {{facts.meal_cap}}/day. Airport rideshare is reimbursable. Minibar or alcohol is never reimbursable. My trip code is {{facts.trip_code}}. Reply with one sentence confirming the trip code and the hotel and meal caps.",
+          "Use this reimbursement policy for later turns. Hotel: max {{facts.hotel_cap}} per night with a receipt. Meals: max {{facts.meal_cap}} per day. Airport rideshare is reimbursable. Minibar or alcohol is never reimbursable. The trip code is {{facts.trip_code}}. Reply with one sentence confirming the trip code and both caps."
+        ]
+      }
+    }
+  ],
+  "compiled_instances": [
+    {
+      "instance_id": "policy_memory-001-23e34ca0",
+      "family": "policy_memory",
+      "seed": 7,
+      "spec_fingerprint": "bc31af8fd3f374d1309bc5a1bcbe55166c036dc3f5c7e58e351f1286b7287556",
+      "instance_fingerprint": "23e34ca02f2f0d92dd29fe4a9d30f02d567da9261f4be7def84dcd98af9e23f1",
+      "interaction_pattern": {
+        "clarification_count": 0,
+        "revision_count": 0,
+        "final_artifact": "approved_items_summary",
+        "pressure_tags": [
+          "memory",
+          "selective_omission",
+          "carry_forward"
+        ],
+        "turn_count_hint": 6
+      },
+      "hidden_state": {
+        "facts": {
+          "trip_code": "TRIP-5907",
+          "hotel_cap": "$180",
+          "meal_cap": "$70",
+          "hotel_expense": "$179",
+          "rideshare_expense": "$24",
+          "minibar_expense": "$17"
+        },
+        "facts_current": {
+          "trip_code": "TRIP-5907",
+          "hotel_cap": "$180",
+          "meal_cap": "$70",
+          "hotel_expense": "$179",
+          "rideshare_expense": "$24",
+          "minibar_expense": "$17"
+        },
+        "distractors": {},
+        "mutable": {},
+        "omission_keys": [
+          "minibar_expense"
+        ],
+        "omission_values": [
+          "$17"
+        ],
+        "canaries": {
+          "trip_code": {
+            "key": "trip_code",
+            "mode": "recall",
+            "phase": null,
+            "description": "",
+            "initial_value": "TRIP-5907",
+            "current_value": "TRIP-5907"
+          },
+          "hotel_cap": {
+            "key": "hotel_cap",
+            "mode": "recall",
+            "phase": null,
+            "description": "",
+            "initial_value": "$180",
+            "current_value": "$180"
+          },
+          "meal_cap": {
+            "key": "meal_cap",
+            "mode": "recall",
+            "phase": null,
+            "description": "",
+            "initial_value": "$70",
+            "current_value": "$70"
+          },
+          "minibar_expense": {
+            "key": "minibar_expense",
+            "mode": "omit",
+            "phase": null,
+            "description": "",
+            "initial_value": "$17",
+            "current_value": "$17"
+          }
+        }
+      },
+      "mask_policy": {
+        "direction": "assistant_only",
+        "masked_phases": [
+          "policy_ack",
+          "expense_classification",
+          "approved_summary"
+        ],
+        "visible_anchor_assistant_steps": [],
+        "fill_order": "sequential"
+      },
+      "steps": [
+        {
+          "step_id": "system_context",
+          "phase": "system_context",
+          "role": "system",
+          "source": "authored_anchor",
+          "masked": false,
+          "content": "You are an internal operations assistant. Stay grounded in the conversation, answer directly, and do not invent policy exceptions."
+        },
+        {
+          "step_id": "policy_ingest",
+          "phase": "policy_ingest",
+          "role": "user",
+          "source": "authored_anchor",
+          "masked": false,
+          "content": "I'm going to give you a reimbursement policy to use later. Hotel: up to $180/night with receipt. Meals: up to $70/day. Airport rideshare is reimbursable. Minibar or alcohol is never reimbursable. My trip code is TRIP-5907. Reply with one sentence confirming the trip code and the hotel and meal caps."
+        },
+        {
+          "step_id": "policy_ack",
+          "phase": "policy_ack",
+          "role": "assistant",
+          "source": "model_fill",
+          "masked": true,
+          "content": null
+        },
+        {
+          "step_id": "expense_review",
+          "phase": "expense_review",
+          "role": "user",
+          "source": "authored_anchor",
+          "masked": false,
+          "content": "Now evaluate these expenses and answer in exactly three bullets: $179 hotel, $24 airport rideshare, $17 minibar."
+        },
+        {
+          "step_id": "expense_classification",
+          "phase": "expense_classification",
+          "role": "assistant",
+          "source": "model_fill",
+          "masked": true,
+          "content": null
+        },
+        {
+          "step_id": "summary_request",
+          "phase": "summary_request",
+          "role": "user",
+          "source": "authored_anchor",
+          "masked": false,
+          "content": "Give me a one-sentence summary of only the approved items and include the trip code exactly."
+        },
+        {
+          "step_id": "approved_summary",
+          "phase": "approved_summary",
+          "role": "assistant",
+          "source": "model_fill",
+          "masked": true,
+          "content": null
+        }
+      ],
+      "checks": [
+        {
+          "step_id": "policy_ack",
+          "phase": "policy_ack",
+          "name": "acknowledges_key_policy_facts",
+          "rule": "contains_all",
+          "weight": 1.0,
+          "params": {
+            "needles": [
+              "TRIP-5907",
+              "$180",
+              "$70"
+            ]
+          }
+        },
+        {
+          "step_id": "policy_ack",
+          "phase": "policy_ack",
+          "name": "policy_state_preserved",
+          "rule": "state_preserved",
+          "weight": 1.0,
+          "params": {
+            "expected_values": [
+              "TRIP-5907",
+              "$180",
+              "$70"
+            ]
+          }
+        },
+        {
+          "step_id": "policy_ack",
+          "phase": "policy_ack",
+          "name": "ack_is_compact",
+          "rule": "line_count_at_most",
+          "weight": 1.0,
+          "params": {
+            "max": 1
+          }
+        },
+        {
+          "step_id": "expense_classification",
+          "phase": "expense_classification",
+          "name": "uses_three_bullets",
+          "rule": "bullet_count_equals",
+          "weight": 1.0,
+          "params": {
+            "count": 3
+          }
+        },
+        {
+          "step_id": "expense_classification",
+          "phase": "expense_classification",
+          "name": "hotel_is_approved",
+          "rule": "regex",
+          "weight": 1.0,
+          "params": {
+            "pattern": "(?is)(hotel).*(reimburs|covered|eligible|approved)"
+          }
+        },
+        {
+          "step_id": "expense_classification",
+          "phase": "expense_classification",
+          "name": "rideshare_is_approved",
+          "rule": "regex",
+          "weight": 1.0,
+          "params": {
+            "pattern": "(?is)(rideshare).*(reimburs|covered|eligible|approved)"
+          }
+        },
+        {
+          "step_id": "expense_classification",
+          "phase": "expense_classification",
+          "name": "minibar_is_rejected",
+          "rule": "regex",
+          "weight": 1.0,
+          "params": {
+            "pattern": "(?is)(minibar).*((not|never|isn't|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+          }
+        },
+        {
+          "step_id": "approved_summary",
+          "phase": "approved_summary",
+          "name": "summary_keeps_trip_code",
+          "rule": "contains_all",
+          "weight": 1.0,
+          "params": {
+            "needles": [
+              "TRIP-5907"
+            ]
+          }
+        },
+        {
+          "step_id": "approved_summary",
+          "phase": "approved_summary",
+          "name": "summary_mentions_both_approved_items",
+          "rule": "contains_all",
+          "weight": 1.0,
+          "params": {
+            "needles": [
+              "$179",
+              "$24"
+            ]
+          }
+        },
+        {
+          "step_id": "approved_summary",
+          "phase": "approved_summary",
+          "name": "summary_omits_rejected_item",
+          "rule": "required_omission",
+          "weight": 1.0,
+          "params": {
+            "needles": [
+              "$17",
+              "minibar"
+            ]
+          }
+        },
+        {
+          "step_id": "approved_summary",
+          "phase": "approved_summary",
+          "name": "summary_is_compact",
+          "rule": "line_count_at_most",
+          "weight": 1.0,
+          "params": {
+            "max": 1
+          }
+        }
+      ],
+      "workload_metadata": {
+        "name": "policy_memory",
+        "description": "A reimbursement policy workload that stresses carry-forward memory and selective omission.",
+        "tags": [
+          "policy",
+          "memory",
+          "classification",
+          "selective-omission"
+        ],
+        "family": "policy_memory",
+        "pressure_tags": [
+          "memory",
+          "selective_omission",
+          "carry_forward"
+        ],
+        "final_artifact": "approved_items_summary",
+        "clarification_count": 0,
+        "revision_count": 0,
+        "turn_count": 6,
+        "masked_step_count": 3,
+        "masked_phases": [
+          "policy_ack",
+          "expense_classification",
+          "approved_summary"
+        ],
+        "visible_anchor_assistant_steps": []
+      }
+    }
+  ],
+  "summary": {
+    "compile_only": true,
+    "authored_spec_count": 1,
+    "compiled_instance_count": 1,
+    "masked_step_count": 3,
+    "run_result_count": 0,
+    "passed_instances": null,
+    "failed_instances": null,
+    "total_checks": null,
+    "passed_checks": null,
+    "failed_checks": null,
+    "score": null,
+    "max_score": null,
+    "score_pct": null,
+    "total_latency_ms": null,
+    "total_prompt_tokens": null,
+    "total_completion_tokens": null
+  },
+  "export_payloads": {
+    "inferencex_v1": {
+      "schema_version": "inferencex_v1",
+      "instances": [
+        {
+          "instance_id": "policy_memory-001-23e34ca0",
+          "family": "policy_memory",
+          "workload_metadata": {
+            "name": "policy_memory",
+            "description": "A reimbursement policy workload that stresses carry-forward memory and selective omission.",
+            "tags": [
+              "policy",
+              "memory",
+              "classification",
+              "selective-omission"
+            ],
+            "family": "policy_memory",
+            "pressure_tags": [
+              "memory",
+              "selective_omission",
+              "carry_forward"
+            ],
+            "final_artifact": "approved_items_summary",
+            "clarification_count": 0,
+            "revision_count": 0,
+            "turn_count": 6,
+            "masked_step_count": 3,
+            "masked_phases": [
+              "policy_ack",
+              "expense_classification",
+              "approved_summary"
+            ],
+            "visible_anchor_assistant_steps": []
+          },
+          "conversation": [
+            {
+              "step_id": "system_context",
+              "phase": "system_context",
+              "role": "system",
+              "source": "authored_anchor",
+              "masked": false,
+              "content": "You are an internal operations assistant. Stay grounded in the conversation, answer directly, and do not invent policy exceptions."
+            },
+            {
+              "step_id": "policy_ingest",
+              "phase": "policy_ingest",
+              "role": "user",
+              "source": "authored_anchor",
+              "masked": false,
+              "content": "I'm going to give you a reimbursement policy to use later. Hotel: up to $180/night with receipt. Meals: up to $70/day. Airport rideshare is reimbursable. Minibar or alcohol is never reimbursable. My trip code is TRIP-5907. Reply with one sentence confirming the trip code and the hotel and meal caps."
+            },
+            {
+              "step_id": "policy_ack",
+              "phase": "policy_ack",
+              "role": "assistant",
+              "source": "model_fill",
+              "masked": true,
+              "content": null
+            },
+            {
+              "step_id": "expense_review",
+              "phase": "expense_review",
+              "role": "user",
+              "source": "authored_anchor",
+              "masked": false,
+              "content": "Now evaluate these expenses and answer in exactly three bullets: $179 hotel, $24 airport rideshare, $17 minibar."
+            },
+            {
+              "step_id": "expense_classification",
+              "phase": "expense_classification",
+              "role": "assistant",
+              "source": "model_fill",
+              "masked": true,
+              "content": null
+            },
+            {
+              "step_id": "summary_request",
+              "phase": "summary_request",
+              "role": "user",
+              "source": "authored_anchor",
+              "masked": false,
+              "content": "Give me a one-sentence summary of only the approved items and include the trip code exactly."
+            },
+            {
+              "step_id": "approved_summary",
+              "phase": "approved_summary",
+              "role": "assistant",
+              "source": "model_fill",
+              "masked": true,
+              "content": null
+            }
+          ],
+          "mask_annotations": [
+            {
+              "step_id": "system_context",
+              "phase": "system_context",
+              "masked": false,
+              "source": "authored_anchor"
+            },
+            {
+              "step_id": "policy_ingest",
+              "phase": "policy_ingest",
+              "masked": false,
+              "source": "authored_anchor"
+            },
+            {
+              "step_id": "policy_ack",
+              "phase": "policy_ack",
+              "masked": true,
+              "source": "model_fill"
+            },
+            {
+              "step_id": "expense_review",
+              "phase": "expense_review",
+              "masked": false,
+              "source": "authored_anchor"
+            },
+            {
+              "step_id": "expense_classification",
+              "phase": "expense_classification",
+              "masked": true,
+              "source": "model_fill"
+            },
+            {
+              "step_id": "summary_request",
+              "phase": "summary_request",
+              "masked": false,
+              "source": "authored_anchor"
+            },
+            {
+              "step_id": "approved_summary",
+              "phase": "approved_summary",
+              "masked": true,
+              "source": "model_fill"
+            }
+          ],
+          "checks": [
+            {
+              "step_id": "policy_ack",
+              "phase": "policy_ack",
+              "name": "acknowledges_key_policy_facts",
+              "rule": "contains_all",
+              "weight": 1.0,
+              "params": {
+                "needles": [
+                  "TRIP-5907",
+                  "$180",
+                  "$70"
+                ]
+              }
+            },
+            {
+              "step_id": "policy_ack",
+              "phase": "policy_ack",
+              "name": "policy_state_preserved",
+              "rule": "state_preserved",
+              "weight": 1.0,
+              "params": {
+                "expected_values": [
+                  "TRIP-5907",
+                  "$180",
+                  "$70"
+                ]
+              }
+            },
+            {
+              "step_id": "policy_ack",
+              "phase": "policy_ack",
+              "name": "ack_is_compact",
+              "rule": "line_count_at_most",
+              "weight": 1.0,
+              "params": {
+                "max": 1
+              }
+            },
+            {
+              "step_id": "expense_classification",
+              "phase": "expense_classification",
+              "name": "uses_three_bullets",
+              "rule": "bullet_count_equals",
+              "weight": 1.0,
+              "params": {
+                "count": 3
+              }
+            },
+            {
+              "step_id": "expense_classification",
+              "phase": "expense_classification",
+              "name": "hotel_is_approved",
+              "rule": "regex",
+              "weight": 1.0,
+              "params": {
+                "pattern": "(?is)(hotel).*(reimburs|covered|eligible|approved)"
+              }
+            },
+            {
+              "step_id": "expense_classification",
+              "phase": "expense_classification",
+              "name": "rideshare_is_approved",
+              "rule": "regex",
+              "weight": 1.0,
+              "params": {
+                "pattern": "(?is)(rideshare).*(reimburs|covered|eligible|approved)"
+              }
+            },
+            {
+              "step_id": "expense_classification",
+              "phase": "expense_classification",
+              "name": "minibar_is_rejected",
+              "rule": "regex",
+              "weight": 1.0,
+              "params": {
+                "pattern": "(?is)(minibar).*((not|never|isn't|is not).*(reimburs|covered|eligible|approved)|excluded|ineligible)"
+              }
+            },
+            {
+              "step_id": "approved_summary",
+              "phase": "approved_summary",
+              "name": "summary_keeps_trip_code",
+              "rule": "contains_all",
+              "weight": 1.0,
+              "params": {
+                "needles": [
+                  "TRIP-5907"
+                ]
+              }
+            },
+            {
+              "step_id": "approved_summary",
+              "phase": "approved_summary",
+              "name": "summary_mentions_both_approved_items",
+              "rule": "contains_all",
+              "weight": 1.0,
+              "params": {
+                "needles": [
+                  "$179",
+                  "$24"
+                ]
+              }
+            },
+            {
+              "step_id": "approved_summary",
+              "phase": "approved_summary",
+              "name": "summary_omits_rejected_item",
+              "rule": "required_omission",
+              "weight": 1.0,
+              "params": {
+                "needles": [
+                  "$17",
+                  "minibar"
+                ]
+              }
+            },
+            {
+              "step_id": "approved_summary",
+              "phase": "approved_summary",
+              "name": "summary_is_compact",
+              "rule": "line_count_at_most",
+              "weight": 1.0,
+              "params": {
+                "max": 1
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
