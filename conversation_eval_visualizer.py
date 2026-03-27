@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import statistics
 from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Iterable
@@ -187,7 +188,8 @@ def scenario_rows(report: dict[str, Any]) -> list[dict[str, Any]]:
     return rows
 
 
-def family_rows(scen_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def family_rows(scen_rows: list[dict[str, Any]], turns: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    scenario_to_family = {str(row["name"]): str(row["family"]) for row in scen_rows}
     grouped: dict[str, dict[str, Any]] = defaultdict(
         lambda: {
             "scenario_count": 0,
@@ -195,8 +197,10 @@ def family_rows(scen_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "latency_total_ms": 0.0,
             "completion_tokens_total": 0,
             "completion_tokens_max": 0,
+            "completion_token_values": [],
             "prompt_tokens_total": 0,
             "prompt_tokens_max": 0,
+            "prompt_token_values": [],
             "prompt_growth_max": 0,
             "passed_scenarios": 0,
             "failed_scenarios": 0,
@@ -225,6 +229,14 @@ def family_rows(scen_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         group["context_growth_profile"].update([row["context_growth_profile"]])
         group["expected_response_size_class"].update([row["expected_response_size_class"]])
 
+    for turn in turns:
+        family = scenario_to_family.get(str(turn["scenario"]))
+        if not family:
+            continue
+        group = grouped[family]
+        group["completion_token_values"].append(int(turn.get("completion_tokens") or 0))
+        group["prompt_token_values"].append(int(turn.get("prompt_tokens") or 0))
+
     rows: list[dict[str, Any]] = []
     for family, payload in sorted(grouped.items()):
         rows.append(
@@ -236,8 +248,18 @@ def family_rows(scen_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "latency_avg_ms": safe_div(payload["latency_total_ms"], payload["turns"]),
                 "completion_tokens_total": payload["completion_tokens_total"],
                 "completion_tokens_avg": safe_div(payload["completion_tokens_total"], payload["turns"]),
+                "completion_tokens_median": (
+                    statistics.median(payload["completion_token_values"])
+                    if payload["completion_token_values"]
+                    else 0.0
+                ),
                 "completion_tokens_max": payload["completion_tokens_max"],
                 "prompt_tokens_avg": safe_div(payload["prompt_tokens_total"], payload["turns"]),
+                "prompt_tokens_median": (
+                    statistics.median(payload["prompt_token_values"])
+                    if payload["prompt_token_values"]
+                    else 0.0
+                ),
                 "prompt_tokens_max": payload["prompt_tokens_max"],
                 "prompt_growth_max": payload["prompt_growth_max"],
                 "passed_scenarios": payload["passed_scenarios"],
@@ -318,14 +340,30 @@ def bar_cell(value: float, max_value: float, text: str) -> str:
     )
 
 
+def expandable_message_cell(text: str, *, preview: str, kind: str) -> str:
+    preview_box = f'<div class="table-message-box {kind}">{escape(preview)}</div>'
+    if preview == text:
+        return preview_box
+    return (
+        f'<details class="table-message-box table-message-detail {kind}">'
+        '<summary class="table-message-summary">'
+        f'<span class="table-message-preview">{escape(preview)}</span>'
+        f'<span class="table-message-full">{escape(text)}</span>'
+        '<span class="table-message-hint table-message-hint-expand">Click to expand</span>'
+        '<span class="table-message-hint table-message-hint-collapse">Click to collapse</span>'
+        "</summary>"
+        "</details>"
+    )
+
+
 def build_single_run_html(report: dict[str, Any], source_path: Path) -> str:
     summary = report["summary"]
     config = report["config"]
     meta = report["meta"]
     rules = rule_counts(report)
     scen_rows = scenario_rows(report)
-    fam_rows = family_rows(scen_rows)
     turns = turn_rows(report)
+    fam_rows = family_rows(scen_rows, turns)
     prompt_tokens_total = sum((row["prompt_tokens"] or 0) for row in turns)
 
     max_scen_lat = max((row["latency_total_ms"] for row in scen_rows), default=0.0)
@@ -365,8 +403,10 @@ def build_single_run_html(report: dict[str, Any], source_path: Path) -> str:
             f"<td>{format_ms(row['latency_avg_ms'])}</td>"
             f"<td>{format_num(row['completion_tokens_total'])}</td>"
             f"<td>{format_num(row['completion_tokens_avg'])}</td>"
+            f"<td>{format_num(row['completion_tokens_median'])}</td>"
             f"<td>{format_num(row['completion_tokens_max'])}</td>"
             f"<td>{format_num(row['prompt_tokens_avg'])}</td>"
+            f"<td>{format_num(row['prompt_tokens_median'])}</td>"
             f"<td>{format_num(row['prompt_tokens_max'])}</td>"
             f"<td>{row['completion_tokens_per_second']:.2f} tok/s</td>"
             f"<td>{escape(smoke_summary)}</td>"
@@ -418,6 +458,16 @@ def build_single_run_html(report: dict[str, Any], source_path: Path) -> str:
         for row in scenario_turns:
             user_preview = truncate_block(row["user_message"], char_limit=360, line_limit=6)
             assistant_preview = truncate_block(row["assistant_message"], char_limit=520, line_limit=10)
+            user_message_html = expandable_message_cell(
+                str(row["user_message"]),
+                preview=user_preview,
+                kind="user",
+            )
+            assistant_message_html = expandable_message_cell(
+                str(row["assistant_message"]),
+                preview=assistant_preview,
+                kind="assistant",
+            )
             checks_html = "".join(
                 "<li>"
                 f"{badge('pass', 'pass') if c.get('passed') else badge('fail', 'fail')} "
@@ -433,8 +483,8 @@ def build_single_run_html(report: dict[str, Any], source_path: Path) -> str:
                 f"<td>{bar_cell(float(row['completion_tokens'] or 0), float(max_turn_completion or 1), format_num(row['completion_tokens']))}</td>"
                 f"<td>{row['checks_passed']}/{row['checks_total']}</td>"
                 f"<td>{escape(row['stop_reason'])}</td>"
-                f"<td><div class='table-message-box user'>{escape(user_preview)}</div></td>"
-                f"<td><div class='table-message-box assistant'>{escape(assistant_preview)}</div></td>"
+                f"<td>{user_message_html}</td>"
+                f"<td>{assistant_message_html}</td>"
                 f"<td><details class='turn-checks'><summary>Checks</summary><ul class='check-list'>{checks_html}</ul></details></td>"
                 "</tr>"
             )
@@ -478,8 +528,6 @@ def build_single_run_html(report: dict[str, Any], source_path: Path) -> str:
             total = len(trace.get("checks", []))
             user_full = str(trace.get("user_message", ""))
             assistant_full = str(trace.get("assistant_message", ""))
-            user_preview = truncate_block(user_full, char_limit=280, line_limit=5)
-            assistant_preview = truncate_block(assistant_full, char_limit=420, line_limit=8)
             checks_html = "".join(
                 "<tr>"
                 f"<td><code>{escape(check.get('name', ''))}</code></td>"
@@ -489,43 +537,25 @@ def build_single_run_html(report: dict[str, Any], source_path: Path) -> str:
                 "</tr>"
                 for check in trace.get("checks", [])
             )
-            expanded_blocks = ""
-            if user_preview != user_full:
-                expanded_blocks += (
-                    "<div class='chat-expanded-block'>"
-                    "<div class='chat-expanded-label'>Full user prompt</div>"
-                    f"<div class='chat-expanded-content'>{escape(user_full)}</div>"
-                    "</div>"
-                )
-            if assistant_preview != assistant_full:
-                expanded_blocks += (
-                    "<div class='chat-expanded-block'>"
-                    "<div class='chat-expanded-label'>Full assistant reply</div>"
-                    f"<div class='chat-expanded-content'>{escape(assistant_full)}</div>"
-                    "</div>"
-                )
             scenario_details += (
                 "<div class='chat-turn'>"
                 "<div class='chat-message-row user'>"
                 "<div class='chat-avatar user'>U</div>"
                 "<div class='chat-message user'>"
                 "<div class='chat-role'>User</div>"
-                f"<div class='chat-content'>{escape(user_preview)}</div>"
+                f"<div class='chat-content'>{escape(user_full)}</div>"
                 "</div>"
                 "</div>"
-                "<details class='chat-reply-detail'>"
-                "<summary class='chat-message-row assistant chat-reply-summary'>"
-                "<span class='chat-avatar assistant'>A</span>"
-                "<span class='chat-message assistant'>"
-                "<span class='chat-role'>Assistant</span>"
-                f"<span class='chat-content'>{escape(assistant_preview)}</span>"
-                "</span>"
-                "</summary>"
-                f"{expanded_blocks}"
+                "<div class='chat-message-row assistant'>"
+                "<div class='chat-avatar assistant'>A</div>"
+                "<div class='chat-message assistant'>"
+                "<div class='chat-role'>Assistant</div>"
+                f"<div class='chat-content'>{escape(assistant_full)}</div>"
+                "</div>"
+                "</div>"
                 f"<div class='chat-checks-head'>Contract checks: {passed}/{total} passed</div>"
                 "<table class='chat-checks-table'><thead><tr><th>Check</th><th>Rule</th><th>Status</th><th>Details</th></tr></thead>"
                 f"<tbody>{checks_html}</tbody></table>"
-                "</details>"
                 "</div>"
             )
         scenario_details += "</div></details>"
@@ -711,6 +741,27 @@ summary {{
   font-weight: 500;
   font-size: 0.92rem;
 }}
+.section-controls {{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 14px 0 18px;
+}}
+.section-control-button {{
+  appearance: none;
+  border: 1px solid var(--border);
+  background: #f8fbff;
+  color: var(--text);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}}
+.section-control-button:hover {{
+  background: #eef4fd;
+}}
 .chat-thread {{
   display: grid;
   gap: 24px;
@@ -864,12 +915,57 @@ summary {{
 .table-message-box.user {{
   background: #fdfefe;
 }}
-.table-message-box.assistant {{
-  background: #f4f8ff;
-}}
-.turn-scenario-detail {{
-  display: block;
-  margin-top: 18px;
+	.table-message-box.assistant {{
+	  background: #f4f8ff;
+	}}
+	.table-message-detail {{
+	  min-width: 240px;
+	  padding: 0;
+	}}
+	.table-message-summary {{
+	  display: block;
+	  list-style: none;
+	  cursor: pointer;
+	  padding: 12px 14px;
+	}}
+	.table-message-summary::-webkit-details-marker {{
+	  display: none;
+	}}
+	.table-message-preview,
+	.table-message-full {{
+	  display: block;
+	  white-space: pre-wrap;
+	  word-break: break-word;
+	  line-height: 1.55;
+	}}
+	.table-message-full {{
+	  display: none;
+	}}
+	.table-message-detail[open] .table-message-preview {{
+	  display: none;
+	}}
+	.table-message-detail[open] .table-message-full {{
+	  display: block;
+	}}
+	.table-message-hint {{
+	  display: inline-block;
+	  margin-top: 8px;
+	  color: var(--muted);
+	  font-size: 0.82rem;
+	  font-weight: 600;
+	}}
+	.table-message-hint-collapse {{
+	  display: none;
+	}}
+	.table-message-detail[open] .table-message-hint-expand {{
+	  display: none;
+	}}
+	.table-message-detail[open] .table-message-hint-collapse {{
+	  display: inline-block;
+	}}
+	.turn-scenario-detail {{
+	  display: block;
+	  margin-top: 18px;
   border: 1px solid var(--border);
   border-radius: 14px;
   background: #fcfdff;
@@ -978,8 +1074,10 @@ ul.tight {{ margin: 8px 0 0 0; padding-left: 18px; }}
           <th>Avg / turn</th>
           <th>Completion tokens</th>
           <th>Avg response tokens</th>
+          <th>Median response tokens</th>
           <th>Max response tokens</th>
           <th>Avg prompt tokens</th>
+          <th>Median prompt tokens</th>
           <th>Max prompt tokens</th>
           <th>Decode rate</th>
           <th>Contract pass rate</th>
@@ -1003,6 +1101,10 @@ ul.tight {{ margin: 8px 0 0 0; padding-left: 18px; }}
     Use this section for failure analysis and benchmark authoring. Each scenario can be opened to inspect the
     exact user prompt, assistant reply, and deterministic check outcomes turn by turn.
   </p>
+  <div class="section-controls">
+    <button type="button" class="section-control-button" id="replay-expand-all">Expand all</button>
+    <button type="button" class="section-control-button" id="replay-collapse-all">Collapse all</button>
+  </div>
   {scenario_details}
 </section>
 
@@ -1032,6 +1134,23 @@ document.querySelectorAll(".turn-checks").forEach((element) => {{
 const firstTurnScenario = document.querySelector(".turn-scenario-detail");
 if (firstTurnScenario) {{
   firstTurnScenario.open = true;
+}}
+const replayScenarioDetails = document.querySelectorAll(".scenario-detail");
+const replayExpandAll = document.getElementById("replay-expand-all");
+const replayCollapseAll = document.getElementById("replay-collapse-all");
+if (replayExpandAll) {{
+  replayExpandAll.addEventListener("click", () => {{
+    replayScenarioDetails.forEach((element) => {{
+      element.open = true;
+    }});
+  }});
+}}
+if (replayCollapseAll) {{
+  replayCollapseAll.addEventListener("click", () => {{
+    replayScenarioDetails.forEach((element) => {{
+      element.open = false;
+    }});
+  }});
 }}
 </script>
 </body>

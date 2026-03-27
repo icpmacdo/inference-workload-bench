@@ -1,0 +1,1550 @@
+[
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "shape_control_v2_relaxed_01_release_notes_atlas_relay",
+    "description": "Four-turn long release note drafting for Atlas Relay. Relaxed scoring removes line-count and contains-all checks.",
+    "benchmark_family": "long_input_long_output_multiturn",
+    "system_prompt": "You are a structured summarization assistant. Use only the supplied facts, keep reasoning light, and satisfy the explicit keyword and minimum-length constraints exactly.",
+    "facts": {
+      "entity": "Atlas Relay",
+      "time_a": "July 22 launch date",
+      "time_b": "August 5 fallback readiness review",
+      "status_a": "limited beta release channel",
+      "fact_1": "bulk queue pause is included",
+      "fact_2": "CSV export scheduling is included",
+      "fact_3": "role-based alert routing is included",
+      "fact_4": "BUG-431 duplicate resend notices is fixed",
+      "op_note_1": "support readiness remains with Mina Patel",
+      "op_note_2": "field enablement notes must mention pilot communication sequencing",
+      "risk_note": "alert routing is not yet available in EU tenants",
+      "owner_note": "Mina Patel owns support coordination",
+      "addendum_1": "documentation screenshots will be published after the fallback readiness review",
+      "addendum_2": "the operations team requested a clear note on EU rollout limitations",
+      "artifact_a": "internal release notes",
+      "artifact_b": "revised internal release notes",
+      "audience_a": "a go-to-market lead and support manager",
+      "audience_b": "a launch review lead who was not in the earlier thread",
+      "task_type": "release_notes"
+    },
+    "tags": [
+      "shape_control_v2_relaxed",
+      "multiturn",
+      "long-input-long-output",
+      "release-notes",
+      "relaxed-scoring"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "staged_growth",
+      "decode_stress": "high",
+      "expected_response_size_class": "large",
+      "isl_bucket": "xlarge",
+      "osl_bucket": "xlarge"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "Prepare internal release notes for a go-to-market lead and support manager. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Product or account: Atlas Relay Primary timing detail: July 22 launch date Primary channel or status detail: limited beta release channel Core fact 1: bulk queue pause is included Core fact 2: CSV export scheduling is included Core fact 3: role-based alert routing is included Core fact 4: BUG-431 duplicate resend notices is fixed Operational note: support readiness remains with Mina Patel Operational note: field enablement notes must mention pilot communication sequencing Risk or limitation note: alert routing is not yet available in EU tenants Owner note: Mina Patel owns support coordination Reminder: preserve exact names and dates where provided, especially Atlas Relay and July 22 launch date Additional handling instructions: Write a long-form structured summary that feels complete to an internal operator reading it cold. Do not convert this into a short memo or a terse bullet list; we want a substantive artifact with multiple lines of readable prose. Restate all critical details, especially bulk queue pause is included, CSV export scheduling is included, and role-based alert routing is included, because those are considered must-keep facts. If there is a limitation or risk note, preserve it in neutral language rather than softening it away. Your response should read like a long internal artifact that could be forwarded without additional explanation. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "release_notes",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "release",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Prepare revised internal release notes for a launch review lead who was not in the earlier thread. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Carry forward the same entity: Atlas Relay Carry forward the same timing detail: July 22 launch date New timing or milestone detail: August 5 fallback readiness review Carry forward status detail: limited beta release channel Carry forward core fact 1: bulk queue pause is included Carry forward core fact 2: CSV export scheduling is included Carry forward core fact 3: role-based alert routing is included Carry forward core fact 4: BUG-431 duplicate resend notices is fixed New addendum fact: documentation screenshots will be published after the fallback readiness review New addendum fact: the operations team requested a clear note on EU rollout limitations Persistent risk or limitation note: alert routing is not yet available in EU tenants Persistent owner note: Mina Patel owns support coordination Additional handling instructions: Revise the prior answer rather than starting over from scratch, but keep the new artifact fully standalone for a new reader. The new version should still be substantial and detailed, and it should clearly absorb the addendum facts instead of appending a tiny note at the end. Keep all original critical details plus the new addendum facts documentation screenshots will be published after the fallback readiness review and the operations team requested a clear note on EU rollout limitations. Do not shorten the artifact; the point of this workload is to require another large response under accumulated conversation context. Assume the reviewer wants a revised long-form artifact that preserves old facts and incorporates the new addendum cleanly. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "release_notes_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "update",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Create a second revision of the prior artifact for a launch review lead who was not in the earlier thread. Keep the same entity Atlas Relay, preserve the original timing detail July 22 launch date, preserve the addendum timing detail August 5 fallback readiness review, and continue to carry limited beta release channel. Keep these critical facts visible: bulk queue pause is included; CSV export scheduling is included; role-based alert routing is included; BUG-431 duplicate resend notices is fixed. Also keep the persistent operational notes support readiness remains with Mina Patel and field enablement notes must mention pilot communication sequencing. Make sure the revision still surfaces the risk or limitation note alert routing is not yet available in EU tenants and the owner note Mina Patel owns support coordination. Retain the prior addendum material documentation screenshots will be published after the fallback readiness review and the operations team requested a clear note on EU rollout limitations, but rewrite the full artifact so it feels newly revised rather than copied. The new draft must remain fully standalone, must remain long-form, and must still feel complete to a new reader who did not see the first two turns. Do not shorten the artifact or collapse it into a short memo. This workload is intentionally asking for another dense response under growing conversation context, so keep the body substantial and keep all explicit facts stable.",
+        "input_contract": {
+          "task_type": "release_notes_second_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "revision",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "Write a final long-form handoff version for a launch review lead who was not in the earlier thread that is still grounded only in the same conversation facts. The handoff must preserve Atlas Relay, July 22 launch date, August 5 fallback readiness review, and limited beta release channel. It must keep all four core facts unchanged: bulk queue pause is included; CSV export scheduling is included; role-based alert routing is included; BUG-431 duplicate resend notices is fixed. It must also retain both operational notes support readiness remains with Mina Patel and field enablement notes must mention pilot communication sequencing, the risk or limitation note alert routing is not yet available in EU tenants, the owner note Mina Patel owns support coordination, and both addendum facts documentation screenshots will be published after the fallback readiness review and the operations team requested a clear note on EU rollout limitations. The handoff should read like the most complete version in the sequence, not a shortened wrap-up. It should still be long enough for someone to rely on directly, and it should remain faithful to all prior constraints without introducing any new scope, root causes, approvals, timelines, or outcomes beyond what is already in the conversation. Assume this final version may be forwarded internally as the definitive long artifact, so it must stay comprehensive, stable, and easy to read under the accumulated multi-turn context.",
+        "input_contract": {
+          "task_type": "release_notes_final_handoff",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "final",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      }
+    ],
+    "contract_source": "<generated shape_control_v2_relaxed>"
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "shape_control_v2_relaxed_02_release_notes_beacon_assist",
+    "description": "Four-turn long release note drafting for Beacon Assist. Relaxed scoring removes line-count and contains-all checks.",
+    "benchmark_family": "long_input_long_output_multiturn",
+    "system_prompt": "You are a structured summarization assistant. Use only the supplied facts, keep reasoning light, and satisfy the explicit keyword and minimum-length constraints exactly.",
+    "facts": {
+      "entity": "Beacon Assist",
+      "time_a": "August 14 launch date",
+      "time_b": "August 28 pilot checkpoint",
+      "status_a": "pilot rollout channel",
+      "fact_1": "shared escalation inboxes are included",
+      "fact_2": "handoff note templates are included",
+      "fact_3": "audit trail exports are included",
+      "fact_4": "BUG-508 stale assignee badges is fixed",
+      "op_note_1": "support readiness remains with Jordan Alvarez",
+      "op_note_2": "support managers want a reusable internal note for the pilot phase",
+      "risk_note": "audit trail exports remain capped at 30 days",
+      "owner_note": "Jordan Alvarez owns support coordination",
+      "addendum_1": "training notes for support leads will follow the pilot checkpoint",
+      "addendum_2": "the pilot update must repeat the 30-day export cap clearly",
+      "artifact_a": "internal release notes",
+      "artifact_b": "revised internal release notes",
+      "audience_a": "an operations launch lead and support manager",
+      "audience_b": "a pilot review manager who needs a standalone revision",
+      "task_type": "release_notes"
+    },
+    "tags": [
+      "shape_control_v2_relaxed",
+      "multiturn",
+      "long-input-long-output",
+      "release-notes",
+      "relaxed-scoring"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "staged_growth",
+      "decode_stress": "high",
+      "expected_response_size_class": "large",
+      "isl_bucket": "xlarge",
+      "osl_bucket": "xlarge"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "Prepare internal release notes for an operations launch lead and support manager. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Product or account: Beacon Assist Primary timing detail: August 14 launch date Primary channel or status detail: pilot rollout channel Core fact 1: shared escalation inboxes are included Core fact 2: handoff note templates are included Core fact 3: audit trail exports are included Core fact 4: BUG-508 stale assignee badges is fixed Operational note: support readiness remains with Jordan Alvarez Operational note: support managers want a reusable internal note for the pilot phase Risk or limitation note: audit trail exports remain capped at 30 days Owner note: Jordan Alvarez owns support coordination Reminder: preserve exact names and dates where provided, especially Beacon Assist and August 14 launch date Additional handling instructions: Write a long-form structured summary that feels complete to an internal operator reading it cold. Do not convert this into a short memo or a terse bullet list; we want a substantive artifact with multiple lines of readable prose. Restate all critical details, especially shared escalation inboxes are included, handoff note templates are included, and audit trail exports are included, because those are considered must-keep facts. If there is a limitation or risk note, preserve it in neutral language rather than softening it away. Your response should read like a long internal artifact that could be forwarded without additional explanation. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "release_notes",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "release",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Prepare revised internal release notes for a pilot review manager who needs a standalone revision. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Carry forward the same entity: Beacon Assist Carry forward the same timing detail: August 14 launch date New timing or milestone detail: August 28 pilot checkpoint Carry forward status detail: pilot rollout channel Carry forward core fact 1: shared escalation inboxes are included Carry forward core fact 2: handoff note templates are included Carry forward core fact 3: audit trail exports are included Carry forward core fact 4: BUG-508 stale assignee badges is fixed New addendum fact: training notes for support leads will follow the pilot checkpoint New addendum fact: the pilot update must repeat the 30-day export cap clearly Persistent risk or limitation note: audit trail exports remain capped at 30 days Persistent owner note: Jordan Alvarez owns support coordination Additional handling instructions: Revise the prior answer rather than starting over from scratch, but keep the new artifact fully standalone for a new reader. The new version should still be substantial and detailed, and it should clearly absorb the addendum facts instead of appending a tiny note at the end. Keep all original critical details plus the new addendum facts training notes for support leads will follow the pilot checkpoint and the pilot update must repeat the 30-day export cap clearly. Do not shorten the artifact; the point of this workload is to require another large response under accumulated conversation context. Assume the reviewer wants a revised long-form artifact that preserves old facts and incorporates the new addendum cleanly. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "release_notes_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "update",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Create a second revision of the prior artifact for a pilot review manager who needs a standalone revision. Keep the same entity Beacon Assist, preserve the original timing detail August 14 launch date, preserve the addendum timing detail August 28 pilot checkpoint, and continue to carry pilot rollout channel. Keep these critical facts visible: shared escalation inboxes are included; handoff note templates are included; audit trail exports are included; BUG-508 stale assignee badges is fixed. Also keep the persistent operational notes support readiness remains with Jordan Alvarez and support managers want a reusable internal note for the pilot phase. Make sure the revision still surfaces the risk or limitation note audit trail exports remain capped at 30 days and the owner note Jordan Alvarez owns support coordination. Retain the prior addendum material training notes for support leads will follow the pilot checkpoint and the pilot update must repeat the 30-day export cap clearly, but rewrite the full artifact so it feels newly revised rather than copied. The new draft must remain fully standalone, must remain long-form, and must still feel complete to a new reader who did not see the first two turns. Do not shorten the artifact or collapse it into a short memo. This workload is intentionally asking for another dense response under growing conversation context, so keep the body substantial and keep all explicit facts stable.",
+        "input_contract": {
+          "task_type": "release_notes_second_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "revision",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "Write a final long-form handoff version for a pilot review manager who needs a standalone revision that is still grounded only in the same conversation facts. The handoff must preserve Beacon Assist, August 14 launch date, August 28 pilot checkpoint, and pilot rollout channel. It must keep all four core facts unchanged: shared escalation inboxes are included; handoff note templates are included; audit trail exports are included; BUG-508 stale assignee badges is fixed. It must also retain both operational notes support readiness remains with Jordan Alvarez and support managers want a reusable internal note for the pilot phase, the risk or limitation note audit trail exports remain capped at 30 days, the owner note Jordan Alvarez owns support coordination, and both addendum facts training notes for support leads will follow the pilot checkpoint and the pilot update must repeat the 30-day export cap clearly. The handoff should read like the most complete version in the sequence, not a shortened wrap-up. It should still be long enough for someone to rely on directly, and it should remain faithful to all prior constraints without introducing any new scope, root causes, approvals, timelines, or outcomes beyond what is already in the conversation. Assume this final version may be forwarded internally as the definitive long artifact, so it must stay comprehensive, stable, and easy to read under the accumulated multi-turn context.",
+        "input_contract": {
+          "task_type": "release_notes_final_handoff",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "final",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      }
+    ],
+    "contract_source": "<generated shape_control_v2_relaxed>"
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "shape_control_v2_relaxed_03_release_notes_harbor_notes",
+    "description": "Four-turn long release note drafting for Harbor Notes. Relaxed scoring removes line-count and contains-all checks.",
+    "benchmark_family": "long_input_long_output_multiturn",
+    "system_prompt": "You are a structured summarization assistant. Use only the supplied facts, keep reasoning light, and satisfy the explicit keyword and minimum-length constraints exactly.",
+    "facts": {
+      "entity": "Harbor Notes",
+      "time_a": "September 3 launch date",
+      "time_b": "September 17 staged expansion review",
+      "status_a": "staged availability release",
+      "fact_1": "meeting note pinning is included",
+      "fact_2": "workspace-level retention controls are included",
+      "fact_3": "summary handoff drafts are included",
+      "fact_4": "BUG-612 duplicate attendee rows is fixed",
+      "op_note_1": "support readiness remains with Riley Chen",
+      "op_note_2": "launch communications need a note for admin audiences",
+      "risk_note": "retention controls are admin-only in v1",
+      "owner_note": "Riley Chen owns support coordination",
+      "addendum_1": "admin onboarding material will be published before the staged expansion review",
+      "addendum_2": "the revised note must repeat the admin-only limitation clearly",
+      "artifact_a": "internal release notes",
+      "artifact_b": "revised internal release notes",
+      "audience_a": "an internal launch lead and documentation owner",
+      "audience_b": "an operations reviewer who needs the revision standalone",
+      "task_type": "release_notes"
+    },
+    "tags": [
+      "shape_control_v2_relaxed",
+      "multiturn",
+      "long-input-long-output",
+      "release-notes",
+      "relaxed-scoring"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "staged_growth",
+      "decode_stress": "high",
+      "expected_response_size_class": "large",
+      "isl_bucket": "xlarge",
+      "osl_bucket": "xlarge"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "Prepare internal release notes for an internal launch lead and documentation owner. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Product or account: Harbor Notes Primary timing detail: September 3 launch date Primary channel or status detail: staged availability release Core fact 1: meeting note pinning is included Core fact 2: workspace-level retention controls are included Core fact 3: summary handoff drafts are included Core fact 4: BUG-612 duplicate attendee rows is fixed Operational note: support readiness remains with Riley Chen Operational note: launch communications need a note for admin audiences Risk or limitation note: retention controls are admin-only in v1 Owner note: Riley Chen owns support coordination Reminder: preserve exact names and dates where provided, especially Harbor Notes and September 3 launch date Additional handling instructions: Write a long-form structured summary that feels complete to an internal operator reading it cold. Do not convert this into a short memo or a terse bullet list; we want a substantive artifact with multiple lines of readable prose. Restate all critical details, especially meeting note pinning is included, workspace-level retention controls are included, and summary handoff drafts are included, because those are considered must-keep facts. If there is a limitation or risk note, preserve it in neutral language rather than softening it away. Your response should read like a long internal artifact that could be forwarded without additional explanation. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "release_notes",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "release",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Prepare revised internal release notes for an operations reviewer who needs the revision standalone. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Carry forward the same entity: Harbor Notes Carry forward the same timing detail: September 3 launch date New timing or milestone detail: September 17 staged expansion review Carry forward status detail: staged availability release Carry forward core fact 1: meeting note pinning is included Carry forward core fact 2: workspace-level retention controls are included Carry forward core fact 3: summary handoff drafts are included Carry forward core fact 4: BUG-612 duplicate attendee rows is fixed New addendum fact: admin onboarding material will be published before the staged expansion review New addendum fact: the revised note must repeat the admin-only limitation clearly Persistent risk or limitation note: retention controls are admin-only in v1 Persistent owner note: Riley Chen owns support coordination Additional handling instructions: Revise the prior answer rather than starting over from scratch, but keep the new artifact fully standalone for a new reader. The new version should still be substantial and detailed, and it should clearly absorb the addendum facts instead of appending a tiny note at the end. Keep all original critical details plus the new addendum facts admin onboarding material will be published before the staged expansion review and the revised note must repeat the admin-only limitation clearly. Do not shorten the artifact; the point of this workload is to require another large response under accumulated conversation context. Assume the reviewer wants a revised long-form artifact that preserves old facts and incorporates the new addendum cleanly. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "release_notes_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "update",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Create a second revision of the prior artifact for an operations reviewer who needs the revision standalone. Keep the same entity Harbor Notes, preserve the original timing detail September 3 launch date, preserve the addendum timing detail September 17 staged expansion review, and continue to carry staged availability release. Keep these critical facts visible: meeting note pinning is included; workspace-level retention controls are included; summary handoff drafts are included; BUG-612 duplicate attendee rows is fixed. Also keep the persistent operational notes support readiness remains with Riley Chen and launch communications need a note for admin audiences. Make sure the revision still surfaces the risk or limitation note retention controls are admin-only in v1 and the owner note Riley Chen owns support coordination. Retain the prior addendum material admin onboarding material will be published before the staged expansion review and the revised note must repeat the admin-only limitation clearly, but rewrite the full artifact so it feels newly revised rather than copied. The new draft must remain fully standalone, must remain long-form, and must still feel complete to a new reader who did not see the first two turns. Do not shorten the artifact or collapse it into a short memo. This workload is intentionally asking for another dense response under growing conversation context, so keep the body substantial and keep all explicit facts stable.",
+        "input_contract": {
+          "task_type": "release_notes_second_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "revision",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "Write a final long-form handoff version for an operations reviewer who needs the revision standalone that is still grounded only in the same conversation facts. The handoff must preserve Harbor Notes, September 3 launch date, September 17 staged expansion review, and staged availability release. It must keep all four core facts unchanged: meeting note pinning is included; workspace-level retention controls are included; summary handoff drafts are included; BUG-612 duplicate attendee rows is fixed. It must also retain both operational notes support readiness remains with Riley Chen and launch communications need a note for admin audiences, the risk or limitation note retention controls are admin-only in v1, the owner note Riley Chen owns support coordination, and both addendum facts admin onboarding material will be published before the staged expansion review and the revised note must repeat the admin-only limitation clearly. The handoff should read like the most complete version in the sequence, not a shortened wrap-up. It should still be long enough for someone to rely on directly, and it should remain faithful to all prior constraints without introducing any new scope, root causes, approvals, timelines, or outcomes beyond what is already in the conversation. Assume this final version may be forwarded internally as the definitive long artifact, so it must stay comprehensive, stable, and easy to read under the accumulated multi-turn context.",
+        "input_contract": {
+          "task_type": "release_notes_final_handoff",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "final",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      }
+    ],
+    "contract_source": "<generated shape_control_v2_relaxed>"
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "shape_control_v2_relaxed_04_policy_summary_travel_policy",
+    "description": "Four-turn long travel policy summary with revision. Relaxed scoring removes line-count and contains-all checks.",
+    "benchmark_family": "long_input_long_output_multiturn",
+    "system_prompt": "You are a structured summarization assistant. Use only the supplied facts, keep reasoning light, and satisfy the explicit keyword and minimum-length constraints exactly.",
+    "facts": {
+      "entity": "Travel reimbursement policy",
+      "time_a": "submit within 10 business days",
+      "time_b": "quarterly audit reminder",
+      "status_a": "current policy guidance",
+      "fact_1": "hotel is capped at $220 per night",
+      "fact_2": "meals are capped at $75 per day",
+      "fact_3": "airport rideshare is reimbursable",
+      "fact_4": "alcohol is never reimbursable",
+      "op_note_1": "director approval is required above $500 total",
+      "op_note_2": "receipts are required for every lodging charge",
+      "risk_note": "late submissions are handled by exception only",
+      "owner_note": "team leads must enforce receipt rules consistently",
+      "addendum_1": "quarterly audit packets must include exception approvals",
+      "addendum_2": "the revised summary should keep the late-submission exception note visible",
+      "artifact_a": "manager policy summary",
+      "artifact_b": "revised manager policy summary",
+      "audience_a": "team leads who approve expenses",
+      "audience_b": "finance operations leads reviewing summary guidance",
+      "task_type": "policy_summary"
+    },
+    "tags": [
+      "shape_control_v2_relaxed",
+      "multiturn",
+      "long-input-long-output",
+      "policy-summary",
+      "relaxed-scoring"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "staged_growth",
+      "decode_stress": "high",
+      "expected_response_size_class": "large",
+      "isl_bucket": "xlarge",
+      "osl_bucket": "xlarge"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "Prepare manager policy summary for team leads who approve expenses. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Product or account: Travel reimbursement policy Primary timing detail: submit within 10 business days Primary channel or status detail: current policy guidance Core fact 1: hotel is capped at $220 per night Core fact 2: meals are capped at $75 per day Core fact 3: airport rideshare is reimbursable Core fact 4: alcohol is never reimbursable Operational note: director approval is required above $500 total Operational note: receipts are required for every lodging charge Risk or limitation note: late submissions are handled by exception only Owner note: team leads must enforce receipt rules consistently Reminder: preserve exact names and dates where provided, especially Travel reimbursement policy and submit within 10 business days Additional handling instructions: Write a long-form structured summary that feels complete to an internal operator reading it cold. Do not convert this into a short memo or a terse bullet list; we want a substantive artifact with multiple lines of readable prose. Restate all critical details, especially hotel is capped at $220 per night, meals are capped at $75 per day, and airport rideshare is reimbursable, because those are considered must-keep facts. If there is a limitation or risk note, preserve it in neutral language rather than softening it away. Your response should read like a long internal artifact that could be forwarded without additional explanation. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "policy_summary",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "policy",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Prepare revised manager policy summary for finance operations leads reviewing summary guidance. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Carry forward the same entity: Travel reimbursement policy Carry forward the same timing detail: submit within 10 business days New timing or milestone detail: quarterly audit reminder Carry forward status detail: current policy guidance Carry forward core fact 1: hotel is capped at $220 per night Carry forward core fact 2: meals are capped at $75 per day Carry forward core fact 3: airport rideshare is reimbursable Carry forward core fact 4: alcohol is never reimbursable New addendum fact: quarterly audit packets must include exception approvals New addendum fact: the revised summary should keep the late-submission exception note visible Persistent risk or limitation note: late submissions are handled by exception only Persistent owner note: team leads must enforce receipt rules consistently Additional handling instructions: Revise the prior answer rather than starting over from scratch, but keep the new artifact fully standalone for a new reader. The new version should still be substantial and detailed, and it should clearly absorb the addendum facts instead of appending a tiny note at the end. Keep all original critical details plus the new addendum facts quarterly audit packets must include exception approvals and the revised summary should keep the late-submission exception note visible. Do not shorten the artifact; the point of this workload is to require another large response under accumulated conversation context. Assume the reviewer wants a revised long-form artifact that preserves old facts and incorporates the new addendum cleanly. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "policy_summary_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "summary",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Create a second revision of the prior artifact for finance operations leads reviewing summary guidance. Keep the same entity Travel reimbursement policy, preserve the original timing detail submit within 10 business days, preserve the addendum timing detail quarterly audit reminder, and continue to carry current policy guidance. Keep these critical facts visible: hotel is capped at $220 per night; meals are capped at $75 per day; airport rideshare is reimbursable; alcohol is never reimbursable. Also keep the persistent operational notes director approval is required above $500 total and receipts are required for every lodging charge. Make sure the revision still surfaces the risk or limitation note late submissions are handled by exception only and the owner note team leads must enforce receipt rules consistently. Retain the prior addendum material quarterly audit packets must include exception approvals and the revised summary should keep the late-submission exception note visible, but rewrite the full artifact so it feels newly revised rather than copied. The new draft must remain fully standalone, must remain long-form, and must still feel complete to a new reader who did not see the first two turns. Do not shorten the artifact or collapse it into a short memo. This workload is intentionally asking for another dense response under growing conversation context, so keep the body substantial and keep all explicit facts stable.",
+        "input_contract": {
+          "task_type": "policy_summary_second_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "revision",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "Write a final long-form handoff version for finance operations leads reviewing summary guidance that is still grounded only in the same conversation facts. The handoff must preserve Travel reimbursement policy, submit within 10 business days, quarterly audit reminder, and current policy guidance. It must keep all four core facts unchanged: hotel is capped at $220 per night; meals are capped at $75 per day; airport rideshare is reimbursable; alcohol is never reimbursable. It must also retain both operational notes director approval is required above $500 total and receipts are required for every lodging charge, the risk or limitation note late submissions are handled by exception only, the owner note team leads must enforce receipt rules consistently, and both addendum facts quarterly audit packets must include exception approvals and the revised summary should keep the late-submission exception note visible. The handoff should read like the most complete version in the sequence, not a shortened wrap-up. It should still be long enough for someone to rely on directly, and it should remain faithful to all prior constraints without introducing any new scope, root causes, approvals, timelines, or outcomes beyond what is already in the conversation. Assume this final version may be forwarded internally as the definitive long artifact, so it must stay comprehensive, stable, and easy to read under the accumulated multi-turn context.",
+        "input_contract": {
+          "task_type": "policy_summary_final_handoff",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "final",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      }
+    ],
+    "contract_source": "<generated shape_control_v2_relaxed>"
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "shape_control_v2_relaxed_05_policy_summary_data_retention",
+    "description": "Four-turn long data retention policy summary with revision. Relaxed scoring removes line-count and contains-all checks.",
+    "benchmark_family": "long_input_long_output_multiturn",
+    "system_prompt": "You are a structured summarization assistant. Use only the supplied facts, keep reasoning light, and satisfy the explicit keyword and minimum-length constraints exactly.",
+    "facts": {
+      "entity": "Data retention policy",
+      "time_a": "retention exceptions are reviewed every quarter",
+      "time_b": "annual legal review checkpoint",
+      "status_a": "current retention guidance",
+      "fact_1": "customer support transcripts are retained for 18 months",
+      "fact_2": "system audit logs are retained for 90 days",
+      "fact_3": "deletion requests must be acknowledged within 3 business days",
+      "fact_4": "legal hold blocks deletion and export removal",
+      "op_note_1": "only workspace admins may approve retention exceptions",
+      "op_note_2": "legal teams require consistent wording around deletion blocks",
+      "risk_note": "retention exceptions are sensitive and should be narrowly granted",
+      "owner_note": "workspace admins own exception approvals",
+      "addendum_1": "annual legal review must confirm exception language and legal hold wording",
+      "addendum_2": "the revised summary should keep the sensitivity warning visible",
+      "artifact_a": "manager policy summary",
+      "artifact_b": "revised manager policy summary",
+      "audience_a": "operations leads managing retention workflows",
+      "audience_b": "legal operations reviewers who need a standalone revision",
+      "task_type": "policy_summary"
+    },
+    "tags": [
+      "shape_control_v2_relaxed",
+      "multiturn",
+      "long-input-long-output",
+      "policy-summary",
+      "relaxed-scoring"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "staged_growth",
+      "decode_stress": "high",
+      "expected_response_size_class": "large",
+      "isl_bucket": "xlarge",
+      "osl_bucket": "xlarge"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "Prepare manager policy summary for operations leads managing retention workflows. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Product or account: Data retention policy Primary timing detail: retention exceptions are reviewed every quarter Primary channel or status detail: current retention guidance Core fact 1: customer support transcripts are retained for 18 months Core fact 2: system audit logs are retained for 90 days Core fact 3: deletion requests must be acknowledged within 3 business days Core fact 4: legal hold blocks deletion and export removal Operational note: only workspace admins may approve retention exceptions Operational note: legal teams require consistent wording around deletion blocks Risk or limitation note: retention exceptions are sensitive and should be narrowly granted Owner note: workspace admins own exception approvals Reminder: preserve exact names and dates where provided, especially Data retention policy and retention exceptions are reviewed every quarter Additional handling instructions: Write a long-form structured summary that feels complete to an internal operator reading it cold. Do not convert this into a short memo or a terse bullet list; we want a substantive artifact with multiple lines of readable prose. Restate all critical details, especially customer support transcripts are retained for 18 months, system audit logs are retained for 90 days, and deletion requests must be acknowledged within 3 business days, because those are considered must-keep facts. If there is a limitation or risk note, preserve it in neutral language rather than softening it away. Your response should read like a long internal artifact that could be forwarded without additional explanation. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "policy_summary",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "policy",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Prepare revised manager policy summary for legal operations reviewers who need a standalone revision. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Carry forward the same entity: Data retention policy Carry forward the same timing detail: retention exceptions are reviewed every quarter New timing or milestone detail: annual legal review checkpoint Carry forward status detail: current retention guidance Carry forward core fact 1: customer support transcripts are retained for 18 months Carry forward core fact 2: system audit logs are retained for 90 days Carry forward core fact 3: deletion requests must be acknowledged within 3 business days Carry forward core fact 4: legal hold blocks deletion and export removal New addendum fact: annual legal review must confirm exception language and legal hold wording New addendum fact: the revised summary should keep the sensitivity warning visible Persistent risk or limitation note: retention exceptions are sensitive and should be narrowly granted Persistent owner note: workspace admins own exception approvals Additional handling instructions: Revise the prior answer rather than starting over from scratch, but keep the new artifact fully standalone for a new reader. The new version should still be substantial and detailed, and it should clearly absorb the addendum facts instead of appending a tiny note at the end. Keep all original critical details plus the new addendum facts annual legal review must confirm exception language and legal hold wording and the revised summary should keep the sensitivity warning visible. Do not shorten the artifact; the point of this workload is to require another large response under accumulated conversation context. Assume the reviewer wants a revised long-form artifact that preserves old facts and incorporates the new addendum cleanly. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "policy_summary_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "summary",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Create a second revision of the prior artifact for legal operations reviewers who need a standalone revision. Keep the same entity Data retention policy, preserve the original timing detail retention exceptions are reviewed every quarter, preserve the addendum timing detail annual legal review checkpoint, and continue to carry current retention guidance. Keep these critical facts visible: customer support transcripts are retained for 18 months; system audit logs are retained for 90 days; deletion requests must be acknowledged within 3 business days; legal hold blocks deletion and export removal. Also keep the persistent operational notes only workspace admins may approve retention exceptions and legal teams require consistent wording around deletion blocks. Make sure the revision still surfaces the risk or limitation note retention exceptions are sensitive and should be narrowly granted and the owner note workspace admins own exception approvals. Retain the prior addendum material annual legal review must confirm exception language and legal hold wording and the revised summary should keep the sensitivity warning visible, but rewrite the full artifact so it feels newly revised rather than copied. The new draft must remain fully standalone, must remain long-form, and must still feel complete to a new reader who did not see the first two turns. Do not shorten the artifact or collapse it into a short memo. This workload is intentionally asking for another dense response under growing conversation context, so keep the body substantial and keep all explicit facts stable.",
+        "input_contract": {
+          "task_type": "policy_summary_second_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "revision",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "Write a final long-form handoff version for legal operations reviewers who need a standalone revision that is still grounded only in the same conversation facts. The handoff must preserve Data retention policy, retention exceptions are reviewed every quarter, annual legal review checkpoint, and current retention guidance. It must keep all four core facts unchanged: customer support transcripts are retained for 18 months; system audit logs are retained for 90 days; deletion requests must be acknowledged within 3 business days; legal hold blocks deletion and export removal. It must also retain both operational notes only workspace admins may approve retention exceptions and legal teams require consistent wording around deletion blocks, the risk or limitation note retention exceptions are sensitive and should be narrowly granted, the owner note workspace admins own exception approvals, and both addendum facts annual legal review must confirm exception language and legal hold wording and the revised summary should keep the sensitivity warning visible. The handoff should read like the most complete version in the sequence, not a shortened wrap-up. It should still be long enough for someone to rely on directly, and it should remain faithful to all prior constraints without introducing any new scope, root causes, approvals, timelines, or outcomes beyond what is already in the conversation. Assume this final version may be forwarded internally as the definitive long artifact, so it must stay comprehensive, stable, and easy to read under the accumulated multi-turn context.",
+        "input_contract": {
+          "task_type": "policy_summary_final_handoff",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "final",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      }
+    ],
+    "contract_source": "<generated shape_control_v2_relaxed>"
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "shape_control_v2_relaxed_06_policy_summary_access_requests",
+    "description": "Four-turn long access request policy summary with revision. Relaxed scoring removes line-count and contains-all checks.",
+    "benchmark_family": "long_input_long_output_multiturn",
+    "system_prompt": "You are a structured summarization assistant. Use only the supplied facts, keep reasoning light, and satisfy the explicit keyword and minimum-length constraints exactly.",
+    "facts": {
+      "entity": "Access request policy",
+      "time_a": "temporary access expires after 8 hours",
+      "time_b": "next business day security review",
+      "status_a": "current access guidance",
+      "fact_1": "every production access request must name a ticket and business reason",
+      "fact_2": "engineering manager approval is required for write access",
+      "fact_3": "security reviews all emergency grants the next business day",
+      "fact_4": "shared credentials are never allowed",
+      "op_note_1": "all granted access must be logged in the audit register",
+      "op_note_2": "team leads want a reusable summary for on-call escalation situations",
+      "risk_note": "shared credentials create an automatic policy breach",
+      "owner_note": "engineering managers own write-access approvals",
+      "addendum_1": "the revised summary should clarify that emergency access still needs logging",
+      "addendum_2": "the revised summary should keep the automatic policy-breach note visible",
+      "artifact_a": "manager policy summary",
+      "artifact_b": "revised manager policy summary",
+      "audience_a": "platform leads approving access",
+      "audience_b": "security reviewers auditing emergency grants",
+      "task_type": "policy_summary"
+    },
+    "tags": [
+      "shape_control_v2_relaxed",
+      "multiturn",
+      "long-input-long-output",
+      "policy-summary",
+      "relaxed-scoring"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "staged_growth",
+      "decode_stress": "high",
+      "expected_response_size_class": "large",
+      "isl_bucket": "xlarge",
+      "osl_bucket": "xlarge"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "Prepare manager policy summary for platform leads approving access. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Product or account: Access request policy Primary timing detail: temporary access expires after 8 hours Primary channel or status detail: current access guidance Core fact 1: every production access request must name a ticket and business reason Core fact 2: engineering manager approval is required for write access Core fact 3: security reviews all emergency grants the next business day Core fact 4: shared credentials are never allowed Operational note: all granted access must be logged in the audit register Operational note: team leads want a reusable summary for on-call escalation situations Risk or limitation note: shared credentials create an automatic policy breach Owner note: engineering managers own write-access approvals Reminder: preserve exact names and dates where provided, especially Access request policy and temporary access expires after 8 hours Additional handling instructions: Write a long-form structured summary that feels complete to an internal operator reading it cold. Do not convert this into a short memo or a terse bullet list; we want a substantive artifact with multiple lines of readable prose. Restate all critical details, especially every production access request must name a ticket and business reason, engineering manager approval is required for write access, and security reviews all emergency grants the next business day, because those are considered must-keep facts. If there is a limitation or risk note, preserve it in neutral language rather than softening it away. Your response should read like a long internal artifact that could be forwarded without additional explanation. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "policy_summary",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "policy",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Prepare revised manager policy summary for security reviewers auditing emergency grants. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Carry forward the same entity: Access request policy Carry forward the same timing detail: temporary access expires after 8 hours New timing or milestone detail: next business day security review Carry forward status detail: current access guidance Carry forward core fact 1: every production access request must name a ticket and business reason Carry forward core fact 2: engineering manager approval is required for write access Carry forward core fact 3: security reviews all emergency grants the next business day Carry forward core fact 4: shared credentials are never allowed New addendum fact: the revised summary should clarify that emergency access still needs logging New addendum fact: the revised summary should keep the automatic policy-breach note visible Persistent risk or limitation note: shared credentials create an automatic policy breach Persistent owner note: engineering managers own write-access approvals Additional handling instructions: Revise the prior answer rather than starting over from scratch, but keep the new artifact fully standalone for a new reader. The new version should still be substantial and detailed, and it should clearly absorb the addendum facts instead of appending a tiny note at the end. Keep all original critical details plus the new addendum facts the revised summary should clarify that emergency access still needs logging and the revised summary should keep the automatic policy-breach note visible. Do not shorten the artifact; the point of this workload is to require another large response under accumulated conversation context. Assume the reviewer wants a revised long-form artifact that preserves old facts and incorporates the new addendum cleanly. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "policy_summary_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "summary",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Create a second revision of the prior artifact for security reviewers auditing emergency grants. Keep the same entity Access request policy, preserve the original timing detail temporary access expires after 8 hours, preserve the addendum timing detail next business day security review, and continue to carry current access guidance. Keep these critical facts visible: every production access request must name a ticket and business reason; engineering manager approval is required for write access; security reviews all emergency grants the next business day; shared credentials are never allowed. Also keep the persistent operational notes all granted access must be logged in the audit register and team leads want a reusable summary for on-call escalation situations. Make sure the revision still surfaces the risk or limitation note shared credentials create an automatic policy breach and the owner note engineering managers own write-access approvals. Retain the prior addendum material the revised summary should clarify that emergency access still needs logging and the revised summary should keep the automatic policy-breach note visible, but rewrite the full artifact so it feels newly revised rather than copied. The new draft must remain fully standalone, must remain long-form, and must still feel complete to a new reader who did not see the first two turns. Do not shorten the artifact or collapse it into a short memo. This workload is intentionally asking for another dense response under growing conversation context, so keep the body substantial and keep all explicit facts stable.",
+        "input_contract": {
+          "task_type": "policy_summary_second_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "revision",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "Write a final long-form handoff version for security reviewers auditing emergency grants that is still grounded only in the same conversation facts. The handoff must preserve Access request policy, temporary access expires after 8 hours, next business day security review, and current access guidance. It must keep all four core facts unchanged: every production access request must name a ticket and business reason; engineering manager approval is required for write access; security reviews all emergency grants the next business day; shared credentials are never allowed. It must also retain both operational notes all granted access must be logged in the audit register and team leads want a reusable summary for on-call escalation situations, the risk or limitation note shared credentials create an automatic policy breach, the owner note engineering managers own write-access approvals, and both addendum facts the revised summary should clarify that emergency access still needs logging and the revised summary should keep the automatic policy-breach note visible. The handoff should read like the most complete version in the sequence, not a shortened wrap-up. It should still be long enough for someone to rely on directly, and it should remain faithful to all prior constraints without introducing any new scope, root causes, approvals, timelines, or outcomes beyond what is already in the conversation. Assume this final version may be forwarded internally as the definitive long artifact, so it must stay comprehensive, stable, and easy to read under the accumulated multi-turn context.",
+        "input_contract": {
+          "task_type": "policy_summary_final_handoff",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "final",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      }
+    ],
+    "contract_source": "<generated shape_control_v2_relaxed>"
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "shape_control_v2_relaxed_07_issue_recap_email_queue",
+    "description": "Four-turn long incident recap for the email queue processor. Relaxed scoring removes line-count and contains-all checks.",
+    "benchmark_family": "long_input_long_output_multiturn",
+    "system_prompt": "You are a structured summarization assistant. Use only the supplied facts, keep reasoning light, and satisfy the explicit keyword and minimum-length constraints exactly.",
+    "facts": {
+      "entity": "INC-2204",
+      "time_a": "09:14 UTC start time",
+      "time_b": "09:46 UTC backlog-clear checkpoint",
+      "status_a": "email queue processor in us-west-2",
+      "fact_1": "delivery backlog climbed above 42,000 messages",
+      "fact_2": "a malformed tenant template triggered retry storms",
+      "fact_3": "the offending template was disabled and workers were restarted",
+      "fact_4": "backlog cleared by 09:46 UTC",
+      "op_note_1": "on-call needed a handoff artifact for the next operator",
+      "op_note_2": "regional communications asked for a standalone incident recap",
+      "risk_note": "retry storms can recur if malformed templates are re-enabled",
+      "owner_note": "the messaging on-call owns follow-up verification",
+      "addendum_1": "the revised recap should explicitly restate the follow-up verification owner",
+      "addendum_2": "the revised recap should keep the retry-storm recurrence risk visible",
+      "artifact_a": "incident recap",
+      "artifact_b": "revised incident recap",
+      "audience_a": "an on-call engineer taking handoff",
+      "audience_b": "a regional operations lead reading the recap later",
+      "task_type": "issue_recap"
+    },
+    "tags": [
+      "shape_control_v2_relaxed",
+      "multiturn",
+      "long-input-long-output",
+      "issue-recap",
+      "relaxed-scoring"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "staged_growth",
+      "decode_stress": "high",
+      "expected_response_size_class": "large",
+      "isl_bucket": "xlarge",
+      "osl_bucket": "xlarge"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "Prepare incident recap for an on-call engineer taking handoff. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Product or account: INC-2204 Primary timing detail: 09:14 UTC start time Primary channel or status detail: email queue processor in us-west-2 Core fact 1: delivery backlog climbed above 42,000 messages Core fact 2: a malformed tenant template triggered retry storms Core fact 3: the offending template was disabled and workers were restarted Core fact 4: backlog cleared by 09:46 UTC Operational note: on-call needed a handoff artifact for the next operator Operational note: regional communications asked for a standalone incident recap Risk or limitation note: retry storms can recur if malformed templates are re-enabled Owner note: the messaging on-call owns follow-up verification Reminder: preserve exact names and dates where provided, especially INC-2204 and 09:14 UTC start time Additional handling instructions: Write a long-form structured summary that feels complete to an internal operator reading it cold. Do not convert this into a short memo or a terse bullet list; we want a substantive artifact with multiple lines of readable prose. Restate all critical details, especially delivery backlog climbed above 42,000 messages, a malformed tenant template triggered retry storms, and the offending template was disabled and workers were restarted, because those are considered must-keep facts. If there is a limitation or risk note, preserve it in neutral language rather than softening it away. Your response should read like a long internal artifact that could be forwarded without additional explanation. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "issue_recap",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "incident",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Prepare revised incident recap for a regional operations lead reading the recap later. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Carry forward the same entity: INC-2204 Carry forward the same timing detail: 09:14 UTC start time New timing or milestone detail: 09:46 UTC backlog-clear checkpoint Carry forward status detail: email queue processor in us-west-2 Carry forward core fact 1: delivery backlog climbed above 42,000 messages Carry forward core fact 2: a malformed tenant template triggered retry storms Carry forward core fact 3: the offending template was disabled and workers were restarted Carry forward core fact 4: backlog cleared by 09:46 UTC New addendum fact: the revised recap should explicitly restate the follow-up verification owner New addendum fact: the revised recap should keep the retry-storm recurrence risk visible Persistent risk or limitation note: retry storms can recur if malformed templates are re-enabled Persistent owner note: the messaging on-call owns follow-up verification Additional handling instructions: Revise the prior answer rather than starting over from scratch, but keep the new artifact fully standalone for a new reader. The new version should still be substantial and detailed, and it should clearly absorb the addendum facts instead of appending a tiny note at the end. Keep all original critical details plus the new addendum facts the revised recap should explicitly restate the follow-up verification owner and the revised recap should keep the retry-storm recurrence risk visible. Do not shorten the artifact; the point of this workload is to require another large response under accumulated conversation context. Assume the reviewer wants a revised long-form artifact that preserves old facts and incorporates the new addendum cleanly. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "issue_recap_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "update",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Create a second revision of the prior artifact for a regional operations lead reading the recap later. Keep the same entity INC-2204, preserve the original timing detail 09:14 UTC start time, preserve the addendum timing detail 09:46 UTC backlog-clear checkpoint, and continue to carry email queue processor in us-west-2. Keep these critical facts visible: delivery backlog climbed above 42,000 messages; a malformed tenant template triggered retry storms; the offending template was disabled and workers were restarted; backlog cleared by 09:46 UTC. Also keep the persistent operational notes on-call needed a handoff artifact for the next operator and regional communications asked for a standalone incident recap. Make sure the revision still surfaces the risk or limitation note retry storms can recur if malformed templates are re-enabled and the owner note the messaging on-call owns follow-up verification. Retain the prior addendum material the revised recap should explicitly restate the follow-up verification owner and the revised recap should keep the retry-storm recurrence risk visible, but rewrite the full artifact so it feels newly revised rather than copied. The new draft must remain fully standalone, must remain long-form, and must still feel complete to a new reader who did not see the first two turns. Do not shorten the artifact or collapse it into a short memo. This workload is intentionally asking for another dense response under growing conversation context, so keep the body substantial and keep all explicit facts stable.",
+        "input_contract": {
+          "task_type": "issue_recap_second_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "revision",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "Write a final long-form handoff version for a regional operations lead reading the recap later that is still grounded only in the same conversation facts. The handoff must preserve INC-2204, 09:14 UTC start time, 09:46 UTC backlog-clear checkpoint, and email queue processor in us-west-2. It must keep all four core facts unchanged: delivery backlog climbed above 42,000 messages; a malformed tenant template triggered retry storms; the offending template was disabled and workers were restarted; backlog cleared by 09:46 UTC. It must also retain both operational notes on-call needed a handoff artifact for the next operator and regional communications asked for a standalone incident recap, the risk or limitation note retry storms can recur if malformed templates are re-enabled, the owner note the messaging on-call owns follow-up verification, and both addendum facts the revised recap should explicitly restate the follow-up verification owner and the revised recap should keep the retry-storm recurrence risk visible. The handoff should read like the most complete version in the sequence, not a shortened wrap-up. It should still be long enough for someone to rely on directly, and it should remain faithful to all prior constraints without introducing any new scope, root causes, approvals, timelines, or outcomes beyond what is already in the conversation. Assume this final version may be forwarded internally as the definitive long artifact, so it must stay comprehensive, stable, and easy to read under the accumulated multi-turn context.",
+        "input_contract": {
+          "task_type": "issue_recap_final_handoff",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "final",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      }
+    ],
+    "contract_source": "<generated shape_control_v2_relaxed>"
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "shape_control_v2_relaxed_08_issue_recap_api_latency",
+    "description": "Four-turn long incident recap for the API gateway latency issue. Relaxed scoring removes line-count and contains-all checks.",
+    "benchmark_family": "long_input_long_output_multiturn",
+    "system_prompt": "You are a structured summarization assistant. Use only the supplied facts, keep reasoning light, and satisfy the explicit keyword and minimum-length constraints exactly.",
+    "facts": {
+      "entity": "INC-2218",
+      "time_a": "14:07 UTC start time",
+      "time_b": "14:39 UTC latency recovery checkpoint",
+      "status_a": "public API gateway in eu-west-1",
+      "fact_1": "p95 latency rose above 11 seconds for search requests",
+      "fact_2": "a cache invalidation job flooded the shared Redis cluster",
+      "fact_3": "the invalidation job was paused and cache keys were warmed manually",
+      "fact_4": "latency returned to baseline by 14:39 UTC",
+      "op_note_1": "the platform team needed a recap for search stakeholders",
+      "op_note_2": "follow-up review requires a reusable written summary",
+      "risk_note": "cache invalidation floods can recur during bulk refresh jobs",
+      "owner_note": "the API platform lead owns the follow-up review",
+      "addendum_1": "the revised recap should explicitly retain the reusable-summary framing",
+      "addendum_2": "the revised recap should keep the recurrence risk visible",
+      "artifact_a": "incident recap",
+      "artifact_b": "revised incident recap",
+      "audience_a": "an API platform engineer taking over the case",
+      "audience_b": "a search stakeholder who needs the revised narrative",
+      "task_type": "issue_recap"
+    },
+    "tags": [
+      "shape_control_v2_relaxed",
+      "multiturn",
+      "long-input-long-output",
+      "issue-recap",
+      "relaxed-scoring"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "staged_growth",
+      "decode_stress": "high",
+      "expected_response_size_class": "large",
+      "isl_bucket": "xlarge",
+      "osl_bucket": "xlarge"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "Prepare incident recap for an API platform engineer taking over the case. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Product or account: INC-2218 Primary timing detail: 14:07 UTC start time Primary channel or status detail: public API gateway in eu-west-1 Core fact 1: p95 latency rose above 11 seconds for search requests Core fact 2: a cache invalidation job flooded the shared Redis cluster Core fact 3: the invalidation job was paused and cache keys were warmed manually Core fact 4: latency returned to baseline by 14:39 UTC Operational note: the platform team needed a recap for search stakeholders Operational note: follow-up review requires a reusable written summary Risk or limitation note: cache invalidation floods can recur during bulk refresh jobs Owner note: the API platform lead owns the follow-up review Reminder: preserve exact names and dates where provided, especially INC-2218 and 14:07 UTC start time Additional handling instructions: Write a long-form structured summary that feels complete to an internal operator reading it cold. Do not convert this into a short memo or a terse bullet list; we want a substantive artifact with multiple lines of readable prose. Restate all critical details, especially p95 latency rose above 11 seconds for search requests, a cache invalidation job flooded the shared Redis cluster, and the invalidation job was paused and cache keys were warmed manually, because those are considered must-keep facts. If there is a limitation or risk note, preserve it in neutral language rather than softening it away. Your response should read like a long internal artifact that could be forwarded without additional explanation. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "issue_recap",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "incident",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Prepare revised incident recap for a search stakeholder who needs the revised narrative. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Carry forward the same entity: INC-2218 Carry forward the same timing detail: 14:07 UTC start time New timing or milestone detail: 14:39 UTC latency recovery checkpoint Carry forward status detail: public API gateway in eu-west-1 Carry forward core fact 1: p95 latency rose above 11 seconds for search requests Carry forward core fact 2: a cache invalidation job flooded the shared Redis cluster Carry forward core fact 3: the invalidation job was paused and cache keys were warmed manually Carry forward core fact 4: latency returned to baseline by 14:39 UTC New addendum fact: the revised recap should explicitly retain the reusable-summary framing New addendum fact: the revised recap should keep the recurrence risk visible Persistent risk or limitation note: cache invalidation floods can recur during bulk refresh jobs Persistent owner note: the API platform lead owns the follow-up review Additional handling instructions: Revise the prior answer rather than starting over from scratch, but keep the new artifact fully standalone for a new reader. The new version should still be substantial and detailed, and it should clearly absorb the addendum facts instead of appending a tiny note at the end. Keep all original critical details plus the new addendum facts the revised recap should explicitly retain the reusable-summary framing and the revised recap should keep the recurrence risk visible. Do not shorten the artifact; the point of this workload is to require another large response under accumulated conversation context. Assume the reviewer wants a revised long-form artifact that preserves old facts and incorporates the new addendum cleanly. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "issue_recap_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "update",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Create a second revision of the prior artifact for a search stakeholder who needs the revised narrative. Keep the same entity INC-2218, preserve the original timing detail 14:07 UTC start time, preserve the addendum timing detail 14:39 UTC latency recovery checkpoint, and continue to carry public API gateway in eu-west-1. Keep these critical facts visible: p95 latency rose above 11 seconds for search requests; a cache invalidation job flooded the shared Redis cluster; the invalidation job was paused and cache keys were warmed manually; latency returned to baseline by 14:39 UTC. Also keep the persistent operational notes the platform team needed a recap for search stakeholders and follow-up review requires a reusable written summary. Make sure the revision still surfaces the risk or limitation note cache invalidation floods can recur during bulk refresh jobs and the owner note the API platform lead owns the follow-up review. Retain the prior addendum material the revised recap should explicitly retain the reusable-summary framing and the revised recap should keep the recurrence risk visible, but rewrite the full artifact so it feels newly revised rather than copied. The new draft must remain fully standalone, must remain long-form, and must still feel complete to a new reader who did not see the first two turns. Do not shorten the artifact or collapse it into a short memo. This workload is intentionally asking for another dense response under growing conversation context, so keep the body substantial and keep all explicit facts stable.",
+        "input_contract": {
+          "task_type": "issue_recap_second_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "revision",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "Write a final long-form handoff version for a search stakeholder who needs the revised narrative that is still grounded only in the same conversation facts. The handoff must preserve INC-2218, 14:07 UTC start time, 14:39 UTC latency recovery checkpoint, and public API gateway in eu-west-1. It must keep all four core facts unchanged: p95 latency rose above 11 seconds for search requests; a cache invalidation job flooded the shared Redis cluster; the invalidation job was paused and cache keys were warmed manually; latency returned to baseline by 14:39 UTC. It must also retain both operational notes the platform team needed a recap for search stakeholders and follow-up review requires a reusable written summary, the risk or limitation note cache invalidation floods can recur during bulk refresh jobs, the owner note the API platform lead owns the follow-up review, and both addendum facts the revised recap should explicitly retain the reusable-summary framing and the revised recap should keep the recurrence risk visible. The handoff should read like the most complete version in the sequence, not a shortened wrap-up. It should still be long enough for someone to rely on directly, and it should remain faithful to all prior constraints without introducing any new scope, root causes, approvals, timelines, or outcomes beyond what is already in the conversation. Assume this final version may be forwarded internally as the definitive long artifact, so it must stay comprehensive, stable, and easy to read under the accumulated multi-turn context.",
+        "input_contract": {
+          "task_type": "issue_recap_final_handoff",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "final",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      }
+    ],
+    "contract_source": "<generated shape_control_v2_relaxed>"
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "shape_control_v2_relaxed_09_issue_recap_billing_export",
+    "description": "Four-turn long incident recap for the billing export worker. Relaxed scoring removes line-count and contains-all checks.",
+    "benchmark_family": "long_input_long_output_multiturn",
+    "system_prompt": "You are a structured summarization assistant. Use only the supplied facts, keep reasoning light, and satisfy the explicit keyword and minimum-length constraints exactly.",
+    "facts": {
+      "entity": "INC-2241",
+      "time_a": "18:22 UTC start time",
+      "time_b": "19:03 UTC queue-clear checkpoint",
+      "status_a": "billing export worker in ca-central-1",
+      "fact_1": "scheduled exports stalled and 1,280 jobs remained queued",
+      "fact_2": "an expired storage credential blocked archive writes",
+      "fact_3": "the credential was rotated and failed jobs were replayed",
+      "fact_4": "all queued exports completed by 19:03 UTC",
+      "op_note_1": "finance operations requested a handoff-ready recap",
+      "op_note_2": "the revised note should be standalone for audit reviewers",
+      "risk_note": "archive-write failures can recur if credential rotation drifts again",
+      "owner_note": "the billing infrastructure lead owns follow-up rotation checks",
+      "addendum_1": "the revised recap should explicitly retain the audit-review audience note",
+      "addendum_2": "the revised recap should keep the credential-drift recurrence risk visible",
+      "artifact_a": "incident recap",
+      "artifact_b": "revised incident recap",
+      "audience_a": "a billing engineer taking incident handoff",
+      "audience_b": "an audit reviewer who needs the revised narrative",
+      "task_type": "issue_recap"
+    },
+    "tags": [
+      "shape_control_v2_relaxed",
+      "multiturn",
+      "long-input-long-output",
+      "issue-recap",
+      "relaxed-scoring"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "staged_growth",
+      "decode_stress": "high",
+      "expected_response_size_class": "large",
+      "isl_bucket": "xlarge",
+      "osl_bucket": "xlarge"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "Prepare incident recap for a billing engineer taking incident handoff. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Product or account: INC-2241 Primary timing detail: 18:22 UTC start time Primary channel or status detail: billing export worker in ca-central-1 Core fact 1: scheduled exports stalled and 1,280 jobs remained queued Core fact 2: an expired storage credential blocked archive writes Core fact 3: the credential was rotated and failed jobs were replayed Core fact 4: all queued exports completed by 19:03 UTC Operational note: finance operations requested a handoff-ready recap Operational note: the revised note should be standalone for audit reviewers Risk or limitation note: archive-write failures can recur if credential rotation drifts again Owner note: the billing infrastructure lead owns follow-up rotation checks Reminder: preserve exact names and dates where provided, especially INC-2241 and 18:22 UTC start time Additional handling instructions: Write a long-form structured summary that feels complete to an internal operator reading it cold. Do not convert this into a short memo or a terse bullet list; we want a substantive artifact with multiple lines of readable prose. Restate all critical details, especially scheduled exports stalled and 1,280 jobs remained queued, an expired storage credential blocked archive writes, and the credential was rotated and failed jobs were replayed, because those are considered must-keep facts. If there is a limitation or risk note, preserve it in neutral language rather than softening it away. Your response should read like a long internal artifact that could be forwarded without additional explanation. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "issue_recap",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "incident",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Prepare revised incident recap for an audit reviewer who needs the revised narrative. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Carry forward the same entity: INC-2241 Carry forward the same timing detail: 18:22 UTC start time New timing or milestone detail: 19:03 UTC queue-clear checkpoint Carry forward status detail: billing export worker in ca-central-1 Carry forward core fact 1: scheduled exports stalled and 1,280 jobs remained queued Carry forward core fact 2: an expired storage credential blocked archive writes Carry forward core fact 3: the credential was rotated and failed jobs were replayed Carry forward core fact 4: all queued exports completed by 19:03 UTC New addendum fact: the revised recap should explicitly retain the audit-review audience note New addendum fact: the revised recap should keep the credential-drift recurrence risk visible Persistent risk or limitation note: archive-write failures can recur if credential rotation drifts again Persistent owner note: the billing infrastructure lead owns follow-up rotation checks Additional handling instructions: Revise the prior answer rather than starting over from scratch, but keep the new artifact fully standalone for a new reader. The new version should still be substantial and detailed, and it should clearly absorb the addendum facts instead of appending a tiny note at the end. Keep all original critical details plus the new addendum facts the revised recap should explicitly retain the audit-review audience note and the revised recap should keep the credential-drift recurrence risk visible. Do not shorten the artifact; the point of this workload is to require another large response under accumulated conversation context. Assume the reviewer wants a revised long-form artifact that preserves old facts and incorporates the new addendum cleanly. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "issue_recap_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "update",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Create a second revision of the prior artifact for an audit reviewer who needs the revised narrative. Keep the same entity INC-2241, preserve the original timing detail 18:22 UTC start time, preserve the addendum timing detail 19:03 UTC queue-clear checkpoint, and continue to carry billing export worker in ca-central-1. Keep these critical facts visible: scheduled exports stalled and 1,280 jobs remained queued; an expired storage credential blocked archive writes; the credential was rotated and failed jobs were replayed; all queued exports completed by 19:03 UTC. Also keep the persistent operational notes finance operations requested a handoff-ready recap and the revised note should be standalone for audit reviewers. Make sure the revision still surfaces the risk or limitation note archive-write failures can recur if credential rotation drifts again and the owner note the billing infrastructure lead owns follow-up rotation checks. Retain the prior addendum material the revised recap should explicitly retain the audit-review audience note and the revised recap should keep the credential-drift recurrence risk visible, but rewrite the full artifact so it feels newly revised rather than copied. The new draft must remain fully standalone, must remain long-form, and must still feel complete to a new reader who did not see the first two turns. Do not shorten the artifact or collapse it into a short memo. This workload is intentionally asking for another dense response under growing conversation context, so keep the body substantial and keep all explicit facts stable.",
+        "input_contract": {
+          "task_type": "issue_recap_second_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "revision",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "Write a final long-form handoff version for an audit reviewer who needs the revised narrative that is still grounded only in the same conversation facts. The handoff must preserve INC-2241, 18:22 UTC start time, 19:03 UTC queue-clear checkpoint, and billing export worker in ca-central-1. It must keep all four core facts unchanged: scheduled exports stalled and 1,280 jobs remained queued; an expired storage credential blocked archive writes; the credential was rotated and failed jobs were replayed; all queued exports completed by 19:03 UTC. It must also retain both operational notes finance operations requested a handoff-ready recap and the revised note should be standalone for audit reviewers, the risk or limitation note archive-write failures can recur if credential rotation drifts again, the owner note the billing infrastructure lead owns follow-up rotation checks, and both addendum facts the revised recap should explicitly retain the audit-review audience note and the revised recap should keep the credential-drift recurrence risk visible. The handoff should read like the most complete version in the sequence, not a shortened wrap-up. It should still be long enough for someone to rely on directly, and it should remain faithful to all prior constraints without introducing any new scope, root causes, approvals, timelines, or outcomes beyond what is already in the conversation. Assume this final version may be forwarded internally as the definitive long artifact, so it must stay comprehensive, stable, and easy to read under the accumulated multi-turn context.",
+        "input_contract": {
+          "task_type": "issue_recap_final_handoff",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "final",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": []
+      }
+    ],
+    "contract_source": "<generated shape_control_v2_relaxed>"
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "shape_control_v2_relaxed_10_customer_safe_summary_contract_delay",
+    "description": "Four-turn long customer-safe summary for Cedar Finance. Relaxed scoring removes line-count and contains-all checks.",
+    "benchmark_family": "long_input_long_output_multiturn",
+    "system_prompt": "You are a structured summarization assistant. Use only the supplied facts, keep reasoning light, and satisfy the explicit keyword and minimum-length constraints exactly.",
+    "facts": {
+      "entity": "Cedar Finance",
+      "time_a": "tomorrow document resend commitment",
+      "time_b": "next status note after signature follow-up",
+      "status_a": "service remains active during the delay",
+      "fact_1": "renewal paperwork is delayed pending one missing signature",
+      "fact_2": "the account team will resend the document packet tomorrow",
+      "fact_3": "service remains active during the delay",
+      "fact_4": "the customer update must stay safe for external sharing",
+      "op_note_1": "the customer-facing note should sound calm and complete",
+      "op_note_2": "the revised note should still be safe if forwarded broadly",
+      "risk_note": "do not mention discount approval or internal routing codes",
+      "owner_note": "the account team owns the next customer-safe update",
+      "addendum_1": "the revised note should explicitly keep the calm and complete tone",
+      "addendum_2": "the revised note should retain the forwarding-safe guidance",
+      "artifact_a": "customer-safe summary",
+      "artifact_b": "revised customer-safe summary",
+      "audience_a": "an account manager drafting an external update",
+      "audience_b": "a later account lead who needs the revision standalone",
+      "task_type": "customer_safe_summary"
+    },
+    "tags": [
+      "shape_control_v2_relaxed",
+      "multiturn",
+      "long-input-long-output",
+      "customer-safe-summary",
+      "relaxed-scoring"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "staged_growth",
+      "decode_stress": "high",
+      "expected_response_size_class": "large",
+      "isl_bucket": "xlarge",
+      "osl_bucket": "xlarge"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "Prepare customer-safe summary for an account manager drafting an external update. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Product or account: Cedar Finance Primary timing detail: tomorrow document resend commitment Primary channel or status detail: service remains active during the delay Core fact 1: renewal paperwork is delayed pending one missing signature Core fact 2: the account team will resend the document packet tomorrow Core fact 3: service remains active during the delay Core fact 4: the customer update must stay safe for external sharing Operational note: the customer-facing note should sound calm and complete Operational note: the revised note should still be safe if forwarded broadly Risk or limitation note: do not mention discount approval or internal routing codes Owner note: the account team owns the next customer-safe update Reminder: preserve exact names and dates where provided, especially Cedar Finance and tomorrow document resend commitment Additional handling instructions: Write a long-form structured summary that feels complete to an internal operator reading it cold. Do not convert this into a short memo or a terse bullet list; we want a substantive artifact with multiple lines of readable prose. Restate all critical details, especially renewal paperwork is delayed pending one missing signature, the account team will resend the document packet tomorrow, and service remains active during the delay, because those are considered must-keep facts. If there is a limitation or risk note, preserve it in neutral language rather than softening it away. Your response should read like a long internal artifact that could be forwarded without additional explanation. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "customer_safe_summary",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "customer",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": [
+          {
+            "name": "turn_01_omits_internal_only_details",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "discount approval",
+              "routing codes",
+              "RC-17A"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Prepare revised customer-safe summary for a later account lead who needs the revision standalone. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Carry forward the same entity: Cedar Finance Carry forward the same timing detail: tomorrow document resend commitment New timing or milestone detail: next status note after signature follow-up Carry forward status detail: service remains active during the delay Carry forward core fact 1: renewal paperwork is delayed pending one missing signature Carry forward core fact 2: the account team will resend the document packet tomorrow Carry forward core fact 3: service remains active during the delay Carry forward core fact 4: the customer update must stay safe for external sharing New addendum fact: the revised note should explicitly keep the calm and complete tone New addendum fact: the revised note should retain the forwarding-safe guidance Persistent risk or limitation note: do not mention discount approval or internal routing codes Persistent owner note: the account team owns the next customer-safe update Additional handling instructions: Revise the prior answer rather than starting over from scratch, but keep the new artifact fully standalone for a new reader. The new version should still be substantial and detailed, and it should clearly absorb the addendum facts instead of appending a tiny note at the end. Keep all original critical details plus the new addendum facts the revised note should explicitly keep the calm and complete tone and the revised note should retain the forwarding-safe guidance. Do not shorten the artifact; the point of this workload is to require another large response under accumulated conversation context. Assume the reviewer wants a revised long-form artifact that preserves old facts and incorporates the new addendum cleanly. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "customer_safe_summary_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "update",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": [
+          {
+            "name": "turn_02_omits_internal_only_details",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "discount approval",
+              "routing codes",
+              "RC-17A"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Create a second revision of the prior artifact for a later account lead who needs the revision standalone. Keep the same entity Cedar Finance, preserve the original timing detail tomorrow document resend commitment, preserve the addendum timing detail next status note after signature follow-up, and continue to carry service remains active during the delay. Keep these critical facts visible: renewal paperwork is delayed pending one missing signature; the account team will resend the document packet tomorrow; service remains active during the delay; the customer update must stay safe for external sharing. Also keep the persistent operational notes the customer-facing note should sound calm and complete and the revised note should still be safe if forwarded broadly. Make sure the revision still surfaces the risk or limitation note do not mention discount approval or internal routing codes and the owner note the account team owns the next customer-safe update. Retain the prior addendum material the revised note should explicitly keep the calm and complete tone and the revised note should retain the forwarding-safe guidance, but rewrite the full artifact so it feels newly revised rather than copied. The new draft must remain fully standalone, must remain long-form, and must still feel complete to a new reader who did not see the first two turns. Do not shorten the artifact or collapse it into a short memo. This workload is intentionally asking for another dense response under growing conversation context, so keep the body substantial and keep all explicit facts stable.",
+        "input_contract": {
+          "task_type": "customer_safe_summary_second_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "revision",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": [
+          {
+            "name": "turn_03_omits_internal_only_details",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "discount approval",
+              "routing codes",
+              "RC-17A"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "Write a final long-form handoff version for a later account lead who needs the revision standalone that is still grounded only in the same conversation facts. The handoff must preserve Cedar Finance, tomorrow document resend commitment, next status note after signature follow-up, and service remains active during the delay. It must keep all four core facts unchanged: renewal paperwork is delayed pending one missing signature; the account team will resend the document packet tomorrow; service remains active during the delay; the customer update must stay safe for external sharing. It must also retain both operational notes the customer-facing note should sound calm and complete and the revised note should still be safe if forwarded broadly, the risk or limitation note do not mention discount approval or internal routing codes, the owner note the account team owns the next customer-safe update, and both addendum facts the revised note should explicitly keep the calm and complete tone and the revised note should retain the forwarding-safe guidance. The handoff should read like the most complete version in the sequence, not a shortened wrap-up. It should still be long enough for someone to rely on directly, and it should remain faithful to all prior constraints without introducing any new scope, root causes, approvals, timelines, or outcomes beyond what is already in the conversation. Assume this final version may be forwarded internally as the definitive long artifact, so it must stay comprehensive, stable, and easy to read under the accumulated multi-turn context.",
+        "input_contract": {
+          "task_type": "customer_safe_summary_final_handoff",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "final",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": [
+          {
+            "name": "turn_04_omits_internal_only_details",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "discount approval",
+              "routing codes",
+              "RC-17A"
+            ]
+          }
+        ]
+      }
+    ],
+    "contract_source": "<generated shape_control_v2_relaxed>"
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "shape_control_v2_relaxed_11_customer_safe_summary_login_issue",
+    "description": "Four-turn long customer-safe summary for Granite Telecom. Relaxed scoring removes line-count and contains-all checks.",
+    "benchmark_family": "long_input_long_output_multiturn",
+    "system_prompt": "You are a structured summarization assistant. Use only the supplied facts, keep reasoning light, and satisfy the explicit keyword and minimum-length constraints exactly.",
+    "facts": {
+      "entity": "Granite Telecom",
+      "time_a": "today remediation-window commitment",
+      "time_b": "next status note after remediation confirmation",
+      "status_a": "access is partially restored for affected admins",
+      "fact_1": "some admins saw sign-in delays after a password reset event",
+      "fact_2": "support will share a confirmed remediation window today",
+      "fact_3": "access is partially restored for affected admins",
+      "fact_4": "the customer-safe note must avoid internal investigation language",
+      "op_note_1": "the outward message should feel complete without technical over-sharing",
+      "op_note_2": "the revised note should still be safe if forwarded broadly",
+      "risk_note": "do not mention hotfix review language or internal codes",
+      "owner_note": "support owns the next customer-safe update",
+      "addendum_1": "the revised note should explicitly preserve the no-over-sharing constraint",
+      "addendum_2": "the revised note should preserve the forwarding-safe tone",
+      "artifact_a": "customer-safe summary",
+      "artifact_b": "revised customer-safe summary",
+      "audience_a": "a support manager drafting an external update",
+      "audience_b": "a later escalation manager who needs the revision standalone",
+      "task_type": "customer_safe_summary"
+    },
+    "tags": [
+      "shape_control_v2_relaxed",
+      "multiturn",
+      "long-input-long-output",
+      "customer-safe-summary",
+      "relaxed-scoring"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "staged_growth",
+      "decode_stress": "high",
+      "expected_response_size_class": "large",
+      "isl_bucket": "xlarge",
+      "osl_bucket": "xlarge"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "Prepare customer-safe summary for a support manager drafting an external update. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Product or account: Granite Telecom Primary timing detail: today remediation-window commitment Primary channel or status detail: access is partially restored for affected admins Core fact 1: some admins saw sign-in delays after a password reset event Core fact 2: support will share a confirmed remediation window today Core fact 3: access is partially restored for affected admins Core fact 4: the customer-safe note must avoid internal investigation language Operational note: the outward message should feel complete without technical over-sharing Operational note: the revised note should still be safe if forwarded broadly Risk or limitation note: do not mention hotfix review language or internal codes Owner note: support owns the next customer-safe update Reminder: preserve exact names and dates where provided, especially Granite Telecom and today remediation-window commitment Additional handling instructions: Write a long-form structured summary that feels complete to an internal operator reading it cold. Do not convert this into a short memo or a terse bullet list; we want a substantive artifact with multiple lines of readable prose. Restate all critical details, especially some admins saw sign-in delays after a password reset event, support will share a confirmed remediation window today, and access is partially restored for affected admins, because those are considered must-keep facts. If there is a limitation or risk note, preserve it in neutral language rather than softening it away. Your response should read like a long internal artifact that could be forwarded without additional explanation. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "customer_safe_summary",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "customer",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": [
+          {
+            "name": "turn_01_omits_internal_only_details",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "hotfix review",
+              "RC-28C",
+              "internal investigation language"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Prepare revised customer-safe summary for a later escalation manager who needs the revision standalone. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Carry forward the same entity: Granite Telecom Carry forward the same timing detail: today remediation-window commitment New timing or milestone detail: next status note after remediation confirmation Carry forward status detail: access is partially restored for affected admins Carry forward core fact 1: some admins saw sign-in delays after a password reset event Carry forward core fact 2: support will share a confirmed remediation window today Carry forward core fact 3: access is partially restored for affected admins Carry forward core fact 4: the customer-safe note must avoid internal investigation language New addendum fact: the revised note should explicitly preserve the no-over-sharing constraint New addendum fact: the revised note should preserve the forwarding-safe tone Persistent risk or limitation note: do not mention hotfix review language or internal codes Persistent owner note: support owns the next customer-safe update Additional handling instructions: Revise the prior answer rather than starting over from scratch, but keep the new artifact fully standalone for a new reader. The new version should still be substantial and detailed, and it should clearly absorb the addendum facts instead of appending a tiny note at the end. Keep all original critical details plus the new addendum facts the revised note should explicitly preserve the no-over-sharing constraint and the revised note should preserve the forwarding-safe tone. Do not shorten the artifact; the point of this workload is to require another large response under accumulated conversation context. Assume the reviewer wants a revised long-form artifact that preserves old facts and incorporates the new addendum cleanly. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "customer_safe_summary_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "update",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": [
+          {
+            "name": "turn_02_omits_internal_only_details",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "hotfix review",
+              "RC-28C",
+              "internal investigation language"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Create a second revision of the prior artifact for a later escalation manager who needs the revision standalone. Keep the same entity Granite Telecom, preserve the original timing detail today remediation-window commitment, preserve the addendum timing detail next status note after remediation confirmation, and continue to carry access is partially restored for affected admins. Keep these critical facts visible: some admins saw sign-in delays after a password reset event; support will share a confirmed remediation window today; access is partially restored for affected admins; the customer-safe note must avoid internal investigation language. Also keep the persistent operational notes the outward message should feel complete without technical over-sharing and the revised note should still be safe if forwarded broadly. Make sure the revision still surfaces the risk or limitation note do not mention hotfix review language or internal codes and the owner note support owns the next customer-safe update. Retain the prior addendum material the revised note should explicitly preserve the no-over-sharing constraint and the revised note should preserve the forwarding-safe tone, but rewrite the full artifact so it feels newly revised rather than copied. The new draft must remain fully standalone, must remain long-form, and must still feel complete to a new reader who did not see the first two turns. Do not shorten the artifact or collapse it into a short memo. This workload is intentionally asking for another dense response under growing conversation context, so keep the body substantial and keep all explicit facts stable.",
+        "input_contract": {
+          "task_type": "customer_safe_summary_second_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "revision",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": [
+          {
+            "name": "turn_03_omits_internal_only_details",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "hotfix review",
+              "RC-28C",
+              "internal investigation language"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "Write a final long-form handoff version for a later escalation manager who needs the revision standalone that is still grounded only in the same conversation facts. The handoff must preserve Granite Telecom, today remediation-window commitment, next status note after remediation confirmation, and access is partially restored for affected admins. It must keep all four core facts unchanged: some admins saw sign-in delays after a password reset event; support will share a confirmed remediation window today; access is partially restored for affected admins; the customer-safe note must avoid internal investigation language. It must also retain both operational notes the outward message should feel complete without technical over-sharing and the revised note should still be safe if forwarded broadly, the risk or limitation note do not mention hotfix review language or internal codes, the owner note support owns the next customer-safe update, and both addendum facts the revised note should explicitly preserve the no-over-sharing constraint and the revised note should preserve the forwarding-safe tone. The handoff should read like the most complete version in the sequence, not a shortened wrap-up. It should still be long enough for someone to rely on directly, and it should remain faithful to all prior constraints without introducing any new scope, root causes, approvals, timelines, or outcomes beyond what is already in the conversation. Assume this final version may be forwarded internally as the definitive long artifact, so it must stay comprehensive, stable, and easy to read under the accumulated multi-turn context.",
+        "input_contract": {
+          "task_type": "customer_safe_summary_final_handoff",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "final",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": [
+          {
+            "name": "turn_04_omits_internal_only_details",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "hotfix review",
+              "RC-28C",
+              "internal investigation language"
+            ]
+          }
+        ]
+      }
+    ],
+    "contract_source": "<generated shape_control_v2_relaxed>"
+  },
+  {
+    "schema_version": "benchmark_contract_v1",
+    "name": "shape_control_v2_relaxed_12_customer_safe_summary_sync_delay",
+    "description": "Four-turn long customer-safe summary for Juniper Media. Relaxed scoring removes line-count and contains-all checks.",
+    "benchmark_family": "long_input_long_output_multiturn",
+    "system_prompt": "You are a structured summarization assistant. Use only the supplied facts, keep reasoning light, and satisfy the explicit keyword and minimum-length constraints exactly.",
+    "facts": {
+      "entity": "Juniper Media",
+      "time_a": "next status update after the current replay completes",
+      "time_b": "follow-up note after replay verification",
+      "status_a": "existing documents remain available and no data loss is expected",
+      "fact_1": "document syncs are delayed for a subset of workspaces",
+      "fact_2": "operations will provide the next status update after the current replay completes",
+      "fact_3": "existing documents remain available and no data loss is expected",
+      "fact_4": "the customer-safe note must remain calm and externally shareable",
+      "op_note_1": "the message should reassure readers without overpromising",
+      "op_note_2": "the revised note should remain safe if forwarded outside the main thread",
+      "risk_note": "do not mention queue partition rebalance or internal codes",
+      "owner_note": "operations owns the next customer-safe update",
+      "addendum_1": "the revised note should explicitly preserve the reassurance-without-overpromising tone",
+      "addendum_2": "the revised note should keep the forwarding-safe constraint visible",
+      "artifact_a": "customer-safe summary",
+      "artifact_b": "revised customer-safe summary",
+      "audience_a": "an operations lead drafting an external update",
+      "audience_b": "a later account lead who needs the revision standalone",
+      "task_type": "customer_safe_summary"
+    },
+    "tags": [
+      "shape_control_v2_relaxed",
+      "multiturn",
+      "long-input-long-output",
+      "customer-safe-summary",
+      "relaxed-scoring"
+    ],
+    "workload_metadata": {
+      "reasoning_class": "light",
+      "context_growth_profile": "staged_growth",
+      "decode_stress": "high",
+      "expected_response_size_class": "large",
+      "isl_bucket": "xlarge",
+      "osl_bucket": "xlarge"
+    },
+    "turns": [
+      {
+        "turn_id": "turn_01",
+        "prompt": "Prepare customer-safe summary for an operations lead drafting an external update. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Product or account: Juniper Media Primary timing detail: next status update after the current replay completes Primary channel or status detail: existing documents remain available and no data loss is expected Core fact 1: document syncs are delayed for a subset of workspaces Core fact 2: operations will provide the next status update after the current replay completes Core fact 3: existing documents remain available and no data loss is expected Core fact 4: the customer-safe note must remain calm and externally shareable Operational note: the message should reassure readers without overpromising Operational note: the revised note should remain safe if forwarded outside the main thread Risk or limitation note: do not mention queue partition rebalance or internal codes Owner note: operations owns the next customer-safe update Reminder: preserve exact names and dates where provided, especially Juniper Media and next status update after the current replay completes Additional handling instructions: Write a long-form structured summary that feels complete to an internal operator reading it cold. Do not convert this into a short memo or a terse bullet list; we want a substantive artifact with multiple lines of readable prose. Restate all critical details, especially document syncs are delayed for a subset of workspaces, operations will provide the next status update after the current replay completes, and existing documents remain available and no data loss is expected, because those are considered must-keep facts. If there is a limitation or risk note, preserve it in neutral language rather than softening it away. Your response should read like a long internal artifact that could be forwarded without additional explanation. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "customer_safe_summary",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "customer",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": [
+          {
+            "name": "turn_01_omits_internal_only_details",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "queue partition rebalance",
+              "RC-33F",
+              "internal codes"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_02",
+        "prompt": "Prepare revised customer-safe summary for a later account lead who needs the revision standalone. Use the following verbose source note as your only basis. The source is intentionally long because this workload is meant to preserve dense factual context and still produce a usable long-form summary. Source note: Carry forward the same entity: Juniper Media Carry forward the same timing detail: next status update after the current replay completes New timing or milestone detail: follow-up note after replay verification Carry forward status detail: existing documents remain available and no data loss is expected Carry forward core fact 1: document syncs are delayed for a subset of workspaces Carry forward core fact 2: operations will provide the next status update after the current replay completes Carry forward core fact 3: existing documents remain available and no data loss is expected Carry forward core fact 4: the customer-safe note must remain calm and externally shareable New addendum fact: the revised note should explicitly preserve the reassurance-without-overpromising tone New addendum fact: the revised note should keep the forwarding-safe constraint visible Persistent risk or limitation note: do not mention queue partition rebalance or internal codes Persistent owner note: operations owns the next customer-safe update Additional handling instructions: Revise the prior answer rather than starting over from scratch, but keep the new artifact fully standalone for a new reader. The new version should still be substantial and detailed, and it should clearly absorb the addendum facts instead of appending a tiny note at the end. Keep all original critical details plus the new addendum facts the revised note should explicitly preserve the reassurance-without-overpromising tone and the revised note should keep the forwarding-safe constraint visible. Do not shorten the artifact; the point of this workload is to require another large response under accumulated conversation context. Assume the reviewer wants a revised long-form artifact that preserves old facts and incorporates the new addendum cleanly. Do not invent any additional scope, policy, causes, timelines, owners, or mitigations beyond what is explicitly stated in the source note and the handling instructions above.",
+        "input_contract": {
+          "task_type": "customer_safe_summary_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "update",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": [
+          {
+            "name": "turn_02_omits_internal_only_details",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "queue partition rebalance",
+              "RC-33F",
+              "internal codes"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_03",
+        "prompt": "Create a second revision of the prior artifact for a later account lead who needs the revision standalone. Keep the same entity Juniper Media, preserve the original timing detail next status update after the current replay completes, preserve the addendum timing detail follow-up note after replay verification, and continue to carry existing documents remain available and no data loss is expected. Keep these critical facts visible: document syncs are delayed for a subset of workspaces; operations will provide the next status update after the current replay completes; existing documents remain available and no data loss is expected; the customer-safe note must remain calm and externally shareable. Also keep the persistent operational notes the message should reassure readers without overpromising and the revised note should remain safe if forwarded outside the main thread. Make sure the revision still surfaces the risk or limitation note do not mention queue partition rebalance or internal codes and the owner note operations owns the next customer-safe update. Retain the prior addendum material the revised note should explicitly preserve the reassurance-without-overpromising tone and the revised note should keep the forwarding-safe constraint visible, but rewrite the full artifact so it feels newly revised rather than copied. The new draft must remain fully standalone, must remain long-form, and must still feel complete to a new reader who did not see the first two turns. Do not shorten the artifact or collapse it into a short memo. This workload is intentionally asking for another dense response under growing conversation context, so keep the body substantial and keep all explicit facts stable.",
+        "input_contract": {
+          "task_type": "customer_safe_summary_second_revision",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "revision",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": [
+          {
+            "name": "turn_03_omits_internal_only_details",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "queue partition rebalance",
+              "RC-33F",
+              "internal codes"
+            ]
+          }
+        ]
+      },
+      {
+        "turn_id": "turn_04",
+        "prompt": "Write a final long-form handoff version for a later account lead who needs the revision standalone that is still grounded only in the same conversation facts. The handoff must preserve Juniper Media, next status update after the current replay completes, follow-up note after replay verification, and existing documents remain available and no data loss is expected. It must keep all four core facts unchanged: document syncs are delayed for a subset of workspaces; operations will provide the next status update after the current replay completes; existing documents remain available and no data loss is expected; the customer-safe note must remain calm and externally shareable. It must also retain both operational notes the message should reassure readers without overpromising and the revised note should remain safe if forwarded outside the main thread, the risk or limitation note do not mention queue partition rebalance or internal codes, the owner note operations owns the next customer-safe update, and both addendum facts the revised note should explicitly preserve the reassurance-without-overpromising tone and the revised note should keep the forwarding-safe constraint visible. The handoff should read like the most complete version in the sequence, not a shortened wrap-up. It should still be long enough for someone to rely on directly, and it should remain faithful to all prior constraints without introducing any new scope, root causes, approvals, timelines, or outcomes beyond what is already in the conversation. Assume this final version may be forwarded internally as the definitive long artifact, so it must stay comprehensive, stable, and easy to read under the accumulated multi-turn context.",
+        "input_contract": {
+          "task_type": "customer_safe_summary_final_handoff",
+          "min_input_character_count": 1000
+        },
+        "output_contract": {
+          "keyword_counts": [
+            {
+              "keyword": "final",
+              "count": 2
+            }
+          ],
+          "min_character_count": 1000
+        },
+        "correctness_checks": [
+          {
+            "name": "turn_04_omits_internal_only_details",
+            "rule": "contains_none",
+            "weight": 1.0,
+            "needles": [
+              "queue partition rebalance",
+              "RC-33F",
+              "internal codes"
+            ]
+          }
+        ]
+      }
+    ],
+    "contract_source": "<generated shape_control_v2_relaxed>"
+  }
+]
